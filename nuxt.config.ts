@@ -1,5 +1,10 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  runtimeConfig: {
+    public: {
+      baseURL: "",
+    },
+  },
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
   modules: ['@nuxtjs/tailwindcss', 'shadcn-nuxt', '@pinia/nuxt'],
@@ -15,6 +20,9 @@ export default defineNuxtConfig({
     componentDir: './components/ui'
   },
   css: ['~/assets/scss/main.scss'],
+  pinia: {
+    storesDirs: ['./stores/stores/**'],
+  },
   postcss: {
     plugins: {
       tailwindcss: {},
