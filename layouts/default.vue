@@ -1,5 +1,9 @@
 <template>
+  <div class="main-content">
+
   <slot />
+  </div>
+  <div class="w-[200px]">
   <SidebarProvider>
     <div class="flex h-screen bg-gray-100 dark:bg-gray-900">
       <Sidebar>
@@ -33,6 +37,7 @@
       </Sidebar>
     </div>
   </SidebarProvider>
+</div>
 </template>
 
 <script setup lang="ts"></script>

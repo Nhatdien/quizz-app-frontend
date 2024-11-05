@@ -1,1 +1,6 @@
 @forward "./tailwind.scss";
+
+.main-content{
+    margin-left: 280px;
+    width: calc(100% - 300px);
+}

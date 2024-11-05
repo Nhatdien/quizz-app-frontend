@@ -1,6 +1,7 @@
 export type Config = {
   base_url: string;
-  ws_url: string;
+  access_token?: string;
+  client_id?: string;
 };
 
 export abstract class Base {
@@ -12,32 +13,43 @@ export abstract class Base {
     this.config = config;
   }
 
-  public setLoading = (loading: boolean): void => {
+  public onLoading = (loading: boolean, callback = (): void => {}): void => {
     this.loading = loading;
+    callback();
   };
 
-  public setError = (error: string): void => {
-    this.error = error;
+  public onResponse = (response: Response, callback = (): void => {}): void => {
+    callback();
+  }
+
+  public onError = (error: Error, callback = (): void => {}): void => {
+    this.error = error.message;
+    callback();
   };
 
   protected async fetch<T>(input: RequestInfo, init?: RequestInit): Promise<T> {
-    this.setLoading(true);
+    this.onLoading(true);
     return new Promise((resolve, reject) => {
       fetch(input, init)
-        .then((response) => {
-          console.log(response);
+        .then((response: Response) => {
+          this.onResponse(response);
+          
           if (response.status !== 200) {
-            throw new Error("Error fetching data");
+            if (response.status === 401) {
+              throw new Error("Unauthorized");
+            } else {
+              throw new Error("Something went wrong");
+            }
           }
           return response.json();
         })
         .then((data) => {
-          this.setLoading(false);
+          this.onLoading(false);
           resolve(data);
         })
         .catch((error) => {
-          this.setError(error.message);
-          this.setLoading(false);
+          this.onError(error);
+          this.onLoading(false);
           reject(error);
         });
     });

@@ -3,6 +3,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       baseURL: "",
+      clientId: "",
     },
   },
   compatibilityDate: '2024-04-03',

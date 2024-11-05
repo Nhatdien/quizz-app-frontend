@@ -3,15 +3,15 @@ import type { TopicType } from "../types/topic";
 
 export class Topic extends Base {
   async getTopics(): Promise<TopicType[]> {
-    return this.fetch<TopicType[]>(`${this.config.base_url}/topics`);
+    return this.fetch<TopicType[]>(`${this.config.base_url}/topic`);
   }
 
   async getTopic(code: string): Promise<TopicType> {
-    return this.fetch<TopicType>(`${this.config.base_url}/topics/${code}`);
+    return this.fetch<TopicType>(`${this.config.base_url}/topic/${code}`);
   }
 
   async createTopic(topic: TopicType): Promise<TopicType> {
-    return this.fetch<TopicType>(`${this.config.base_url}/topics`, {
+    return this.fetch<TopicType>(`${this.config.base_url}/topic`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
