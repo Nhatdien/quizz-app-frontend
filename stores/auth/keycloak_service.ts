@@ -1,43 +1,74 @@
-import Keycloak from 'keycloak-js'
+import Keycloak from "keycloak-js";
 
-const keycloakInstance = new Keycloak({
-    url: 'http://localhost:8180/realms/quizdev/protocol/openid-connect/auth',
-    realm: 'quizzdev',
-    clientId: 'quizclient'
-})
+class KeycloakService {
+  private static instance: KeycloakService;
+  private _kc: Keycloak;
 
-interface CallbackOneParam<T1 = void, T2 = void> {
-  (param1: T1): T2
-}
+  private constructor() {
+    this._kc = new Keycloak({
+      realm: "quizdev",
+      clientId: "quizclient",
+      url: "http://localhost:8180",
+    });
+  }
 
-interface authenthicatedCallback {
-  (): void
-}
-/**
- * Initializes Keycloak instance and calls the provided callback function if successfully authenticated.
- *
- * @param onAuthenticatedCallback
- */
-const Login = (onAuthenticatedCallback: authenthicatedCallback) => {
-  keycloakInstance
-    .init({ onLoad: 'login-required' })
-    .then(function (authenticated) {
-      authenticated ? onAuthenticatedCallback() : alert('non authenticated')
+  public static getInstance(): KeycloakService {
+    if (!KeycloakService.instance) {
+      KeycloakService.instance = new KeycloakService();
+    }
+    return KeycloakService.instance;
+  }
+
+  public initKeycloak(onAuthenticatedCallback: Function): void {
+    this._kc.init({
+      onLoad: 'login-required',
+      redirectUri: "http://localhost:4200",
+      scope: 'openid email',
+      pkceMethod: 'S256',
     })
-    .catch((e) => {
-      console.error(e)
-      console.log(`keycloak init exception: ${e}`)
-    })
+      .then((authenticated) => {
+        if (!authenticated) {
+          console.log("user is not authenticated..!");
+        }
+        onAuthenticatedCallback();
+      })
+      .catch(console.error);
+  }
+
+  public doLogin(): void {
+    this._kc.login();
+  }
+
+  public doLogout(): void {
+    this._kc.logout();
+  }
+
+  public getToken(): string | undefined {
+    return this._kc.token;
+  }
+
+  public getTokenParsed(): Keycloak.KeycloakTokenParsed | undefined {
+    return this._kc.tokenParsed;
+  }
+
+  public isLoggedIn(): boolean {
+    return !!this._kc.token;
+  }
+
+  public updateToken(successCallback: any): void {
+    this._kc.updateToken(5)
+      .then(successCallback)
+      .catch(this.doLogin);
+  }
+
+  public getUsername(): string | undefined {
+    return this._kc.tokenParsed?.preferred_username;
+  }
+
+  public hasRole(roles: any): boolean {
+    return roles.some((role: any) => this._kc.hasRealmRole(role));
+  }
 }
 
-const LogOut = () => {
-  keycloakInstance.logout()
-}
-
-const KeyCloakService = {
-  CallLogin: Login,
-  CallLogOut: LogOut,
-  instance: keycloakInstance
-}
-
-export default KeyCloakService
+const keycloakServiceInstance = KeycloakService.getInstance();
+export default keycloakServiceInstance;

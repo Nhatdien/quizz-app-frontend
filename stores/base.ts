@@ -20,7 +20,7 @@ export abstract class Base {
 
   public onResponse = (response: Response, callback = (): void => {}): void => {
     callback();
-  }
+  };
 
   public onError = (error: Error, callback = (): void => {}): void => {
     this.error = error.message;
@@ -29,11 +29,26 @@ export abstract class Base {
 
   protected async fetch<T>(input: RequestInfo, init?: RequestInit): Promise<T> {
     this.onLoading(true);
+
+    // Add default headers
+    const defaultHeaders = {
+      "Content-Type": "application/json",
+      "Authorization": this.config.access_token
+        ? `Bearer ${this.config.access_token}`
+        : "3213123"
+    };
+
+    // Merge default headers with any headers passed in init
+    const headers = {
+      ...defaultHeaders,
+      ...init?.headers,
+    };
+
     return new Promise((resolve, reject) => {
-      fetch(input, init)
+      fetch(input, { ...init, ...headers })
         .then((response: Response) => {
           this.onResponse(response);
-          
+
           if (response.status !== 200) {
             if (response.status === 401) {
               throw new Error("Unauthorized");
@@ -51,6 +66,9 @@ export abstract class Base {
           this.onError(error);
           this.onLoading(false);
           reject(error);
+        })
+        .finally(() => {
+          console.log(this.config);
         });
     });
   }

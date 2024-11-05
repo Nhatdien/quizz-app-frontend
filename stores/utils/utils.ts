@@ -8,5 +8,7 @@ export function applyMixins(derivedCtor: any, baseCtors: any[]) {
         );
       });
     });
+
+    Object.getPrototypeOf(derivedCtor).constructor;
   }
   
