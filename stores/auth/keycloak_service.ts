@@ -3,8 +3,11 @@ import Keycloak from "keycloak-js";
 class KeycloakService {
   private static instance: KeycloakService;
   private _kc: Keycloak;
+  private static _keycloakInstance: Keycloak | null = null;
+  private static _initialized: boolean = false;
 
   private constructor() {
+    console.log("KeycloakService constructor");
     this._kc = new Keycloak({
       realm: "quizdev",
       clientId: "quizclient",
@@ -20,9 +23,15 @@ class KeycloakService {
   }
 
   public initKeycloak(onAuthenticatedCallback: Function): void {
+    if (KeycloakService._initialized) {
+      onAuthenticatedCallback();
+      return;
+    }
+
     this._kc.init({
       onLoad: 'login-required',
       redirectUri: "http://localhost:4200",
+      enableLogging: true,
       scope: 'openid email',
       pkceMethod: 'S256',
     })
@@ -30,6 +39,8 @@ class KeycloakService {
         if (!authenticated) {
           console.log("user is not authenticated..!");
         }
+        KeycloakService._keycloakInstance = this._kc;
+        KeycloakService._initialized = true;
         onAuthenticatedCallback();
       })
       .catch(console.error);

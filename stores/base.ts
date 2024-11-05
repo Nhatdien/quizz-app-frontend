@@ -35,7 +35,7 @@ export abstract class Base {
       "Content-Type": "application/json",
       "Authorization": this.config.access_token
         ? `Bearer ${this.config.access_token}`
-        : "3213123"
+        : ""
     };
 
     // Merge default headers with any headers passed in init
@@ -67,9 +67,6 @@ export abstract class Base {
           this.onLoading(false);
           reject(error);
         })
-        .finally(() => {
-          console.log(this.config);
-        });
     });
   }
 }

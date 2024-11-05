@@ -19,7 +19,7 @@ const topicStore = useTopicStore();
 const body = ref("");
 const { data: _, status, error } = await useAsyncData("topics", async () => {
   
-  return ;
+  return topicStore.topics;
 });
 
 onMounted(() => {

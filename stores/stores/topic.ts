@@ -9,6 +9,7 @@ export const useTopicStore = defineStore({
   }),
   actions: {
     async fetchTopics(): Promise<void> {
+      console.log(QuizzAppSDK.getInstance().config)
       return QuizzAppSDK.getInstance().getTopics().then((topics) => {
         this.topics = topics;
       });
