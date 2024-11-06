@@ -8,10 +8,16 @@ export const useTopicStore = defineStore({
     topics: [] as TopicType[],
   }),
   actions: {
-    async fetchTopics(): Promise<void> {
+    async getTopics(): Promise<void> {
       console.log(QuizzAppSDK.getInstance().config)
       return QuizzAppSDK.getInstance().getTopics().then((topics) => {
         this.topics = topics;
+      });
+    },
+
+    async getTopic(code: string): Promise<void> {
+      return QuizzAppSDK.getInstance().getTopic(code).then((topic) => {
+        this.topics = [topic];
       });
     },
   },

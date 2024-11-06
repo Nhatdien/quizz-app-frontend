@@ -2,7 +2,7 @@
   <div>
     <ClientOnly>
       <Button @click="useAuthStore().logout"> Logout</Button>
-      {{ topicStore.topics }} {{ error }}
+      {{ topicStore.topics }} {{ status }}
       <Test />
     </ClientOnly>
   </div>
@@ -17,12 +17,13 @@ const loading = ref(false);
 
 const topicStore = useTopicStore();
 const body = ref("");
-const { data: _, status, error } = await useAsyncData("topics", async () => {
+const { data: _, status } = await useAsyncData("topics", async () => {
+  const response = await topicStore.getTopic("CODE");
   
-  return topicStore.topics;
+  return response;
 });
 
 onMounted(() => {
-  const response = topicStore.fetchTopics();
+
 });
 </script>

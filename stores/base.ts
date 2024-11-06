@@ -53,7 +53,7 @@ export abstract class Base {
             if (response.status === 401) {
               throw new Error("Unauthorized");
             } else {
-              throw new Error("Something went wrong");
+              throw new Error(`Something went wrong ${response.status}`);
             }
           }
           return response.json();

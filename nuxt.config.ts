@@ -6,10 +6,6 @@ export default defineNuxtConfig({
       clientId: "",
     },
   },
-  devServer:{
-    port: 4120,
-  
-  },
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
   modules: ['@nuxtjs/tailwindcss', 'shadcn-nuxt', '@pinia/nuxt'],

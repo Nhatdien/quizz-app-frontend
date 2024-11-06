@@ -1,4 +1,3 @@
-import UserService from "~/stores/auth/keycloak_service";
 import QuizzAppSDK from "@/stores/quizzapp_sdk";
 
 export default defineNuxtPlugin((nuxtApp) => {
@@ -9,9 +8,6 @@ export default defineNuxtPlugin((nuxtApp) => {
     client_id: config.public.clientId,
   });
 
-  UserService.initKeycloak(() => {
-    
-  });
 
   quizzAppSDK.onError = (error: unknown): void => {
   };
