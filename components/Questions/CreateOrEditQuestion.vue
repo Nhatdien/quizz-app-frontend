@@ -5,11 +5,14 @@
 
     <!-- Question input -->
     <div class="question-section">
-      <div class="question-editor" @click="setActiveEditor('question')" v-html="questionText || placeholderText"></div>
+      <div
+        class="question-editor"
+        @click="setActiveEditor('question')"
+        v-html="questionText || placeholderText"></div>
       <div class="question-icons absolute right-0 top-1">
-        <Button variant="secondary" icon="image">dsadsad </Button>
+        <!-- <Button variant="secondary" icon="image">dsadsad </Button>
         <Button variant="secondary" icon="mic">dsada </Button>
-        <Button variant="secondary" icon="video"> dsad</Button>
+        <Button variant="secondary" icon="video"> dsad</Button> -->
       </div>
     </div>
 
@@ -19,57 +22,75 @@
         v-for="(option, index) in options"
         :key="index"
         :style="{ backgroundColor: optionColors[index % optionColors.length] }"
-        class="option-card"
-      >
+        class="option-card">
         <div
           class="option-editor"
           @click="setActiveEditor(index)"
-          v-html="option.text || placeholderText"
-        ></div>
+          v-html="option.text || placeholderText"></div>
         <div class="option-icons">
-          <Button variant="destructive" icon="trash" @click="deleteOption(index)"> </Button>
+          <Button
+            variant="destructive"
+            icon="trash"
+            v-if="options.length > 3"
+            @click="deleteOption(index)">
+          </Button>
           <Button variant="secondary" icon="image"> </Button>
           <Checkbox v-model="option.isCorrect" class="correct-checkbox" />
         </div>
       </div>
-      <Button v-if="options.length < 5" @click="addOption" variant="primary" class="add-option-button">+</Button>
+      <Button
+        v-if="options.length < 5"
+        @click="addOption"
+        variant="primary"
+        class="add-option-button"
+        >+</Button
+      >
     </div>
-
     <!-- Answer type toggle buttons -->
     <div class="answer-type-toggle">
-      <Button :variant="isMultipleCorrect ? 'primary' : 'secondary'" @click="toggleSingleCorrect">Single correct answer</Button>
-      <Button :variant="!isMultipleCorrect ? 'primary' : 'secondary'" @click="toggleMultipleCorrect">Multiple correct answers</Button>
+      <Button
+        :variant="isMultipleCorrect ? 'primary' : 'secondary'"
+        @click="toggleSingleCorrect"
+        >Single correct answer</Button
+      >
+      <Button
+        :variant="!isMultipleCorrect ? 'primary' : 'secondary'"
+        @click="toggleMultipleCorrect"
+        >Multiple correct answers</Button
+      >
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, watch } from 'vue';
-import CommonQuill from '~/components/Common/Quill.vue';
+import CommonQuill from "~/components/Common/Quill.vue";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
-const questionText = ref('');
+const questionText = ref("");
 const options = reactive([
-  { text: '', isCorrect: false },
-  { text: '', isCorrect: false },
-  { text: '', isCorrect: false },
-  { text: '', isCorrect: false },
+  { text: "", isCorrect: false },
+  { text: "", isCorrect: false },
+  { text: "", isCorrect: false },
+  { text: "", isCorrect: false },
 ]);
 const activeEditor = ref(null); // Tracks the currently active editor (question or option index)
-const activeContent = ref(''); // Content bound to the shared toolbar
-const placeholderText = 'Type here...';
+const activeContent = ref(""); // Content bound to the shared toolbar
+const placeholderText = "Type here...";
 
 const toolbarOptions = {
-  theme: 'snow',
+  theme: "snow",
   modules: {
     toolbar: [
-      ['bold', 'italic', 'underline', 'strike'],
-      [{ list: 'ordered' }, { list: 'bullet' }],
-      ['link', 'image']
-    ]
-  }
+      ["bold", "italic", "underline", "strike"],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["link", "image"],
+    ],
+  },
 };
 
-const optionColors = ['#005a99', '#008080', '#ffa500', '#d9534f']; // Colors for option backgrounds
+const testCreateTopic = top;
+
+const optionColors = ["#005a99", "#008080", "#ffa500", "#d9534f"]; // Colors for option backgrounds
 const isMultipleCorrect = ref(false);
 
 // Function to set the active editor and link it to the toolbar content
@@ -77,25 +98,41 @@ function setActiveEditor(editorType) {
   activeEditor.value = editorType;
 
   // Set the active content to the clicked field's content
-  if (editorType === 'question') {
+  if (editorType === "question") {
     activeContent.value = questionText.value;
-  } else if (typeof editorType === 'number') {
+  } else if (typeof editorType === "number") {
     activeContent.value = options[editorType].text;
   }
 }
 
 // Watcher to update the correct field whenever activeContent changes
 watch(activeContent, (newValue) => {
-  if (activeEditor.value === 'question') {
+  if (activeEditor.value === "question") {
     questionText.value = newValue;
-  } else if (typeof activeEditor.value === 'number') {
+  } else if (typeof activeEditor.value === "number") {
     options[activeEditor.value].text = newValue;
   }
 });
 
+const resetCorrectOptions = () => {
+  options.forEach((option) => (option.isCorrect = false));
+  console.log("reset", options);
+};
+
+watch(
+  () => isMultipleCorrect.value,
+  async (newValue) => {
+    if (!newValue) {
+      await nextTick();
+      resetCorrectOptions();
+    }
+  },
+  { deep: true }
+);
+
 // Function to add a new option field
 function addOption() {
-  options.push({ text: '', isCorrect: false });
+  options.push({ text: "", isCorrect: false });
 }
 
 // Function to delete an option
@@ -106,7 +143,7 @@ function deleteOption(index) {
 // Toggle between single and multiple correct answers
 function toggleSingleCorrect() {
   isMultipleCorrect.value = false;
-  options.forEach(option => option.isCorrect = false); // Reset other options if switching to single correct
+  options.forEach((option) => (option.isCorrect = false)); // Reset other options if switching to single correct
 }
 
 function toggleMultipleCorrect() {
@@ -117,6 +154,7 @@ function toggleMultipleCorrect() {
 <style scoped lang="scss">
 .quiz-editor-container {
   padding: 20px;
+  width: 100%;
   background-color: #3a0a4d;
   color: #fff;
   border-radius: 8px;
@@ -133,23 +171,32 @@ function toggleMultipleCorrect() {
 }
 
 .question-editor {
+  * {
+    color: #fff !important;
+  }
   flex-grow: 1;
   padding: 20px;
+  text-align: center;
+  min-height: 15rem;
+  height: auto;
   background-color: #250c3d;
   border-radius: 8px;
-  min-height: 100px;
   cursor: pointer;
 }
 
 .question-icons button {
   background-color: transparent;
   color: #bbb;
-  
+
   margin-right: 5px;
 }
 
 .options-section {
+  width: 100%;
   display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   gap: 15px;
   flex-wrap: wrap;
   margin-bottom: 20px;
@@ -158,7 +205,9 @@ function toggleMultipleCorrect() {
 .option-card {
   padding: 20px;
   flex-grow: 1;
-  max-width: 300px;
+  width: 100%;
+  text-align: center;
+
   min-height: 100px;
   border-radius: 8px;
   color: #fff;

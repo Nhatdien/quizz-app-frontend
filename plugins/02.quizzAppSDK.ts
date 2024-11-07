@@ -9,8 +9,9 @@ export default defineNuxtPlugin((nuxtApp) => {
   });
 
 
-  quizzAppSDK.onError = (error: unknown): void => {
-  };
-
-  nuxtApp.provide("quizzAppSDK", QuizzAppSDK);
+  return {
+    provide:{
+      quizzAppSDK
+    }
+  }
 });

@@ -3615,6 +3615,11 @@ jsonfile@^6.0.1:
   optionalDependencies:
     graceful-fs "^4.1.6"
 
+keycloak-js@^26.0.5:
+  version "26.0.5"
+  resolved "https://registry.yarnpkg.com/keycloak-js/-/keycloak-js-26.0.5.tgz#13ad49076e14f08efe4a3f7463685cbf98a2af45"
+  integrity sha512-3biQ5e+yX8EkU3+2ZO+YbWl0emooXt1wyKgZdGCFW8gT0oKeQh/AK6R9a53ACWBzDVoTBI+0GbXP2jF1sFMznw==
+
 keygrip@~1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/keygrip/-/keygrip-1.1.0.tgz#871b1681d5e159c62a445b0c74b615e0917e7226"
