@@ -20,7 +20,7 @@
           <li v-for="answer in question.answers" :key="answer.id">
             <div class="h-full flex items-center gap-4">
               <p>{{ answer.content }}</p>
-              <Checkbox v-model="answer.isCorrect" disabled></Checkbox>
+              <Checkbox v-model:checked="answer.isCorrect" disabled></Checkbox>
             </div>
           </li>
         </ul>

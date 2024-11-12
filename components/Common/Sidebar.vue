@@ -10,7 +10,7 @@
           >
         </SidebarHeader>
         <SidebarContent>
-          <Button @click="handleClickCreateQuiz" class="m-4"> + Create</Button>
+          <QuizCreateQuizDialog />
           <SidebarMenu>
             <SidebarMenuButton
               :class="{ active: isActive('/admin/dashboard'), hover: true }"

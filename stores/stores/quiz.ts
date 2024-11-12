@@ -10,17 +10,25 @@ export const useQuizStore = defineStore({
   }),
   actions: {
     createTestQuestion,
-    createTestQuiz,
+    async createQuiz(quiz: Quiz) {
+      return QuizzAppSDK.getInstance()
+        .createQuiz(quiz)
+        .then(async (quiz) => {
+          
+          const response = await QuizzAppSDK.getInstance().getQuiz(quiz.id);
+        });
+    },
 
     searchQuiz(search: SearchParams) {
-      console.log(QuizzAppSDK.getInstance().config)
       return QuizzAppSDK.getInstance().searchQuiz(search);
     },
 
-    getQuiz(id: string) {
-      return QuizzAppSDK.getInstance().getQuiz(id).then((quiz) => {
-        this.quiz = [quiz];
-      });
+    async getQuiz(id: string) {
+      return QuizzAppSDK.getInstance()
+        .getQuiz(id)
+        .then((quiz) => {
+          this.quiz = [quiz];
+        });
     },
   },
 });

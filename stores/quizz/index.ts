@@ -15,4 +15,11 @@ export class Quizz extends Base {
         method: "GET",
     });
   }
+
+  createQuiz (quiz: Quiz): Promise<Quiz> {
+    return this.fetch(`${this.config.base_url}/quiz`, {
+        method: "POST",
+        body: JSON.stringify(quiz),
+    });
+  }
 }

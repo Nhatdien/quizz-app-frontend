@@ -35,7 +35,7 @@
             @click="deleteOption(index)">
           </Button>
           <Button variant="secondary" icon="image"> </Button>
-          <Checkbox v-model="option.isCorrect" class="correct-checkbox" />
+          <Checkbox v-model:checked="option.isCorrect" :true-value="true" :false-value="false" class="correct-checkbox" />
         </div>
       </div>
       <Button
@@ -60,7 +60,9 @@
       >
     </div>
   </div>
- {{ question }}
+ {{ questionText }}
+
+ {{ answers }}
   <Button @click="handleSaveQuestion">Save Question</Button>
 </template>
 
@@ -150,6 +152,16 @@ watch(activeContent, (newValue) => {
   }
 });
 
+onMounted(() => {
+  if(props.question) {
+    questionText.value = props.question.content;
+    props.question.answers.forEach((option, index) => {
+      answers[index].text = option.content;
+      answers[index].isCorrect = option.isCorrect;
+    });
+  }
+});
+
 const resetCorrectOptions = () => {
   answers.forEach((option) => (option.isCorrect = false));
   console.log("reset", answers);
@@ -165,10 +177,6 @@ watch(
   },
   { deep: true }
 );
-
-watch(() => props.question, (newValue) => {
- console.log("question", newValue);
-}, { deep: true });
 
 // Function to add a new option field
 function addOption() {
