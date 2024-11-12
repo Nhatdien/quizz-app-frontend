@@ -12,16 +12,26 @@
         <SidebarContent>
           <Button @click="handleClickCreateQuiz" class="m-4"> + Create</Button>
           <SidebarMenu>
-            <SidebarMenuButton to="/admin/dashboard" icon="home">
+            <SidebarMenuButton
+              :class="{ active: isActive('/admin/dashboard'), hover: true }"
+              to="/admin/dashboard"
+              icon="home">
               Dashboard
             </SidebarMenuButton>
-            <SidebarMenuButton @click="navigateTo('quiz')">
+            <SidebarMenuButton
+              :class="{ active: isActive('/quiz'), hover: true }"
+              @click="navigateTo('quiz')">
               Quizzes
             </SidebarMenuButton>
-            <SidebarMenuButton to="/admin/questions" icon="question">
+            <SidebarMenuButton
+              :class="{ active: isActive('/admin/questions'), hover: true }"
+              to="/admin/questions"
+              icon="question">
               Questions
             </SidebarMenuButton>
-            <SidebarMenuButton @click="() => $keycloak.doLogout()">
+            <SidebarMenuButton
+              :class="{ hover: true }"
+              @click="() => $keycloak.doLogout()">
               Logout
             </SidebarMenuButton>
           </SidebarMenu>
@@ -29,7 +39,10 @@
 
         <SidebarFooter>
           <SidebarMenu>
-            <SidebarMenuButton to="/admin/settings" icon="settings">
+            <SidebarMenuButton
+              :class="{ active: isActive('/admin/settings'), hover: true }"
+              to="/admin/settings"
+              icon="settings">
               Settings
             </SidebarMenuButton>
           </SidebarMenu>
@@ -51,9 +64,12 @@ import {
 } from "@/components/ui/sidebar";
 import { sidebarSchema } from "./sidebarSchema";
 import { useQuizStore } from "~/stores/stores/quiz";
+import { useRoute } from "vue-router";
 const { $keycloak } = useNuxtApp();
 
 const quizStore = useQuizStore();
+const route = useRoute();
+
 const handleClickCreateQuiz = async () => {
   const quiz = await quizStore.createTestQuiz({
     title: "Test Quiz",
@@ -66,4 +82,19 @@ const handleClickCreateQuiz = async () => {
 
   navigateTo(`/quiz/${quiz.id}/edit`);
 };
+
+const isActive = (path: string) => {
+  return route.path === path;
+};
 </script>
+
+<style scoped>
+.active {
+  background-color: #f0f0f0; /* Change to your desired active background color */
+  font-weight: bold;
+}
+
+.hover:hover {
+  background-color: #e0e0e0; /* Change to your desired hover background color */
+}
+</style>

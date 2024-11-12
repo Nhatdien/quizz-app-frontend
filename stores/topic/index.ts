@@ -1,5 +1,5 @@
 import { Base } from "../base";
-import type { TopicType } from "../types/topic";
+import type { TopicType } from "../../types/topic";
 
 export class Topic extends Base {
   async getTopics(): Promise<TopicType[]> {

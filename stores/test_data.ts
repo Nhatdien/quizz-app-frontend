@@ -1,4 +1,4 @@
-import type { Quiz } from "./types/quiz";
+import type { Quiz } from "../types/quiz";
 import { ref } from "vue";
 
 const generateRandomId = () => {

@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import QuizzAppSDK from "../quizzapp_sdk";
-import type { TopicType } from "../types/topic";
+import type { TopicType } from "../../types/topic";
 
 export const useTopicStore = defineStore({
   id: "topic",

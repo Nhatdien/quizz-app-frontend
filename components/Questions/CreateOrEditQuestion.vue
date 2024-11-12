@@ -1,8 +1,8 @@
 <template>
-  <CommonQuill v-model="activeContent" :options="toolbarOptions" />
+  <div class="mb-12">
+    <CommonQuill v-model="activeContent" :options="toolbarOptions" />
+  </div>
   <div class="quiz-editor-container">
-    <!-- Fixed toolbar for the editor -->
-
     <!-- Question input -->
     <div class="question-section">
       <div
@@ -19,7 +19,7 @@
     <!-- Answer options -->
     <div class="options-section">
       <div
-        v-for="(option, index) in options"
+        v-for="(option, index) in answers"
         :key="index"
         :style="{ backgroundColor: optionColors[index % optionColors.length] }"
         class="option-card">
@@ -31,7 +31,7 @@
           <Button
             variant="destructive"
             icon="trash"
-            v-if="options.length > 3"
+            v-if="answers.length > 3"
             @click="deleteOption(index)">
           </Button>
           <Button variant="secondary" icon="image"> </Button>
@@ -39,7 +39,7 @@
         </div>
       </div>
       <Button
-        v-if="options.length < 5"
+        v-if="answers.length < 5"
         @click="addOption"
         variant="primary"
         class="add-option-button"
@@ -60,14 +60,52 @@
       >
     </div>
   </div>
+ {{ question }}
+  <Button @click="handleSaveQuestion">Save Question</Button>
 </template>
 
 <script setup>
 import CommonQuill from "~/components/Common/Quill.vue";
+import { quizzes, createTestQuestion } from "~/stores/test_data";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
+const route = useRoute();
+const props = defineProps({
+  question: {
+    type: Object,
+    required: false,
+  },
+});
+
+const handleSaveQuestion = async () => {
+  const questionPayload = {
+    content: questionText.value,
+    answers: answers.map((option) => ({
+      text: option.text,
+      isCorrect: option.isCorrect,
+    })),
+    questionType: isMultipleCorrect.value,
+  };
+
+  await createTestQuestion(route.params.quiz_id, questionPayload);
+  await nextTick();
+};
+
+watch(props.question, (newVal) => {
+  if (newVal) {
+    questionText.value = newVal.text;
+
+    answers.forEach((option, index) => {
+      option.text = newVal.options[index].text;
+      option.isCorrect = newVal.options[index].isCorrect;
+    });
+
+    isMultipleCorrect.value = newVal.isMultipleCorrect;
+  }
+});
+
 const questionText = ref("");
-const options = reactive([
+const answers = reactive([
   { text: "", isCorrect: false },
   { text: "", isCorrect: false },
   { text: "", isCorrect: false },
@@ -88,8 +126,6 @@ const toolbarOptions = {
   },
 };
 
-const testCreateTopic = top;
-
 const optionColors = ["#005a99", "#008080", "#ffa500", "#d9534f"]; // Colors for option backgrounds
 const isMultipleCorrect = ref(false);
 
@@ -101,7 +137,7 @@ function setActiveEditor(editorType) {
   if (editorType === "question") {
     activeContent.value = questionText.value;
   } else if (typeof editorType === "number") {
-    activeContent.value = options[editorType].text;
+    activeContent.value = answers[editorType].text;
   }
 }
 
@@ -110,13 +146,13 @@ watch(activeContent, (newValue) => {
   if (activeEditor.value === "question") {
     questionText.value = newValue;
   } else if (typeof activeEditor.value === "number") {
-    options[activeEditor.value].text = newValue;
+    answers[activeEditor.value].text = newValue;
   }
 });
 
 const resetCorrectOptions = () => {
-  options.forEach((option) => (option.isCorrect = false));
-  console.log("reset", options);
+  answers.forEach((option) => (option.isCorrect = false));
+  console.log("reset", answers);
 };
 
 watch(
@@ -130,20 +166,24 @@ watch(
   { deep: true }
 );
 
+watch(() => props.question, (newValue) => {
+ console.log("question", newValue);
+}, { deep: true });
+
 // Function to add a new option field
 function addOption() {
-  options.push({ text: "", isCorrect: false });
+  answers.push({ text: "", isCorrect: false });
 }
 
 // Function to delete an option
 function deleteOption(index) {
-  options.splice(index, 1);
+  answers.splice(index, 1);
 }
 
 // Toggle between single and multiple correct answers
 function toggleSingleCorrect() {
   isMultipleCorrect.value = false;
-  options.forEach((option) => (option.isCorrect = false)); // Reset other options if switching to single correct
+  answers.forEach((option) => (option.isCorrect = false)); // Reset other options if switching to single correct
 }
 
 function toggleMultipleCorrect() {

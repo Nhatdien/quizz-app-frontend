@@ -3,7 +3,7 @@ import KeyCloakService from "./keycloak_service";
 
 export class Auth extends Base {
 
-  public logout = (): void => {
+  logout(): void  {
     KeyCloakService.doLogout();
   };
 }

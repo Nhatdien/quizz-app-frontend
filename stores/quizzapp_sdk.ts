@@ -2,6 +2,7 @@ import { Base } from "./base";
 import type { Config } from "./base";
 import { Topic } from "./topic";
 import { Auth } from "./auth";
+import { Quizz } from "./quizz";
 import { applyMixins } from "./utils/utils";
 
 class QuizzAppSDK extends Base {
@@ -12,14 +13,15 @@ class QuizzAppSDK extends Base {
   private static _instance: QuizzAppSDK;
 
   public static getInstance(config?: null | Config): QuizzAppSDK {
-    return this._instance || (this._instance = new this(config));
+    const result = this._instance || (this._instance = new this(config));
+    return result;
   }
 }
 
-interface QuizzAppSDK extends Topic, Auth {}
+interface QuizzAppSDK extends Topic, Auth, Quizz {}
 
 applyMixins(QuizzAppSDK, [
-  Topic, Auth
+  Topic, Auth, Quizz
 ]);
 
 export default QuizzAppSDK;

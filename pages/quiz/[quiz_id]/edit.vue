@@ -1,18 +1,18 @@
 <template>
-  <Button @click="navigateTo('/')">+ Add questions</Button>
+  <Button @click="navigateTo('/')">Go back home</Button>
   <QuizDetailInfo :quiz="quizzInfo" />
 </template>
 
 <script setup lang="ts">
-import { quizzes } from "~/stores/test_data";
-import { useQuizStore } from "@/stores/stores/quiz";
+import type { Quiz } from '~/types/quiz';
+
 
 definePageMeta({
   layout: "custom",
 });
 
 const quizzInfo = computed(() => {
-  return quizzes.value.find((quiz) => quiz.id === route.params.quiz_id);
+  return useQuizStore().quiz.find((quiz) => quiz.id === route.params.quiz_id) as Record<string, unknown>;
 });
 const route = useRoute();
 

@@ -1,8 +1,10 @@
 <template>
+  <ClientOnly>
     <QuillEditor
       v-model:content="content"
       :options="options"
       content-type="html" />
+  </ClientOnly>
 </template>
 
 <script setup lang="ts">

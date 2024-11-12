@@ -10,6 +10,8 @@
 </template>
 
 <script setup lang="ts">
-import { quizzes } from "~/stores/test_data";
-import { useQuizStore } from "@/stores/stores/quiz";
+
+const quizzes = computed(() => {
+  return useQuizStore().quiz
+})
 </script>

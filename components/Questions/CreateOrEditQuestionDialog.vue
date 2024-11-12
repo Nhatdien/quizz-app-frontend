@@ -1,32 +1,3 @@
-<script setup lang="ts">
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-
-const props = defineProps({
-  question: {
-    type: Object,
-    default: {
-      cotent: "",
-      options: [],
-    },
-    required: true,
-  },
-  isEditButton: {
-    type: Boolean,
-    default: false,
-  },
-});
-</script>
 
 <template>
   <ClientOnly />
@@ -49,14 +20,35 @@ const props = defineProps({
           }}
         </DialogDescription>
       </DialogHeader>
-      <QuestionsCreateQuestion/>
-      <DialogFooter>
-        <Button @click=""> Save changes </Button>
-      </DialogFooter>
+      <QuestionsCreateOrEditQuestion :question="question"/>
     </DialogContent>
   </Dialog>
   <ClientOnly />
 </template>
 
 <script setup lang="ts">
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
+const props = defineProps({
+  question: {
+    type: Object,
+    required: false,
+  },
+  isEditButton: {
+    type: Boolean,
+    default: false,
+  },
+});
+
 </script>

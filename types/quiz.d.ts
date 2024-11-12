@@ -1,4 +1,5 @@
 export interface Quiz {
+    id: string
     title: string
     topicCode: string
     description: string
@@ -18,4 +19,12 @@ export interface Quiz {
     content: string
     isCorrect: boolean
   }
-  
+
+  export interface SearchParams {
+    pageSize?: number;
+    pageNo?: number;
+    from?: Date;
+    to?: Date;
+    textSearch?: string;
+    status?: string;
+  }
