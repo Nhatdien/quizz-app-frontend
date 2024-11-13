@@ -4,7 +4,7 @@
   <Dialog>
     <DialogTrigger as-child>
       <Button variant="outline">
-        {{ isEditButton ? "Edit" : "Add question" }}
+        {{ isEditButton ? "Edit" : "+ Add question" }}
       </Button>
     </DialogTrigger>
     <DialogContent class="h-[90vh] min-w-[90vw] overflow-y-scroll">

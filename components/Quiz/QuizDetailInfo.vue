@@ -7,20 +7,23 @@
     <div class="questions-section">
       <CreateOrEditQuestionDialog :is-edit-button="false" />
       <div
-        v-for="question in currentQuiz.questions"
+        v-for="(question, index) in currentQuiz.questions"
         :key="question.id"
         class="question-item">
         <div class="question-header">
-          <h2>{{ question.content }}</h2>
+          <h2>{{ index + 1 }}. {{ question.content }}</h2>
           <CreateOrEditQuestionDialog
             :question="question"
             :is-edit-button="true" />
         </div>
         <ul class="answers-list">
-          <li v-for="answer in question.answers" :key="answer.id">
-            <div class="h-full flex items-center gap-4">
-              <p>{{ answer.content }}</p>
+          <li
+            class="self-start"
+            v-for="(answer, index) in question.answers"
+            :key="answer.id">
+            <div class="flex items-center gap-4">
               <Checkbox v-model:checked="answer.isCorrect" disabled></Checkbox>
+              <p class="justify-self-start text-left">{{ quizIndexMap[index] }}. {{ answer.content }}</p>
             </div>
           </li>
         </ul>
@@ -32,6 +35,34 @@
 <script setup lang="ts">
 import CreateOrEditQuestionDialog from "../Questions/CreateOrEditQuestionDialog.vue";
 
+const quizIndexMap = [
+  "A",
+  "B",
+  "C",
+  "D",
+  "E",
+  "F",
+  "G",
+  "H",
+  "I",
+  "J",
+  "K",
+  "L",
+  "M",
+  "N",
+  "O",
+  "P",
+  "Q",
+  "R",
+  "S",
+  "T",
+  "U",
+  "V",
+  "W",
+  "X",
+  "Y",
+  "Z",
+];
 const props = defineProps({
   quiz: {
     type: Object,
@@ -39,7 +70,7 @@ const props = defineProps({
   },
 });
 
-const currentQuiz = reactive({...props.quiz});
+const currentQuiz = reactive({ ...props.quiz });
 
 const addQuestion = () => {
   // Logic to add a question
@@ -83,6 +114,8 @@ const editQuestion = (question) => {
 }
 
 .answers-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   list-style-type: none;
   padding: 0;
 }

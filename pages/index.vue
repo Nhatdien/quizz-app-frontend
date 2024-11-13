@@ -2,19 +2,14 @@
   <div>
     <h1 class="text-xl bold">Recently taken quizzes:</h1>
 
-    <QuizCard
-      v-for="quiz in quizzes"
-      @click="navigateTo(`/quiz/${quiz.id}/edit`)"
-      :key="quiz.id"
-      :title="quiz.title"
-      :description="quiz.description"
-    />
+    <PreviewQuiz :quiz="quizzes[0]"/>
     <NuxtPage />
   </div>
 </template>
 
 <script setup lang="ts">
 import CreateQuestion from "~/components/Questions/CreateOrEditQuestion.vue";
+import PreviewQuiz from "~/components/Quiz/PreviewQuiz.vue";
 
 const topicStore = useTopicStore();
 const quizStore = useQuizStore();
