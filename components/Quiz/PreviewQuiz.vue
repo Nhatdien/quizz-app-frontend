@@ -27,9 +27,11 @@
         v-model:currentSubmissions="currentSubmissions" />
     </div>
     <div class="flex justify-center" v-if="currentQuestion.questionType === 2">
-      <FillTheBlackType 
-      v-model="currentSubmissions[currentQuestionIndex]"
-      :inputLength="getInnerTextFromHTML(currentQuestion.answers[0].content).length"/>
+      <FillTheBlackType
+        v-model="currentSubmissions[currentQuestionIndex]"
+        :inputLength="
+          getInnerTextFromHTML(currentQuestion.answers[0].content).length
+        " />
     </div>
     <!-- Countdown line container -->
     <div class="countdown-line"></div>
@@ -40,6 +42,11 @@
         :disabled="enableMoveButtons.back">
         BACK
       </button>
+      <ClientOnly>
+        <button :class="`continue-button`">
+          SUBMIT {{ countCorrectAnswers }}
+        </button>
+      </ClientOnly>
       <button
         :class="`continue-button ${
           enableMoveButtons.continue ? 'disabled' : ''
@@ -63,7 +70,7 @@ const props = defineProps({
   },
 });
 // Set the countdown duration in seconds
-const countdownDuration = 3600; // Example: 10 seconds
+const countdownDuration = 60; // Example: 10 seconds
 const currentQuestionIndex = ref(0);
 
 const currentQuestion = computed(() => {
@@ -89,6 +96,32 @@ const handleClickContinue = (backOrContinue: "back" | "continue") => {
   if (backOrContinue === "continue") {
     currentQuestionIndex.value += 1;
   }
+};
+
+const countCorrectAnswers = computed(() => {
+  // Count the correct answers
+  const rightAnswers = props.quiz?.questions.map((question) => {
+    return question.answers
+      .filter((answer) => answer.isCorrect)
+      .map((answer) => getInnerTextFromHTML(answer.content));
+  }) as string[][];
+
+  const correctAnswers = currentSubmissions.value.map((submission, index) => {
+    if (currentQuestion.value.questionType === 2) {
+      return submission.join("") === rightAnswers[index][0];
+    }
+
+    return (
+      currentSubmissions.value[index].length > 0 &&
+      compareTwoArrayAnyOrder<string>(submission, rightAnswers[index])
+    );
+  });
+
+  return correctAnswers.filter((answer) => answer).length;
+});
+
+const submitQuiz = () => {
+  // Submit the quiz
 };
 
 const questionIndexMap = ["A", "B", "C", "D", "E"];

@@ -54,7 +54,7 @@ const handleClickOption = (
   optionIndex: number,
   question: Question
 ) => {
-  let currentAnswer = props.currentSubmissions[props.currentQuestionIndex];
+  let currentAnswer = [...props.currentSubmissions[props.currentQuestionIndex]];
 
   if (checkQuestionHaveMultipleAnswers(question)) {
     if (currentAnswer.includes(question.answers[optionIndex].content)) {
