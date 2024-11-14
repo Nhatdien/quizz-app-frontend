@@ -68,8 +68,6 @@
 
 <script setup>
 import CommonQuill from "~/components/Common/Quill.vue";
-import { quizzes, createTestQuestion } from "~/stores/test_data";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 const route = useRoute();
 const props = defineProps({

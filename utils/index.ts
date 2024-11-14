@@ -1,12 +1,11 @@
-export function getInnerTextFromHTML(htmlString: string): string {
-  // Create a temporary DOM element
-  let tempElement = document.createElement("div");
+import { parse } from 'node-html-parser';
 
-  // Set the innerHTML of the temporary element to the HTML string
-  tempElement.innerHTML = htmlString;
+export function getInnerTextFromHTML(htmlString: string): string {
+  // Parse the HTML string
+  const root = parse(htmlString);
 
   // Retrieve and return the innerText
-  return tempElement.innerText;
+  return root.text || "";
 }
 
 export function compareTwoArrayAnyOrder<T>(arr1: T[], arr2: T[]): boolean {
@@ -22,3 +21,7 @@ export function compareTwoArrayAnyOrder<T>(arr1: T[], arr2: T[]): boolean {
   // Check if the two arrays are equal
   return arr1.every((value, index) => value === arr2[index]);
 }
+
+// export function formatScoreOutOf10 (score: number, total: number): string {
+//   return `${score}/${total} (${Math.round(score / total * 10)} out of 10)`;
+// }

@@ -20,6 +20,7 @@
     "clsx": "^2.1.1",
     "keycloak-js": "^26.0.5",
     "lucide-vue-next": "^0.454.0",
+    "node-html-parser": "^6.1.13",
     "nuxt": "^3.13.2",
     "radix-vue": "^1.9.8",
     "shadcn-nuxt": "^0.10.4",

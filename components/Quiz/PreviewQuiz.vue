@@ -20,13 +20,13 @@
     <h3 class="quiz-question">
       #{{ currentQuestionIndex + 1 }} {{ currentQuestion?.content }}
     </h3>
-    <div v-if="currentQuestion.questionType === 1">
+    <div v-if="currentQuestion?.questionType === 1">
       <OptionTypeQuiz
         :question="currentQuestion"
         :currentQuestionIndex="currentQuestionIndex"
         v-model:currentSubmissions="currentSubmissions" />
     </div>
-    <div class="flex justify-center" v-if="currentQuestion.questionType === 2">
+    <div class="flex justify-center" v-if="currentQuestion?.questionType === 2">
       <FillTheBlackType
         v-model="currentSubmissions[currentQuestionIndex]"
         :inputLength="
@@ -42,11 +42,9 @@
         :disabled="enableMoveButtons.back">
         BACK
       </button>
-      <ClientOnly>
-        <button :class="`continue-button`">
+        <button @click="handleClickSubmit" :class="`continue-button`">
           SUBMIT {{ countCorrectAnswers }}
         </button>
-      </ClientOnly>
       <button
         :class="`continue-button ${
           enableMoveButtons.continue ? 'disabled' : ''
@@ -61,7 +59,7 @@
 <script lang="ts" setup>
 import FillTheBlackType from "./FillTheBlackType.vue";
 import OptionTypeQuiz from "./OptionType.vue";
-import type { Quiz, Question } from "~/types/quiz";
+import type { Quiz, Question, QuizzAttempt } from "~/types/quiz";
 
 const props = defineProps({
   quiz: {
@@ -107,7 +105,7 @@ const countCorrectAnswers = computed(() => {
   }) as string[][];
 
   const correctAnswers = currentSubmissions.value.map((submission, index) => {
-    if (currentQuestion.value.questionType === 2) {
+    if (props.quiz?.questions[index].questionType === 2) {
       return submission.join("") === rightAnswers[index][0];
     }
 
@@ -120,8 +118,19 @@ const countCorrectAnswers = computed(() => {
   return correctAnswers.filter((answer) => answer).length;
 });
 
-const submitQuiz = () => {
-  // Submit the quiz
+const isPassedSubmission = computed(() => {
+  const scoreOutOf10 = (countCorrectAnswers.value / (props.quiz?.questions.length || 1)) * 10;
+  return scoreOutOf10 >= 4;
+});
+
+const handleClickSubmit = async () => {
+  const quizAttemptPayload = {
+    quizzId: props.quiz?.id,
+    isPass : isPassedSubmission.value,
+    score: countCorrectAnswers.value,
+  };
+
+  await useQuizStore().createQuizAttempt(quizAttemptPayload as QuizzAttempt);
 };
 
 const questionIndexMap = ["A", "B", "C", "D", "E"];

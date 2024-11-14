@@ -28,3 +28,10 @@ export interface Quiz {
     textSearch?: string;
     status?: string;
   }
+  
+  export interface QuizzAttempt {
+    id: string
+    quizzId: string
+    score: number
+    isPass: boolean
+  }

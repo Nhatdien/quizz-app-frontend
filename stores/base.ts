@@ -18,7 +18,7 @@ export abstract class Base {
     callback();
   };
 
-  public onResponse = (response: Response, callback = (): void => {}): void => {
+  public onResponse = (callback = (): void => {}): void => {
     callback();
   };
 
@@ -32,10 +32,14 @@ export abstract class Base {
 
     // Add default headers
     const defaultHeaders = {
-      "Content-Type": "application/json",
-      "Authorization": this.config.access_token
-        ? `Bearer ${this.config.access_token}`
-        : ""
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json, text/plain, */*",
+        "Access-Control-Allow-Origin": "*",
+        Authorization: this.config.access_token
+          ? `Bearer ${this.config.access_token}`
+          : "",
+      },
     };
 
     // Merge default headers with any headers passed in init
@@ -47,7 +51,7 @@ export abstract class Base {
     return new Promise((resolve, reject) => {
       fetch(input, { ...init, ...headers })
         .then((response: Response) => {
-          this.onResponse(response);
+          console.log({ ...init, ...headers });
 
           if (response.status !== 200) {
             if (response.status === 401) {
@@ -66,7 +70,7 @@ export abstract class Base {
           this.onError(error);
           this.onLoading(false);
           reject(error);
-        })
+        });
     });
   }
 }
