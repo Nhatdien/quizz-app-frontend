@@ -35,7 +35,11 @@
             @click="deleteOption(index)">
           </Button>
           <Button variant="secondary" icon="image"> </Button>
-          <Checkbox v-model:checked="option.isCorrect" :true-value="true" :false-value="false" class="correct-checkbox" />
+          <Checkbox
+            v-model:checked="option.isCorrect"
+            :true-value="true"
+            :false-value="false"
+            class="correct-checkbox" />
         </div>
       </div>
       <Button
@@ -60,9 +64,6 @@
       >
     </div>
   </div>
- {{ questionText }}
-
- {{ answers }}
   <Button @click="handleSaveQuestion">Save Question</Button>
 </template>
 
@@ -77,18 +78,38 @@ const props = defineProps({
   },
 });
 
-const handleSaveQuestion = async () => {
-  const questionPayload = {
-    content: questionText.value,
-    answers: answers.map((option) => ({
-      text: option.text,
-      isCorrect: option.isCorrect,
-    })),
-    questionType: isMultipleCorrect.value,
-  };
 
-  await createTestQuestion(route.params.quiz_id, questionPayload);
-  await nextTick();
+const isEditingQuestion = ref(!!props?.question?.id)
+
+const currentQuiz = computed(() => {
+  return useQuizStore().quiz.find((quiz) => quiz.id === route.params.quiz_id);
+});
+
+const submitPayload = computed(() => {
+
+  const payload = {...currentQuiz.value}
+  const currentEditingQuestion = {
+    content: questionText.value,
+    questionType: 1,
+    answers: answers
+  }
+
+  if(isEditingQuestion.value) {
+    const questionIndex = payload.questions.findIndex((question) => question.id === props.question.id)    
+    payload.questions[questionIndex] = {
+      id: props.question.id,
+      ...currentEditingQuestion
+    }
+  }
+  else{
+    payload.questions = [...payload.questions, currentEditingQuestion]
+  }
+  
+  return payload
+})
+
+const handleSaveQuestion = async () => {
+  await useQuizStore().updateQuiz(submitPayload.value)
 };
 
 watch(props.question, (newVal) => {
@@ -151,7 +172,7 @@ watch(activeContent, (newValue) => {
 });
 
 onMounted(() => {
-  if(props.question) {
+  if (props.question) {
     questionText.value = props.question.content;
     props.question.answers.forEach((option, index) => {
       answers[index].text = option.content;

@@ -13,6 +13,7 @@
         <div class="question-header">
           <h2>{{ index + 1 }}. {{ question.content }}</h2>
           <CreateOrEditQuestionDialog
+            :quiz
             :question="question"
             :is-edit-button="true" />
         </div>

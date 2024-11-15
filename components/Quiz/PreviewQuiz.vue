@@ -234,7 +234,7 @@ watch(
 }
 
 .nav-item.active {
-  background-color: hsl(var(--primary));
+  background-color: hsl(var(--primary)) !important;
   color: white;
 }
 

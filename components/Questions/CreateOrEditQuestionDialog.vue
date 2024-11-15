@@ -37,12 +37,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import type { Quiz, Question } from "~/types/quiz";
 
 const props = defineProps({
   question: {
-    type: Object,
+    type: Object as PropType<Question>,
     required: false,
   },
   isEditButton: {

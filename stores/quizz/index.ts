@@ -25,6 +25,13 @@ export class Quizz extends Base {
     });
   }
 
+  updateQuiz(quiz: Quiz): Promise<Quiz> {
+    return this.fetch(`${this.config.base_url}/quiz/update`, {
+      method: "POST",
+      body: JSON.stringify(quiz),
+    });
+  }
+
   createQuizAttempt(quizAttempt: QuizzAttempt): Promise<Quiz> {
     return this.fetch(`${this.config.base_url}/quiz-attemp/create`, {
       method: "POST",

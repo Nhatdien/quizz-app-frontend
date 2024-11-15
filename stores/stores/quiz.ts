@@ -18,6 +18,10 @@ export const useQuizStore = defineStore({
         });
     },
 
+    async updateQuiz(quiz: Quiz) {
+      return QuizzAppSDK.getInstance().updateQuiz(quiz);
+    },
+
     async createQuizAttempt(quizAttempt: QuizzAttempt) {
       return QuizzAppSDK.getInstance().createQuizAttempt(quizAttempt);
     },
