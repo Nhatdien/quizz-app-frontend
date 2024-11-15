@@ -24,7 +24,7 @@
         </div>
       </FormItem>
       <FormItem label="Quiz Code">
-        <Input v-model="topicCode" placeholder="Enter quiz code" />
+        <Input @blur="(event: Event) => console.log(event?.target?.value)" v-model="topicCode" placeholder="Enter quiz code" />
         <div v-if="v$.topicCode.$error">
           <span v-if="v$.topicCode.$pending" class="text-yellow-500"
             >Validating...</span

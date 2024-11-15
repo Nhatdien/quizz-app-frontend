@@ -31,28 +31,21 @@ export abstract class Base {
     this.onLoading(true);
 
     // Add default headers
-    const defaultHeaders = {
+    const defaultProperty: RequestInit = {
       headers: {
         "Content-Type": "application/json",
-        Accept: "application/json, text/plain, */*",
-        "Access-Control-Allow-Origin": "*",
         Authorization: this.config.access_token
           ? `Bearer ${this.config.access_token}`
           : "",
       },
+      ...init
     };
 
     // Merge default headers with any headers passed in init
-    const headers = {
-      ...defaultHeaders,
-      ...init?.headers,
-    };
 
     return new Promise((resolve, reject) => {
-      fetch(input, { ...init, ...headers })
+      fetch(input, defaultProperty)
         .then((response: Response) => {
-          console.log({ ...init, ...headers });
-
           if (response.status !== 200) {
             if (response.status === 401) {
               throw new Error("Unauthorized");

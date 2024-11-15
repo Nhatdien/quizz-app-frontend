@@ -22,6 +22,4 @@ export function compareTwoArrayAnyOrder<T>(arr1: T[], arr2: T[]): boolean {
   return arr1.every((value, index) => value === arr2[index]);
 }
 
-// export function formatScoreOutOf10 (score: number, total: number): string {
-//   return `${score}/${total} (${Math.round(score / total * 10)} out of 10)`;
-// }
+export const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));

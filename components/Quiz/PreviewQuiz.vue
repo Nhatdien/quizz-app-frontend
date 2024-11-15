@@ -15,11 +15,12 @@
         {{ `${currentQuestionIndex + 1}/${quiz?.questions.length}` }}
       </div>
     </div>
-    <!-- <div class="points"><span class="points-icon">🔵</span> 200</div> -->
     <h2 class="quiz-title">{{ quiz?.title }}</h2>
-    <h3 class="quiz-question">
-      #{{ currentQuestionIndex + 1 }} {{ currentQuestion?.content }}
-    </h3>
+    <transition name="fade">
+      <h3 class="quiz-question" key="question-{{ currentQuestionIndex }}">
+        #{{ currentQuestionIndex + 1 }} {{ currentQuestion?.content }}
+      </h3>
+    </transition>
     <div v-if="currentQuestion?.questionType === 1">
       <OptionTypeQuiz
         :question="currentQuestion"
@@ -33,7 +34,6 @@
           getInnerTextFromHTML(currentQuestion.answers[0].content).length
         " />
     </div>
-    <!-- Countdown line container -->
     <div class="countdown-line"></div>
     <div class="move-buttons">
       <button
@@ -42,9 +42,9 @@
         :disabled="enableMoveButtons.back">
         BACK
       </button>
-        <button @click="handleClickSubmit" :class="`continue-button`">
-          SUBMIT {{ countCorrectAnswers }}
-        </button>
+      <button @click="handleClickSubmit" :class="`continue-button`">
+        SUBMIT {{ countCorrectAnswers }}
+      </button>
       <button
         :class="`continue-button ${
           enableMoveButtons.continue ? 'disabled' : ''
@@ -54,8 +54,33 @@
         CONTINUE
       </button>
     </div>
+    <div class="navigation-bar">
+      <button @click="prevPage" :disabled="currentPage === 0">Prev</button>
+      <CommonTooltipCommon v-for="(submission, index) in paginatedSubmissions">
+        <template #trigger>
+          <div
+            :key="index"
+            class="nav-item"
+            :class="{
+              active: index + currentPage * 5 === currentQuestionIndex,
+              answered: submission.length > 0,
+            }"
+            @click="currentQuestionIndex = index + currentPage * 5">
+            {{ index + 1 + currentPage * 5 }}
+          </div>
+        </template>
+        <template #content>
+            <div><strong>Q:</strong> {{ quiz?.questions[index + currentPage * 5]?.content }}</div>
+            <div><strong>A:</strong> {{ submission.join(", ") }}</div>
+        </template>
+      </CommonTooltipCommon>
+      <button @click="nextPage" :disabled="currentPage >= totalPages - 1">
+        Next
+      </button>
+    </div>
   </div>
 </template>
+
 <script lang="ts" setup>
 import FillTheBlackType from "./FillTheBlackType.vue";
 import OptionTypeQuiz from "./OptionType.vue";
@@ -67,9 +92,11 @@ const props = defineProps({
     required: false,
   },
 });
-// Set the countdown duration in seconds
-const countdownDuration = 60; // Example: 10 seconds
+
+const countdownDuration = 60;
 const currentQuestionIndex = ref(0);
+const currentPage = ref(0);
+const questionsPerPage = 5;
 
 const currentQuestion = computed(() => {
   return props.quiz?.questions[currentQuestionIndex.value] as Question;
@@ -78,6 +105,16 @@ const currentQuestion = computed(() => {
 const currentSubmissions = ref<string[][]>(
   new Array(props.quiz?.questions.length).fill([])
 );
+
+const paginatedSubmissions = computed(() => {
+  const start = currentPage.value * questionsPerPage;
+  const end = start + questionsPerPage;
+  return currentSubmissions.value.slice(start, end);
+});
+
+const totalPages = computed(() => {
+  return Math.ceil((props.quiz?.questions.length || 1) / questionsPerPage);
+});
 
 const enableMoveButtons = computed(() => {
   return {
@@ -97,7 +134,6 @@ const handleClickContinue = (backOrContinue: "back" | "continue") => {
 };
 
 const countCorrectAnswers = computed(() => {
-  // Count the correct answers
   const rightAnswers = props.quiz?.questions.map((question) => {
     return question.answers
       .filter((answer) => answer.isCorrect)
@@ -119,21 +155,32 @@ const countCorrectAnswers = computed(() => {
 });
 
 const isPassedSubmission = computed(() => {
-  const scoreOutOf10 = (countCorrectAnswers.value / (props.quiz?.questions.length || 1)) * 10;
+  const scoreOutOf10 =
+    (countCorrectAnswers.value / (props.quiz?.questions.length || 1)) * 10;
   return scoreOutOf10 >= 4;
 });
 
 const handleClickSubmit = async () => {
   const quizAttemptPayload = {
     quizzId: props.quiz?.id,
-    isPass : isPassedSubmission.value,
+    isPass: isPassedSubmission.value,
     score: countCorrectAnswers.value,
   };
 
   await useQuizStore().createQuizAttempt(quizAttemptPayload as QuizzAttempt);
 };
 
-const questionIndexMap = ["A", "B", "C", "D", "E"];
+const prevPage = () => {
+  if (currentPage.value > 0) {
+    currentPage.value -= 1;
+  }
+};
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value - 1) {
+    currentPage.value += 1;
+  }
+};
 
 watch(
   () => document,
@@ -144,25 +191,71 @@ watch(
     const countdownLine = document.querySelector(
       ".countdown-line"
     ) as HTMLElement;
-    // Initialize the width of the countdown line to 100%
+
+    if (!countdownLine) {
+      return;
+    }
     countdownLine.style.width = "100%";
 
-    // Set up the countdown interval
     let remainingTime = countdownDuration;
     const interval = setInterval(() => {
-      remainingTime -= 0.1; // Decrease time in smaller steps for smooth animation
+      remainingTime -= 0.1;
       const percentage = (remainingTime / countdownDuration) * 100;
       countdownLine.style.width = `${percentage}%`;
 
-      // Stop the countdown when it reaches zero
       if (remainingTime <= 0) {
         clearInterval(interval);
         countdownLine.style.width = "0%";
       }
-    }, 100); // Update every 100ms for smooth animation
+    }, 100);
   },
   { immediate: true }
 );
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.navigation-bar {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.nav-item {
+  padding: 10px;
+  margin: 0 5px;
+  cursor: pointer;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #e0e0e0;
+  }
+}
+
+.nav-item.active {
+  background-color: hsl(var(--primary));
+  color: white;
+}
+
+.nav-item.answered {
+  background-color: #d4edda;
+}
+
+button {
+  margin: 0 5px;
+}
+
+.countdown-line {
+  height: 5px;
+  background-color: hsl(var(--primary));
+  transition: width 0.1s linear;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+  opacity: 0;
+}
+</style>

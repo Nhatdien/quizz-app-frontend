@@ -4,8 +4,11 @@ import type { SearchParams, Quiz, QuizzAttempt } from "~/types/quiz";
 export class Quizz extends Base {
   searchQuiz(search: SearchParams): Promise<Quiz[]> {
     return this.fetch(`${this.config.base_url}/quiz/filter`, {
-      method: "GET",
+      method: "POST",
       body: JSON.stringify(search),
+      headers: {
+        "Content-Type": "application/json"
+      }
     });
   }
 
