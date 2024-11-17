@@ -32,7 +32,6 @@ class KeycloakService {
     if (!KeycloakService._initPromise) {
       KeycloakService._initPromise = KeycloakService._kc.init({
         onLoad: 'login-required',
-        redirectUri: "http://localhost:4200",
         enableLogging: true,
         scope: 'openid email',
         pkceMethod: 'S256',

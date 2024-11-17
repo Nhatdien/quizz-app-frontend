@@ -6,6 +6,7 @@
     </div>
     <div class="questions-section">
       <CreateOrEditQuestionDialog :is-edit-button="false" />
+      <Button @click="handleClickPreview" class="ml-4"> Preview </Button>
       <div
         v-for="(question, index) in currentQuiz.questions"
         :key="question.id"
@@ -24,7 +25,9 @@
             :key="answer.id">
             <div class="flex items-center gap-4">
               <Checkbox v-model:checked="answer.isCorrect" disabled></Checkbox>
-              <p class="justify-self-start text-left">{{ quizIndexMap[index] }}. {{ answer.content }}</p>
+              <p class="justify-self-start text-left">
+                {{ quizIndexMap[index] }}. {{ answer.content }}
+              </p>
             </div>
           </li>
         </ul>
@@ -64,6 +67,13 @@ const quizIndexMap = [
   "Y",
   "Z",
 ];
+
+const route = useRoute();
+
+const handleClickPreview = () => {
+  // Logic to preview the quiz
+  navigateTo(`/quiz/${route.params.quiz_id}/join?preview=true`);
+};
 const props = defineProps({
   quiz: {
     type: Object,

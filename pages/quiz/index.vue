@@ -11,6 +11,9 @@
 
 <script setup lang="ts">
 
+const { $keycloak } = useNuxtApp()
+
+
 const quizzes = computed(() => {
   return useQuizStore().quiz
 })

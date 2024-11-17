@@ -5,10 +5,12 @@
   <div class="quiz-editor-container">
     <!-- Question input -->
     <div class="question-section">
-      <div
+      <input
         class="question-editor"
-        @click="setActiveEditor('question')"
-        v-html="questionText || placeholderText"></div>
+        @focus="setActiveEditor('question')"
+        v-model="questionText"
+        :placeholder="placeholderText"
+      />
       <div class="question-icons absolute right-0 top-1">
         <!-- <Button variant="secondary" icon="image">dsadsad </Button>
         <Button variant="secondary" icon="mic">dsada </Button>
@@ -23,10 +25,12 @@
         :key="index"
         :style="{ backgroundColor: optionColors[index % optionColors.length] }"
         class="option-card">
-        <div
+        <input
           class="option-editor"
-          @click="setActiveEditor(index)"
-          v-html="option.text || placeholderText"></div>
+          @focus="setActiveEditor(index)"
+          v-model="option.text"
+          :placeholder="placeholderText"
+        />
         <div class="option-icons">
           <Button
             variant="destructive"
@@ -78,38 +82,37 @@ const props = defineProps({
   },
 });
 
-
-const isEditingQuestion = ref(!!props?.question?.id)
+const isEditingQuestion = ref(!!props?.question?.id);
 
 const currentQuiz = computed(() => {
   return useQuizStore().quiz.find((quiz) => quiz.id === route.params.quiz_id);
 });
 
 const submitPayload = computed(() => {
-
-  const payload = {...currentQuiz.value}
+  const payload = { ...currentQuiz.value };
   const currentEditingQuestion = {
     content: questionText.value,
     questionType: 1,
-    answers: answers
-  }
+    answers: answers,
+  };
 
-  if(isEditingQuestion.value) {
-    const questionIndex = payload.questions.findIndex((question) => question.id === props.question.id)    
+  if (isEditingQuestion.value) {
+    const questionIndex = payload.questions.findIndex(
+      (question) => question.id === props.question.id
+    );
     payload.questions[questionIndex] = {
       id: props.question.id,
-      ...currentEditingQuestion
-    }
+      ...currentEditingQuestion,
+    };
+  } else {
+    payload.questions = [...payload.questions, currentEditingQuestion];
   }
-  else{
-    payload.questions = [...payload.questions, currentEditingQuestion]
-  }
-  
-  return payload
-})
+
+  return payload;
+});
 
 const handleSaveQuestion = async () => {
-  await useQuizStore().updateQuiz(submitPayload.value)
+  await useQuizStore().updateQuiz(submitPayload.value);
 };
 
 watch(props.question, (newVal) => {
@@ -283,6 +286,9 @@ function toggleMultipleCorrect() {
 
 .option-editor {
   min-height: 60px;
+  background-color: transparent;
+  width: 100%;
+  text-align: center;
   cursor: pointer;
 }
 
