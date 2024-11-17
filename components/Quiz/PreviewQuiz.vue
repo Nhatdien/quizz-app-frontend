@@ -82,7 +82,7 @@
 </template>
 
 <script lang="ts" setup>
-import FillTheBlackType from "./FillTheBlackType.vue";
+import FillTheBlackType from "./FillTheBlankType.vue";
 import OptionTypeQuiz from "./OptionType.vue";
 import type { Quiz, Question, QuizzAttempt } from "~/types/quiz";
 
