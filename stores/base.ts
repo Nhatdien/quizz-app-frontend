@@ -1,5 +1,8 @@
+import { Client } from "@stomp/stompjs";
+
 export type Config = {
   base_url: string;
+  websocket_url?: string;
   access_token?: string;
   client_id?: string;
 };
@@ -9,8 +12,29 @@ export abstract class Base {
 
   public error: string = "";
 
-  constructor(public config: Config) {
+  public config: Config = {
+    base_url: "",
+    websocket_url: "",
+    access_token: "",
+    client_id: "",
+  };
+  
+  constructor(config: Config) {
     this.config = config;
+  }
+
+  private static wsClientInstance: Client;
+
+  public get webSocketClient(): Client {
+    if (!Base.wsClientInstance) {
+      Base.wsClientInstance = new Client({
+        brokerURL: this.config.websocket_url!,
+        connectHeaders: {
+          Authorization: this.config.access_token as string,
+        },
+      });
+    }
+    return Base.wsClientInstance;
   }
 
   public onLoading = (loading: boolean, callback = (): void => {}): void => {
@@ -38,7 +62,7 @@ export abstract class Base {
           ? `Bearer ${this.config.access_token}`
           : "",
       },
-      ...init
+      ...init,
     };
 
     // Merge default headers with any headers passed in init
