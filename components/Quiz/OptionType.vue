@@ -42,19 +42,20 @@ const checkQuestionHaveMultipleAnswers = (question: Question) => {
 };
 
 const checkActiveOption = (index: number, question: Question) => {
-  return props.currentSubmissions[props.currentQuestionIndex].includes(
+  return props.currentSubmissions?.[props.currentQuestionIndex]?.includes(
     question.answers[index].content
   )
     ? "active"
     : "";
 };
 
-const handleClickOption = (
+const handleClickOption = async (
   event: MouseEvent,
   optionIndex: number,
   question: Question
 ) => {
-  let currentAnswer = [...props.currentSubmissions[props.currentQuestionIndex]];
+  await nextTick();
+  let currentAnswer = [...props.currentSubmissions[props.currentQuestionIndex] || []];
 
   if (checkQuestionHaveMultipleAnswers(question)) {
     if (currentAnswer.includes(question.answers[optionIndex].content)) {

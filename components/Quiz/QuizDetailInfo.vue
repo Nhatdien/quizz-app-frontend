@@ -7,6 +7,7 @@
     <div class="questions-section">
       <CreateOrEditQuestionDialog :is-edit-button="false" />
       <Button @click="handleClickPreview" class="ml-4"> Preview </Button>
+      <Button @click="handleClickStartQuiz" class="ml-4"> Start Quiz </Button>
       <div
         v-for="(question, index) in currentQuiz.questions"
         :key="question.id"
@@ -67,6 +68,7 @@ const quizIndexMap = [
   "Y",
   "Z",
 ];
+const { $quizzAppSDK } = useNuxtApp();
 
 const route = useRoute();
 
@@ -88,8 +90,8 @@ const addQuestion = () => {
   navigateTo("/questions/create");
 };
 
-const editQuestion = (question) => {
-  // Logic to edit a question
+const handleClickStartQuiz = () => {
+  $quizzAppSDK.createRoom(currentQuiz.id);
 };
 </script>
 

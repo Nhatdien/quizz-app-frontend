@@ -6,9 +6,6 @@ export class Quizz extends Base {
     return this.fetch(`${this.config.base_url}/quiz/filter`, {
       method: "POST",
       body: JSON.stringify(search),
-      headers: {
-        "Content-Type": "application/json"
-      }
     });
   }
 
@@ -35,9 +32,6 @@ export class Quizz extends Base {
   createQuizAttempt(quizAttempt: QuizzAttempt): Promise<Quiz> {
     return this.fetch(`${this.config.base_url}/quiz-attemp/create`, {
       method: "POST",
-      headers:{
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify(quizAttempt),
     });
   }

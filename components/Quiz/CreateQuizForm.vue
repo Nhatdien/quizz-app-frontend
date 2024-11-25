@@ -24,7 +24,10 @@
         </div>
       </FormItem>
       <FormItem label="Quiz Code">
-        <Input @blur="(event: Event) => console.log(event?.target?.value)" v-model="topicCode" placeholder="Enter quiz code" />
+        <Input
+          @blur="(event: Event) => console.log(event?.target?.value)"
+          v-model="topicCode"
+          placeholder="Enter quiz topic" />
         <div v-if="v$.topicCode.$error">
           <span v-if="v$.topicCode.$pending" class="text-yellow-500"
             >Validating...</span
@@ -34,7 +37,14 @@
           }}</span>
         </div>
       </FormItem>
-      <Button type="primary" @click.prevent="submitForm">Create Quiz</Button>
+
+      <FormItem label="Upload Image">
+        {{ uploadImage }}
+        <CommonUploadFile v-model="uploadImage" />
+      </FormItem>
+      <Button type="primary" @click.prevent="submitForm"
+        ><bold class="text-xl">+</bold> Create Quiz</Button
+      >
     </Form>
   </div>
 </template>
@@ -48,6 +58,7 @@ import { required, minLength } from "@vuelidate/validators";
 const quizTitle = ref("");
 const quizDescription = ref("");
 const topicCode = ref("");
+const uploadImage = ref<File | null>(null);
 
 const rules = {
   quizTitle: { required, minLength: minLength(3) },
@@ -66,10 +77,36 @@ const createQuizPayload = computed(() => {
   };
 });
 
+async function uploadFile(): Promise<void> {
+  if (!uploadImage.value) {
+    alert("No file selected.");
+    return;
+  }
+
+  try {
+    const formData = new FormData();
+    formData.append("file", uploadImage.value);
+
+    const response = await fetch("/api/upload", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (response.ok) {
+      alert("File uploaded successfully!");
+    } else {
+      alert("Failed to upload the file.");
+    }
+  } catch (error) {
+    console.error("Error uploading the file:", error);
+    alert("An error occurred while uploading the file.");
+  }
+}
+
 const submitForm = () => {
   v$.value.$validate();
-  console.log(v$.value)
-  if(v$.value.$invalid !== true) {
+  console.log(v$.value);
+  if (v$.value.$invalid !== true) {
     // Add your form submission logic here
 
     console.log(createQuizPayload.value);

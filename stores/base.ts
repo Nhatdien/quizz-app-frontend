@@ -28,7 +28,8 @@ export abstract class Base {
   public get webSocketClient(): Client {
     if (!Base.wsClientInstance) {
       Base.wsClientInstance = new Client({
-        brokerURL: this.config.websocket_url!,
+        brokerURL: `${this.config.websocket_url!}/quiz-room`,
+        reconnectDelay: 5000,
         connectHeaders: {
           Authorization: this.config.access_token as string,
         },

@@ -1,5 +1,7 @@
 <template>
-  <PreviewQuiz :quiz="currentQuiz" />
+  <div class="flex justify-center items-center h-full">
+  <PreviewQuiz class="" :quiz="currentQuiz" />
+</div>
 </template>
 
 <script setup lang="ts">

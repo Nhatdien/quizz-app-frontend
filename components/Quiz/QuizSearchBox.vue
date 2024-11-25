@@ -42,7 +42,6 @@ const onInputQuizSearch = (event: Event) => {
 </script>
 
 <template>
-  {{ isLoading }}
   <Command>
     <CommandInput
       @input="onInputQuizSearch"

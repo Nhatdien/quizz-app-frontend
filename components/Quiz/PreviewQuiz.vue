@@ -17,22 +17,29 @@
     </div>
     <h2 class="quiz-title">{{ quiz?.title }}</h2>
     <transition name="fade">
-      <h3 class="quiz-question" key="question-{{ currentQuestionIndex }}">
-        #{{ currentQuestionIndex + 1 }} {{ currentQuestion?.content }}
+      <h3
+        class="quiz-question flex flex-col"
+        key="question-{{ currentQuestionIndex }}">
+        #{{ currentQuestionIndex + 1 }}
+        <span class="" v-html="currentQuestion?.content"></span>
       </h3>
     </transition>
-    <div v-if="currentQuestion?.questionType === 1">
-      <OptionTypeQuiz
-        :question="currentQuestion"
-        :currentQuestionIndex="currentQuestionIndex"
-        v-model:currentSubmissions="currentSubmissions" />
-    </div>
-    <div class="flex justify-center" v-if="currentQuestion?.questionType === 2">
-      <FillTheBlackType
-        v-model="currentSubmissions[currentQuestionIndex]"
-        :inputLength="
-          getInnerTextFromHTML(currentQuestion.answers[0].content).length
-        " />
+    <div class="min-h-[360px]">
+      <div v-if="currentQuestion?.questionType === 1">
+        <OptionTypeQuiz
+          :question="currentQuestion"
+          :currentQuestionIndex="currentQuestionIndex"
+          v-model:currentSubmissions="currentSubmissions" />
+      </div>
+      <div
+        class="h-[360px] flex align-center justify-center mx-0 my-auto"
+        v-if="currentQuestion?.questionType === 2">
+        <FillTheBlackType
+          v-model="currentSubmissions[currentQuestionIndex]"
+          :inputLength="
+            getInnerTextFromHTML(currentQuestion.answers[0].content).length
+          " />
+      </div>
     </div>
     <div class="countdown-line"></div>
     <div class="move-buttons">
@@ -54,6 +61,8 @@
         CONTINUE
       </button>
     </div>
+    {{ currentSubmissions }}
+    {{ props.quiz?.questions.length }}
     <div class="navigation-bar">
       <button @click="prevPage" :disabled="currentPage === 0">Prev</button>
       <CommonTooltipCommon v-for="(submission, index) in paginatedSubmissions">
@@ -63,15 +72,18 @@
             class="nav-item"
             :class="{
               active: index + currentPage * 5 === currentQuestionIndex,
-              answered: submission.length > 0,
+              answered: submission?.length > 0,
             }"
             @click="currentQuestionIndex = index + currentPage * 5">
             {{ index + 1 + currentPage * 5 }}
           </div>
         </template>
         <template #content>
-            <div><strong>Q:</strong> {{ quiz?.questions[index + currentPage * 5]?.content }}</div>
-            <div><strong>A:</strong> {{ submission.join(", ") }}</div>
+          <div>
+            <strong>Q:</strong>
+            {{ quiz?.questions[index + currentPage * 5]?.content }}
+          </div>
+          <div><strong>A:</strong> {{ submission.join(", ") }}</div>
         </template>
       </CommonTooltipCommon>
       <button @click="nextPage" :disabled="currentPage >= totalPages - 1">
@@ -252,7 +264,8 @@ button {
   transition: width 0.1s linear;
 }
 
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: opacity 0.5s;
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {

@@ -1,5 +1,5 @@
 <template>
-  <div class="main-content">
+  <div class="main-content-w-sidebar">
     <slot />
   </div>
   <CommonSidebar />

@@ -1,9 +1,9 @@
 <template>
   <div>
-    <h1 class="text-xl bold">Find a quiz: </h1>
-
+    <h1 class="text-3xl font-bold">Find a quiz: </h1>
     <QuizSearchBox />
     <NuxtPage />
+    <CommonUploadFile />
   </div>
 </template>
 
@@ -11,6 +11,7 @@
 import PreviewQuiz from "~/components/Quiz/PreviewQuiz.vue";
 import QuizSearchBox from "~/components/Quiz/QuizSearchBox.vue";
 
+const { $keycloak } = useNuxtApp();
 const quizzes = computed(() => {
   return useQuizStore().quiz;
 });
