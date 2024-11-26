@@ -19,7 +19,7 @@
         type="file"
         class="file-input"
         @change="onFileChange"
-        accept="image/*,.xlsx" />
+        :accept="accept" />
       <div v-if="file" class="preview-area">
         <!-- Image Preview -->
         <img
@@ -42,12 +42,32 @@
     </div>
 
     <!-- Preview or File Details -->
+     <Button v-if="showUpload" @click="handleClickUploadFile"> Upload Excel file</Button>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from "vue";
 
+const props = defineProps({
+  accept: {
+    type: String,
+    default: "image/*",
+  },
+
+  showUpload: {
+    type: Boolean,
+    default: false,
+  },
+
+  uploadPath: {
+    type: String,
+    default: "",
+    required: false,
+  },
+});
+
+const { $quizzAppSDK } = useNuxtApp();
 // File Types
 type FileType = File | null;
 
@@ -84,15 +104,22 @@ function onFileChange(event: Event): void {
   if (files) handleFiles(files);
 }
 
+const acceptValidationMap = {
+  "image/*": "image/",
+  ".pdf": "application/pdf",
+  ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+};
+
 // Process file selection and validate file types
 function handleFiles(files: FileList): void {
   if (files.length > 0) {
     const selectedFile = files[0];
-    const validExtensions = [
-      "image/",
-      "application/pdf",
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    ];
+    const acceptExtensions = props.accept.split(",") as Array<
+      keyof typeof acceptValidationMap
+    >;
+    const validExtensions = acceptExtensions.map(
+      (ext) => acceptValidationMap[ext]
+    );
 
     if (validExtensions.some((ext) => selectedFile.type.startsWith(ext))) {
       file.value = selectedFile;
@@ -115,6 +142,12 @@ function handleFiles(files: FileList): void {
     }
   }
 }
+
+const handleClickUploadFile = async () => {
+  if (file.value) {
+    await $quizzAppSDK.uploadFile(file.value, props.uploadPath);
+  }
+};
 
 // Clear file and preview
 function clearFile(): void {

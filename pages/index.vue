@@ -16,12 +16,6 @@ const quizzes = computed(() => {
   return useQuizStore().quiz;
 });
 
-const { data: _, status } = await useAsyncData("quiz", async () => {
-  const response = await useQuizStore().getQuiz("c85181ddd3a9499d99c5b861288883f3");
-
-  return useQuizStore().quiz
-});
-
 onMounted(async () => {
 
 });

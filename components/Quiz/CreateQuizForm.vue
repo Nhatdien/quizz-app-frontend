@@ -39,8 +39,7 @@
       </FormItem>
 
       <FormItem label="Upload Image">
-        {{ uploadImage }}
-        <CommonUploadFile v-model="uploadImage" />
+        <CommonUploadFile :accept="'image/*'" v-model="uploadImage" />
       </FormItem>
       <Button type="primary" @click.prevent="submitForm"
         ><bold class="text-xl">+</bold> Create Quiz</Button
@@ -54,11 +53,14 @@ import { ref } from "vue";
 import { Input } from "@/components/ui/input";
 import { useVuelidate } from "@vuelidate/core";
 import { required, minLength } from "@vuelidate/validators";
+import type { DocumentEventName } from "@vueuse/core";
 
 const quizTitle = ref("");
 const quizDescription = ref("");
 const topicCode = ref("");
 const uploadImage = ref<File | null>(null);
+
+const { $quizzAppSDK } = useNuxtApp();
 
 const rules = {
   quizTitle: { required, minLength: minLength(3) },
@@ -103,14 +105,25 @@ async function uploadFile(): Promise<void> {
   }
 }
 
-const submitForm = () => {
+const submitForm = async () => {
   v$.value.$validate();
-  console.log(v$.value);
+
+  let imageLink = ""
   if (v$.value.$invalid !== true) {
     // Add your form submission logic here
+    if (uploadImage.value) {
+      const res = await $quizzAppSDK.uploadFile(uploadImage.value, "/upload/image");
+      console.log(res);
+      res ? imageLink = res : imageLink = "";
+    }
 
-    console.log(createQuizPayload.value);
-    navigateTo(`/quiz/${topicCode.value}`);
+    const quizStoreLength = useQuizStore().quiz.length || 1;
+
+    await useQuizStore().createQuiz({
+      ...createQuizPayload.value,
+      imageUrl: imageLink ? imageLink : null,
+    });
+    navigateTo(`/quiz/${useQuizStore().quiz[quizStoreLength - 1].id}`);
   }
   // Add your form submission logic here
 };

@@ -5,7 +5,20 @@ export interface Quiz {
     description: string
     questions: Question[]
   }
+
+  export interface QuizCreate {
+    title: string
+    topicCode: string
+    description: string
+    imageUrl?: string | null
+    questions: Question[]
+  }
   
+  export interface QuizFilterResposne {
+    content: Quiz[]
+    totalElements: number
+    totalPages: number
+  }
   export interface Question {
     id: string
     content: string

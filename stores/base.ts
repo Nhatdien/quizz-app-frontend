@@ -57,13 +57,14 @@ export abstract class Base {
 
     // Add default headers
     const defaultProperty: RequestInit = {
+      ...init,
       headers: {
         "Content-Type": "application/json",
         Authorization: this.config.access_token
           ? `Bearer ${this.config.access_token}`
           : "",
+        ...init?.headers,
       },
-      ...init,
     };
 
     // Merge default headers with any headers passed in init

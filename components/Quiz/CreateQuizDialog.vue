@@ -60,6 +60,7 @@
         </div>
       </div>
       <QuizCreateQuizForm v-if="step == 2" />
+      <CommonUploadFile :accept="'.xlsx'":show-upload="true" :upload-path="'/quiz/import'" v-if="step == 3" />
     </DialogContent>
   </Dialog>
   <ClientOnly />

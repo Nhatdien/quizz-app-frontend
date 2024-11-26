@@ -1,5 +1,10 @@
 import { defineStore } from "pinia";
-import type { Quiz, SearchParams, QuizzAttempt } from "../../types/quiz";
+import type {
+  Quiz,
+  QuizCreate,
+  SearchParams,
+  QuizzAttempt,
+} from "../../types/quiz";
 import QuizzAppSDK from "../quizzapp_sdk";
 
 export const useQuizStore = defineStore({
@@ -8,11 +13,10 @@ export const useQuizStore = defineStore({
     quiz: [] as Quiz[],
   }),
   actions: {
-    async createQuiz(quiz: Quiz) {
+    async createQuiz(quiz: QuizCreate) {
       return QuizzAppSDK.getInstance()
         .createQuiz(quiz)
         .then(async (quiz) => {
-          
           const response = await QuizzAppSDK.getInstance().getQuiz(quiz.id);
           this.quiz.push(response);
         });
@@ -26,8 +30,12 @@ export const useQuizStore = defineStore({
       return QuizzAppSDK.getInstance().createQuizAttempt(quizAttempt);
     },
 
-    searchQuiz(search: SearchParams) {
-      return QuizzAppSDK.getInstance().searchQuiz(search);
+    async searchQuiz(search: SearchParams) {
+      return QuizzAppSDK.getInstance()
+        .searchQuiz(search)
+        .then((quizzes) => {
+          this.quiz = [...quizzes.content];
+        });
     },
 
     async getQuiz(id: string) {
