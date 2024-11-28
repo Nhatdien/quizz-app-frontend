@@ -56,4 +56,6 @@ export class Quizz extends Base {
       },
     });
   }
+  //LIVE QUIZ
+
 }

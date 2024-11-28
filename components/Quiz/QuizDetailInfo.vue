@@ -91,8 +91,13 @@ const addQuestion = () => {
   navigateTo("/questions/create");
 };
 
-const handleClickStartQuiz = () => {
-  $quizzAppSDK.createRoom(currentQuiz.value.id);
+const handleClickStartQuiz = async () => {
+  const room = await $quizzAppSDK.createRoom(currentQuiz.value.id);
+  $quizzAppSDK.webSocketClient.subscribe(`/topic/room/${room.id}`, (message) => {
+    console.log(message);
+  });
+  await useRoomStore().getQuestionIds(currentQuiz.value.id);
+  navigateTo(`/room/${room.id}?quizId=${currentQuiz.value.id}&code=${room.code}`);
 };
 </script>
 
