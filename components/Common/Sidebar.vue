@@ -3,10 +3,10 @@
     <SidebarProvider>
       <Sidebar>
         <SidebarHeader>
-          <span
+          <h3
             @click="navigateTo('/')"
-            class="text-lg font-bold cursor-pointer"
-            >Quizz App</span
+            class="cursor-pointer"
+            >Quizz App</h3
           >
         </SidebarHeader>
         <SidebarContent>

@@ -15,7 +15,7 @@
         <div class="question-header">
           <h2>{{ index + 1 }}. {{ question.content }}</h2>
           <CreateOrEditQuestionDialog
-            :quiz
+            :quiz="currentQuiz"
             :question="question"
             :is-edit-button="true" />
         </div>
@@ -72,18 +72,19 @@ const { $quizzAppSDK } = useNuxtApp();
 
 const route = useRoute();
 
+const { data } = useAsyncData(async () => {
+  const response = await useQuizStore().getQuiz(route.params.quiz_id as string);
+  return useQuizStore().quiz;
+});
+
 const handleClickPreview = () => {
   // Logic to preview the quiz
   navigateTo(`/quiz/${route.params.quiz_id}/join?preview=true`);
 };
-const props = defineProps({
-  quiz: {
-    type: Object,
-    required: true,
-  },
-});
 
-const currentQuiz = reactive({ ...props.quiz });
+const currentQuiz = computed(() => {
+  return useQuizStore().quiz[0];
+});
 
 const addQuestion = () => {
   // Logic to add a question
@@ -91,7 +92,7 @@ const addQuestion = () => {
 };
 
 const handleClickStartQuiz = () => {
-  $quizzAppSDK.createRoom(currentQuiz.id);
+  $quizzAppSDK.createRoom(currentQuiz.value.id);
 };
 </script>
 

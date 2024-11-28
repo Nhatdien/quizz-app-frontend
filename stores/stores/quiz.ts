@@ -33,7 +33,7 @@ export const useQuizStore = defineStore({
     async searchQuiz(search: SearchParams) {
       return QuizzAppSDK.getInstance()
         .searchQuiz(search)
-        .then((quizzes) => {
+        .then(async (quizzes) => {
           this.quiz = [...quizzes.content];
         });
     },

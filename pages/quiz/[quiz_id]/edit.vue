@@ -1,6 +1,6 @@
 <template>
   <Button @click="navigateTo('/')">Go back home</Button>
-  <QuizDetailInfo :quiz="quizzInfo" />
+  <QuizDetailInfo/>
 </template>
 
 <script setup lang="ts">
@@ -11,9 +11,6 @@ definePageMeta({
   layout: "custom",
 });
 
-const quizzInfo = computed(() => {
-  return useQuizStore().quiz.find((quiz) => quiz.id === route.params.quiz_id) as Record<string, unknown>;
-});
 const route = useRoute();
 
 const quizStore = useQuizStore();
