@@ -24,6 +24,8 @@ export interface Quiz {
     content: string
     questionType: number
     imageUrl: any
+    time: number
+    point: number
     answers: Answer[]
   }
   

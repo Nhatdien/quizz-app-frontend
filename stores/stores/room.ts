@@ -1,12 +1,18 @@
 import { defineStore } from "pinia";
 import QuizzAppSDK from "../quizzapp_sdk";
 import type { RoomRes } from "../../types/room";
+import type { Question } from "../../types/quiz";
 
 export const useRoomStore = defineStore({
   id: "room",
   state: () => ({
     quizId: "",
     room: {} as RoomRes,
+
+    currentQuestionIndex: 0,
+    currentQuestion: {} as Question,
+    currentScore: 0,
+    currentSubmission: [] as string[][],
     questionIds: [] as string[],
   }),
   actions: {

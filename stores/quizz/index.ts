@@ -5,6 +5,7 @@ import type {
   QuizCreate,
   QuizFilterResposne,
   QuizzAttempt,
+  Question,
 } from "~/types/quiz";
 
 export class Quizz extends Base {
@@ -56,6 +57,11 @@ export class Quizz extends Base {
       },
     });
   }
-  //LIVE QUIZ
+  //questions
 
+  getQuestionById(id: string): Promise<Question> {
+    return this.fetch(`${this.config.base_url}/question/detail/${id}`, {
+      method: "GET",
+    });
+  }
 }

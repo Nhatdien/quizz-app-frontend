@@ -20,12 +20,10 @@ export class Room extends Base {
     );
   }
 
-  joinRoom(roomId: string, roomCode: string, username: string) {
+  joinRoom(roomId: string, roomCode: string, username: string, onMessageCallback: (message: any) => void) {
     super.webSocketClient.subscribe(
       `/topic/room/${roomId}/questions`,
-      (message) => {
-        console.log(message);
-      }
+      onMessageCallback
     );
     console.log(
       "subscribe to topic",
