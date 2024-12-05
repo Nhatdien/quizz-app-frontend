@@ -8,9 +8,6 @@
       <span class="option-label">{{ questionIndexMap[index] }}</span>
       <div class="option-content">
         <div class="option-text" v-html="answer.content"></div>
-        <!-- <div class="option-price">
-            ₹ 17,356, <span class="price-change negative">-0.31%</span>
-          </div> -->
       </div>
     </div>
   </div>

@@ -1,0 +1,169 @@
+// Variables
+@use "sass:string";
+@use "sass:math";
+
+$yellow-paper: rgb(244, 180, 79);
+$white-paper: #f1f1f1;
+$paper-width: 15rem;
+$paper-height: 19rem;
+$transition-time: 0.4s;
+$number-of-middle-folded-parts: 4;
+$fold-part-height: math.div($paper-height, $number-of-middle-folded-parts);
+
+// Mixins
+@mixin stacked-shadow($through, $even-color, $odd-color) {
+    $shadow : "";
+    @for $i from 1 through $through {
+        @if ($i % 2 == 0) {
+            $shadow : $shadow + "#{$i}px #{$i}px 0 0 #{$even-color}";
+        }
+        @else {
+            $shadow : $shadow + "#{$i}px #{$i}px 0 0 #{$odd-color}";            
+        }
+        $shadow : $shadow + if($i != $through, ", ", "");
+    }
+    box-shadow: string.unquote($shadow);
+}
+
+// Styles
+.section {
+    margin: 0 2rem 4rem;
+    flex: 1;
+    flex-basis: 0;
+}
+.paper {
+    position: relative;
+}
+.ruled {
+    background-color: $yellow-paper;
+    background-image: repeating-linear-gradient(transparent 0, transparent 1em, skyblue 0, skyblue 1.1em);
+    &::after {
+        content: "";
+        position: absolute;
+        left: 1.5rem;
+        top: 0;
+        height: 100%;
+        width: .1rem;
+        border-color: rgba(220, 0, 0, 0.5);
+        border-style: solid;
+        border-width: 0 .1rem 0 .1rem;
+    }
+}
+.fold-corner {
+    background: rgba(93, 59, 246, 0.388);
+    &::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 0;
+        border-style: solid;
+        border-width: .5rem;
+        border-color: white white silver silver;
+        transition: all $transition-time;
+    }
+    &:hover::after {
+        border-width: 1rem;
+    }
+}
+
+%lift-corner {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    width: 45%;
+    height: .2rem;
+    bottom: 3px;
+    box-shadow: 0 .45rem 4px 0 black;
+    transition: all $transition-time;
+}
+.lift {
+    background: rgb(54, 209, 209);
+    &::after{
+        @extend %lift-corner;
+        right: 3px;
+        transform: rotate(5deg);
+    }
+    &::before {
+        @extend %lift-corner;
+        left: 3px;
+        transform: rotate(-5deg);
+    }
+    &:hover::after, &:hover::before {
+        bottom: 7px;
+    }
+}
+
+.stacked {
+    background: $white-paper;
+    @include stacked-shadow($through: 6, $even-color: silver, $odd-color: rgb(60, 60, 60));
+}
+
+.fold-middle {
+    perspective: 700px;
+    .slice {
+        width: 100%;
+        height: $fold-part-height;
+        position: relative;
+        transform-style: preserve-3d;
+        background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/175711/chicken.jpg");
+        transition: all $transition-time;
+    }
+    &:hover .one {
+        transform: rotateX(-45deg);
+    }
+    &:hover .two, &:hover .four {
+        transform: translateY($fold-part-height) rotateX(90deg);
+    }
+    &:hover .three {
+        transform: translateY($fold-part-height) rotateX(-90deg);
+    }
+    &:hover .overlay::after {
+        opacity: 1;
+    }
+}
+.slice.one {
+    transform-origin: bottom;
+}
+
+$slices: two, three, four;
+$i: 1;
+@each $slice in $slices {
+    .slice.#{$slice} {
+        background-position-x: 0;
+        background-position-y: -($fold-part-height * $i);
+        transform: translateY($fold-part-height);
+        transform-origin: top;
+    }
+    $i : $i + 1;
+}
+
+.overlay::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(50, 50, 50, 0.4);
+    opacity: 0;
+    transition: all $transition-time;
+}
+.rounded {
+    background: $yellow-paper;
+    border-top-left-radius: 250px 15px;
+    border-bottom-left-radius: 20px 115px;
+    border-bottom-right-radius: 105px 15px;
+    border-top-right-radius: 20px 15px;
+}
+
+p {
+    font-size: 1.6em;
+    font-family: cursive;
+    color: white;
+    text-align: center;
+    margin-top: .65em;
+}
+::selection {
+    background: indigo;
+    color: indianred;
+}

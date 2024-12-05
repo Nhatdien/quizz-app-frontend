@@ -5,7 +5,7 @@ export function getInnerTextFromHTML(htmlString: string): string {
   const root = parse(htmlString);
 
   // Retrieve and return the innerText
-  return root.text || "";
+  return root.text || htmlString;
 }
 
 export function compareTwoArrayAnyOrder<T>(arr1: T[], arr2: T[]): boolean {

@@ -1,0 +1,12 @@
+version: '3.9'
+
+services:
+  web-frontend:
+    build:
+      dockerfile: Dockerfile.yml
+    env_file:
+      - .env
+    ports:
+      - 4200:3000
+    volumes:
+      - .:/app

@@ -1,5 +1,5 @@
 <template>
-  <div class="quiz-container">
+  <div class="quiz-container paper rounded stacked">
     <div class="progress-container">
       <div class="progress-bar">
         <div
@@ -41,7 +41,6 @@
           " />
       </div>
     </div>
-    <div class="countdown-line"></div>
     <div class="move-buttons">
       <button
         :class="`back-button ${enableMoveButtons.back ? 'disabled' : ''}`"
@@ -50,7 +49,7 @@
         BACK
       </button>
       <button @click="handleClickSubmit" :class="`continue-button`">
-        SUBMIT {{ countCorrectAnswers }}
+        SUBMIT
       </button>
       <button
         :class="`continue-button ${
@@ -61,8 +60,6 @@
         CONTINUE
       </button>
     </div>
-    {{ currentSubmissions }}
-    {{ props.quiz?.questions.length }}
     <div class="navigation-bar">
       <button @click="prevPage" :disabled="currentPage === 0">Prev</button>
       <CommonTooltipCommon v-for="(submission, index) in paginatedSubmissions">
@@ -194,35 +191,6 @@ const nextPage = () => {
   }
 };
 
-watch(
-  () => document,
-  () => {
-    if (!document || countdownDuration <= 0 || countdownDuration === Infinity) {
-      return;
-    }
-    const countdownLine = document.querySelector(
-      ".countdown-line"
-    ) as HTMLElement;
-
-    if (!countdownLine) {
-      return;
-    }
-    countdownLine.style.width = "100%";
-
-    let remainingTime = countdownDuration;
-    const interval = setInterval(() => {
-      remainingTime -= 0.1;
-      const percentage = (remainingTime / countdownDuration) * 100;
-      countdownLine.style.width = `${percentage}%`;
-
-      if (remainingTime <= 0) {
-        clearInterval(interval);
-        countdownLine.style.width = "0%";
-      }
-    }, 100);
-  },
-  { immediate: true }
-);
 </script>
 
 <style lang="scss" scoped>
@@ -256,12 +224,6 @@ watch(
 
 button {
   margin: 0 5px;
-}
-
-.countdown-line {
-  height: 5px;
-  background-color: hsl(var(--primary));
-  transition: width 0.1s linear;
 }
 
 .fade-enter-active,

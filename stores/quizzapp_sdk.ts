@@ -4,6 +4,7 @@ import { Topic } from "./topic";
 import { Auth } from "./auth";
 import { Room } from "./room";
 import { Quizz } from "./quizz";
+import { Note } from "./note";
 import { applyMixins } from "./utils/utils";
 
 class QuizzAppSDK extends Base {
@@ -19,10 +20,10 @@ class QuizzAppSDK extends Base {
   }
 }
 
-interface QuizzAppSDK extends Topic, Auth, Quizz, Room {}
+interface QuizzAppSDK extends Topic, Auth, Quizz, Room, Note {}
 
 applyMixins(QuizzAppSDK, [
-  Topic, Auth, Quizz, Room
+  Topic, Auth, Quizz, Room, Note
 ]);
 
 export default QuizzAppSDK;
