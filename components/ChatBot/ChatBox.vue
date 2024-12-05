@@ -45,7 +45,6 @@ const sendMessage = () => {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    font-family: Arial, sans-serif;
 }
 
 .chatbox-header {

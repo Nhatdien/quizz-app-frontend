@@ -12,7 +12,7 @@
           }"></div>
       </div>
       <div class="progress-text">
-        {{ `${currentQuestionIndex + 1}/${quiz?.questions.length}` }}
+        {{ `${currentQuestionIndex + 1}/${quiz?.questions?.length}` }}
       </div>
     </div>
     <h2 class="quiz-title">{{ quiz?.title }}</h2>
@@ -108,11 +108,11 @@ const currentPage = ref(0);
 const questionsPerPage = 5;
 
 const currentQuestion = computed(() => {
-  return props.quiz?.questions[currentQuestionIndex.value] as Question;
+  return props.quiz?.questions?.[currentQuestionIndex.value] as Question;
 });
 
 const currentSubmissions = ref<string[][]>(
-  new Array(props.quiz?.questions.length).fill([])
+  new Array(props.quiz?.questions?.length).fill([])
 );
 
 const paginatedSubmissions = computed(() => {
@@ -122,13 +122,13 @@ const paginatedSubmissions = computed(() => {
 });
 
 const totalPages = computed(() => {
-  return Math.ceil((props.quiz?.questions.length || 1) / questionsPerPage);
+  return Math.ceil((props.quiz?.questions?.length || 1) / questionsPerPage);
 });
 
 const enableMoveButtons = computed(() => {
   return {
     continue:
-      currentQuestionIndex.value === (props.quiz?.questions.length || 1) - 1,
+      currentQuestionIndex.value === (props.quiz?.questions?.length || 1) - 1,
     back: currentQuestionIndex.value === 0,
   };
 });
@@ -165,7 +165,7 @@ const countCorrectAnswers = computed(() => {
 
 const isPassedSubmission = computed(() => {
   const scoreOutOf10 =
-    (countCorrectAnswers.value / (props.quiz?.questions.length || 1)) * 10;
+    (countCorrectAnswers.value / (props.quiz?.questions?.length || 1)) * 10;
   return scoreOutOf10 >= 4;
 });
 

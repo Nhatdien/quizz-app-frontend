@@ -35,8 +35,8 @@ const onInputQuizSearch = (event: Event) => {
       textSearch:
         (event.target as HTMLInputElement).value || "defaultStringIfSoCommand",
     });
-    console.log(response)
-    searchResults.value = response.content;
+    console.log(useQuizStore().quiz)
+    searchResults.value = useQuizStore().quiz;
   }, 1000);
   isLoading.value = false;
 };
