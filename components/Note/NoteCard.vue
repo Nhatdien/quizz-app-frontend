@@ -1,5 +1,5 @@
 <template>
-  <div class="paper fold-corner rounded mx-4 p-4">
+  <div class="paper rounded bg-[purple] fold-corner  mx-4 p-4">
     <div class="paper__content">
       <div class="paper__header">
         <h2 class="paper__title">Note Title</h2>
@@ -14,5 +14,6 @@
     </div>
   </div>
 </template>
+
 
 <script setup lang="ts"></script>

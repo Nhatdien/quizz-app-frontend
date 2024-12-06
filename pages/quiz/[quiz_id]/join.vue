@@ -1,17 +1,19 @@
 <template>
   <div class="flex justify-center h-full">
     <div class="flex flex-col h-fit w-full gap-6">
-      <PreviewQuiz  :quiz="currentQuiz" />
+      <PreviewQuiz :quiz="currentQuiz" />
       <ChatBotChatBox />
     </div>
     <div class="w-[30%]">
       <NoteCard />
+      {{ useNoteStore().notes }}
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import PreviewQuiz from "~/components/Quiz/PreviewQuiz.vue";
+import { useNoteStore } from "~/stores/stores/note";
 
 definePageMeta({
   layout: "custom",
@@ -20,9 +22,12 @@ definePageMeta({
 const route = useRoute();
 
 const { data, error } = useAsyncData("preview-quiz", async () => {
-  const response = await useQuizStore().getQuiz(route.params.quiz_id as string);
+  await useQuizStore().getQuiz(route.params.quiz_id as string);
+  await useNoteStore().getNotes({
+    quizzId: route.params.quiz_id as string,
+  });
 
-  return response;
+  return {};
 });
 
 const currentQuiz = computed(() => {

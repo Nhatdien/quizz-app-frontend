@@ -4,7 +4,7 @@ import type {
   QuizCreate,
   SearchParams,
   QuizzAttempt,
-} from "../../types/quiz";
+} from "@/types/quiz";
 import QuizzAppSDK from "../quizzapp_sdk";
 
 export const useQuizStore = defineStore({
