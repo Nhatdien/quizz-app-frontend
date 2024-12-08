@@ -8,3 +8,9 @@ export interface BaseContent {
 export interface MessageModel {
   content: BaseContent[];
 }
+
+
+export interface SendMesRes{
+  candidates: MessageModel[];
+  modelVersion: string;
+}

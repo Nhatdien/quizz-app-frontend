@@ -2,6 +2,7 @@ import { Client } from "@stomp/stompjs";
 
 export type Config = {
   base_url: string;
+  current_username: string;
   websocket_url?: string;
   access_token?: string;
   client_id?: string;
@@ -14,6 +15,7 @@ export abstract class Base {
 
   public config: Config = {
     base_url: "",
+    current_username: "",
     websocket_url: "",
     access_token: "",
     client_id: "",

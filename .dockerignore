@@ -1,0 +1,39 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Dependency directories
+node_modules/
+.pnp/
+.pnp.js
+
+# Build directories
+.nuxt/
+build/
+.output/
+
+# Static files
+static/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Nuxt generate
+generate/
+
+# Docker files
+Dockerfile
+Dockerfile.*
+.dockerignore
+
+# Miscellaneous
+.DS_Store
+*.swp
+*.swo
+*.bak
+*.tmp

@@ -22,7 +22,7 @@ class KeycloakService {
     return KeycloakService.instance;
   }
 
-  public initKeycloak(onAuthenticatedCallback: Function): void {
+  public async initKeycloak(onAuthenticatedCallback: Function): Promise<void> {
     console.log("KeycloakService.initKeycloak() called", KeycloakService._initialized);
     if (KeycloakService._initialized) {
       onAuthenticatedCallback();

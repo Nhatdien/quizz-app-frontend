@@ -9,6 +9,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     client_id: config.public.clientId,
   });
 
+  console.log(quizzAppSDK)
   const sdkSokcetClient = quizzAppSDK.webSocketClient;
 
   sdkSokcetClient.onConnect = (frame: IFrame) => {
