@@ -6,8 +6,6 @@
     </div>
     <div class="w-[30%]">
       <NoteCard />
-      {{ useNoteStore().notes }}
-      {{ useChatBotStore().messages }}
     </div>
   </div>
 </template>
@@ -38,7 +36,9 @@ const currentQuiz = computed(() => {
 });
 
 onMounted(async () => {
-  await delay(1000)
-  await useChatBotStore().getMessages($quizzAppSDK.config.current_username);
-})
+  await delay(1000);
+  await useChatBotStore().getMessages({
+    textSearch: $quizzAppSDK.config.current_username,
+  });
+});
 </script>

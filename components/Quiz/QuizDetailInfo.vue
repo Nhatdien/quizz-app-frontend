@@ -1,9 +1,5 @@
 <template>
   <div class="quiz-detail-info">
-    <div class="quiz-info">
-      <h1>{{ currentQuiz.title }}</h1>
-      <p>{{ currentQuiz.description }}</p>
-    </div>
     <div class="questions-section">
       <CreateOrEditQuestionDialog :is-edit-button="false" />
       <Button @click="handleClickPreview" class="ml-4"> Preview </Button>
@@ -95,7 +91,7 @@ const handleClickStartQuiz = async () => {
   const room = await $quizzAppSDK.createRoom(currentQuiz.value.id);
   $quizzAppSDK.webSocketClient.subscribe(`/topic/room/${room.id}`, (message) => {
     console.log(message);
-  });
+  })
   await useRoomStore().getQuestionIds(currentQuiz.value.id);
   navigateTo(`/room/${room.id}?quizId=${currentQuiz.value.id}&code=${room.code}`);
 };

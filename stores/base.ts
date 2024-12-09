@@ -1,8 +1,9 @@
 import { Client } from "@stomp/stompjs";
+import type { IFrame, ActivationState } from "@stomp/stompjs";
 
 export type Config = {
   base_url: string;
-  current_username: string;
+  current_username?: string;
   websocket_url?: string;
   access_token?: string;
   client_id?: string;
@@ -20,13 +21,12 @@ export abstract class Base {
     access_token: "",
     client_id: "",
   };
-  
+
   constructor(config: Config) {
     this.config = config;
   }
 
   private static wsClientInstance: Client;
-
   public get webSocketClient(): Client {
     if (!Base.wsClientInstance) {
       Base.wsClientInstance = new Client({
@@ -40,6 +40,40 @@ export abstract class Base {
     return Base.wsClientInstance;
   }
 
+  public set webSocketClient(config: Config) {
+    if (Base.wsClientInstance) {
+      Base.wsClientInstance.deactivate();
+    }
+    Base.wsClientInstance = new Client({
+      brokerURL: `${config.websocket_url!}/quiz-room`,
+      reconnectDelay: 5000,
+      connectHeaders: {
+        Authorization: config.access_token as string,
+      },
+    });
+
+    console.log("Websocket client", config);
+
+    Base.wsClientInstance.onConnect = (frame: IFrame) => {
+      console.log("Connected to websocket", frame);
+    };
+  
+    Base.wsClientInstance.onStompError = (frame: IFrame) => {
+      console.error("Error", frame);
+    };
+  
+    Base.wsClientInstance.onChangeState = (state: ActivationState) => {
+      console.log("State", state);
+    };
+  
+    Base.wsClientInstance.onWebSocketError = (event: Event) => {
+      console.error("Websocket error", event);
+      Base.wsClientInstance.deactivate();
+    }
+    
+  }
+
+
   public onLoading = (loading: boolean, callback = (): void => {}): void => {
     this.loading = loading;
     callback();
@@ -51,6 +85,7 @@ export abstract class Base {
 
   public onError = (error: Error, callback = (): void => {}): void => {
     this.error = error.message;
+    console.error(error);
     callback();
   };
 
