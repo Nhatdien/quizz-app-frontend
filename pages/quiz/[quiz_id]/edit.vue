@@ -1,6 +1,7 @@
 <template>
   <Button @click="navigateTo('/')">Go back home</Button>
   <QuizDetailInfo/>
+  <ReviewReivewList/>
 </template>
 
 <script setup lang="ts">

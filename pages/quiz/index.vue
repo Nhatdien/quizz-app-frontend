@@ -1,5 +1,5 @@
 <template>
-  {{ quizzes }} {{ loading }}
+  
   <div
     v-loading="loading"
     v-if="quizzes.length > 0"

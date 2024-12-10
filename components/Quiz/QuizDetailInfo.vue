@@ -5,7 +5,7 @@
       <Button @click="handleClickPreview" class="ml-4"> Preview </Button>
       <Button @click="handleClickStartQuiz" class="ml-4"> Start Quiz </Button>
       <div
-        v-for="(question, index) in currentQuiz.questions"
+        v-for="(question, index) in currentQuiz?.questions"
         :key="question.id"
         class="question-item">
         <div class="question-header">
