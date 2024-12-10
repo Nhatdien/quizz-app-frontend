@@ -43,6 +43,7 @@ const newMessage = ref("");
 const sendMessage = async () => {
   const messageSend = {
     contents: [
+      ...useChatBotStore().messages.slice(-4),
       {
         role: "user",
         parts: [
@@ -61,7 +62,6 @@ const sendMessage = async () => {
   });
 
   newMessage.value = "";
-  console.log(responseMessage);
 };
 
 onMounted(() => {
