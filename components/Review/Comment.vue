@@ -1,9 +1,14 @@
 <template>
   <div class="comment">
-    <div class="comment-header">
-      <h3>{{ comment.content }}</h3>
-      <div>{{ comment.username }}</div>
+    <div class="flex gap-4">
+      <img
+        class="rounded-circle border border-[black] rounded-full"
+        src="@/assets/img/default_avt.jpg"
+        width="40"
+        height="40" />
+      <h3>{{ comment.username }}</h3>
     </div>
+    <p>{{ comment.content }}</p>
     <Comment v-for="reply in comment.replies" :comment="reply" />
   </div>
 </template>
@@ -17,29 +22,4 @@ const props = defineProps({
 });
 </script>
 
-<style scoped lang="scss">
-.comment {
-  padding: 1rem;
-  margin: 1rem 0;
-  background: #fffbe6; /* Light paper-like background */
-  border: 1px solid #ccc; /* Border to resemble paper edge */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for pinned effect */
-  position: relative;
-  &:before {
-    content: "";
-    position: absolute;
-    top: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 20px;
-    height: 20px;
-    background: #ffeb3b; /* Pin color */
-    border-radius: 50%;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Pin shadow */
-  }
-  .comment-header {
-    display: flex;
-    gap: 1rem;
-  }
-}
-</style>
+<style scoped lang="scss"></style>

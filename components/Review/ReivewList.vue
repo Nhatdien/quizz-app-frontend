@@ -7,12 +7,20 @@
       <div class="pin"></div>
       <div class="review-header">
         <div>
-          <h3>{{ review?.comment }}</h3>
-          <ReviewDropDown
-            :menu-options="shownReviewDropdown(review.createdBy)" />
+          <h3 class="review-username">
+            <img
+              class="rounded-circle border border-[black] rounded-full"
+              src="@/assets/img/default_avt.jpg"
+              width="40"
+              height="40" />
+            <span>{{ review?.username }}</span>
+            <ReviewDropDown
+              class="align-middle"
+              :menu-options="shownReviewDropdown(review.createdBy)" />
+          </h3>
         </div>
         <div class="review-meta">
-          <span class="review-username">{{ review?.username }}</span>
+          <span>{{ review?.comment }} </span>
           <span class="review-rating">
             <span
               v-for="n in 5"
@@ -142,6 +150,7 @@ const shownReviewDropdown = (createdBy: string) => {
 .review-header {
   display: flex;
   flex-direction: column;
+  justify-items: center;
   margin-bottom: 10px;
 
   h3 {
@@ -158,6 +167,8 @@ const shownReviewDropdown = (createdBy: string) => {
 }
 
 .review-username {
+  display: flex;
+  gap: 10px;
   font-size: 1em;
   color: #666;
 }

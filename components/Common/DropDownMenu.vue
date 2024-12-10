@@ -30,7 +30,7 @@ const props = defineProps({
 <template>
   <DropdownMenu>
     <DropdownMenuTrigger>
-      <slot name="trigger"> ... </slot>
+      <slot class="align-center" name="trigger"> ... </slot>
     </DropdownMenuTrigger>
     <DropdownMenuContent>
       <DropdownMenuLabel v-if="menuOptions?.label">
@@ -42,8 +42,7 @@ const props = defineProps({
         :key="item.label"
         v-on="item?.eventHandlers">
         {{ item.label }}
-        </DropdownMenuItem
-      >
+      </DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>
 </template>
