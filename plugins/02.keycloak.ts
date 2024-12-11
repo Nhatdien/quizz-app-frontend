@@ -11,13 +11,9 @@ export default defineNuxtPlugin(async (nuxtApp) => {
       QuizzAppSDK.getInstance().config.access_token = UserService.getToken();
       QuizzAppSDK.getInstance().config.current_username =
         UserService.getTokenParsed()?.preferred_username;
-      console.log(QuizzAppSDK.getInstance().config.current_username);
     });
   }
-  QuizzAppSDK.getInstance().webSocketClient = QuizzAppSDK.getInstance().config,
-  
-
-  console.log("QuizzAppSDK.getInstance().config", QuizzAppSDK.getInstance().config);
+  QuizzAppSDK.getInstance().webSocketClient = QuizzAppSDK.getInstance().config;
 
   const sdkSokcetClient = QuizzAppSDK.getInstance().webSocketClient;
   console.log("sdkSokcetClient", sdkSokcetClient);

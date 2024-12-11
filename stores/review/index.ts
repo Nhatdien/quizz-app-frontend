@@ -1,28 +1,28 @@
 import { Base } from "../base";
 import type { BaseFilter } from "~/types/common";
+import * as types from "~/types/review";
 export class Review extends Base {
-  getReview(filter: BaseFilter): Promise<unknown> {
+  getReview(filter: BaseFilter): Promise<types.ReviewResponse> {
     return this.fetch(`${this.config.base_url}/review/filter`, {
       method: "POST",
       body: JSON.stringify(filter),
     });
   }
 
-  updateReview(reviewInfo: unknown): Promise<unknown> {
+  updateReview(reviewInfo: unknown): Promise<types.Review> {
     return this.fetch(`${this.config.base_url}/review/update`, {
       method: "POST",
       body: JSON.stringify(reviewInfo),
     });
   }
 
-  deleteReview(reviewId: string): Promise<unknown> {
-    return this.fetch(`${this.config.base_url}/review/delete${reviewId}`, {
-      method: "POST",
-      body: JSON.stringify({ reviewId }),
+  deleteReview(reviewId: string): Promise<void> {
+    return this.fetch(`${this.config.base_url}/review/${reviewId}`, {
+      method: "DELETE",
     });
   }
 
-  createReview(reviewInfo: unknown): Promise<unknown> {
+  createReview(reviewInfo: types.ReviewRequest): Promise<types.Review> {
     return this.fetch(`${this.config.base_url}/review/create`, {
       method: "POST",
       body: JSON.stringify(reviewInfo),
@@ -31,31 +31,30 @@ export class Review extends Base {
 
   //COMMENT CONTROLLER
 
-  createComment(commentInfo: unknown): Promise<unknown> {
+  createComment(commentInfo: types.CommentRequest): Promise<types.Comment> {
     return this.fetch(`${this.config.base_url}/comment/create`, {
       method: "POST",
       body: JSON.stringify(commentInfo),
     });
   }
 
-  createReply(replyInfo: unknown): Promise<unknown> {
+  createReply(replyInfo: types.CommentRequest): Promise<types.Comment> {
     return this.fetch(`${this.config.base_url}/comment/reply`, {
       method: "POST",
       body: JSON.stringify(replyInfo),
     });
   }
 
-  updateComment(commentInfo: unknown): Promise<unknown> {
+  updateComment(commentInfo: types.CommentRequest): Promise<types.Comment> {
     return this.fetch(`${this.config.base_url}/comment/update`, {
       method: "POST",
       body: JSON.stringify(commentInfo),
     });
   }
 
-  deleteComment(commentId: string): Promise<unknown> {
-    return this.fetch(`${this.config.base_url}/comment/delete${commentId}`, {
-      method: "POST",
-      body: JSON.stringify({ commentId }),
+  deleteComment(commentId: string): Promise<void> {
+    return this.fetch(`${this.config.base_url}/comment/${commentId}`, {
+      method: "DELETE",
     });
   }
 }

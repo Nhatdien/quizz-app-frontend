@@ -26,6 +26,14 @@ export interface Comment {
   replies: Comment[];
 }
 
+export interface Review {
+  id: string;
+  quizzId: string;
+  comment: string;
+  username: string;
+  rating: number;
+  comments: Comment[];
+}
 export interface ReviewResponse {
-  content: { id: string; quizzId: string; comment: Comment[]; rating: number };
+  content: Review[];
 }

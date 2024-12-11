@@ -1,0 +1,96 @@
+.review-list {
+  padding: 20px;
+  background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.review-item {
+  position: relative;
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  transform: rotate(-1deg);
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    background: red;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transform: translateX(-50%);
+  }
+}
+
+.pin {
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  background: red;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transform: translateX(-50%);
+}
+
+.review-header {
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+  margin-bottom: 10px;
+
+  h3 {
+    margin: 0 0 10px;
+    font-size: 1.2em;
+    color: #333;
+  }
+}
+
+.review-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.review-username {
+  display: flex;
+  gap: 10px;
+  font-size: 1em;
+  color: #666;
+}
+
+.review-rating {
+  font-size: 1em;
+  color: #f5c518;
+
+  .star {
+    font-size: 1.2em;
+    color: #ddd;
+
+    &.filled {
+      color: #f5c518;
+    }
+
+    // &.half-filled {
+    //   color: #ddd;
+    //   position: relative;
+
+    //   &::before {
+    //     content: "\2605"; // Unicode character for star
+    //     position: absolute;
+    //     left: 0;
+    //     width: 50%;
+    //     overflow: hidden;
+    //     color: #f5c518;
+    //   }
+    // }
+  }
+}

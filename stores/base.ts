@@ -52,27 +52,23 @@ export abstract class Base {
       },
     });
 
-    console.log("Websocket client", config);
-
     Base.wsClientInstance.onConnect = (frame: IFrame) => {
       console.log("Connected to websocket", frame);
     };
-  
+
     Base.wsClientInstance.onStompError = (frame: IFrame) => {
       console.error("Error", frame);
     };
-  
+
     Base.wsClientInstance.onChangeState = (state: ActivationState) => {
       console.log("State", state);
     };
-  
+
     Base.wsClientInstance.onWebSocketError = (event: Event) => {
       console.error("Websocket error", event);
       Base.wsClientInstance.deactivate();
-    }
-    
+    };
   }
-
 
   public onLoading = (loading: boolean, callback = (): void => {}): void => {
     this.loading = loading;
@@ -112,11 +108,14 @@ export abstract class Base {
           if (response.status !== 200) {
             if (response.status === 401) {
               throw new Error("Unauthorized");
-            } else {
-              throw new Error(`Something went wrong ${response.status}`);
             }
           }
-          return response.json();
+          const contentType = response.headers.get("content-type");
+          if (contentType && contentType.includes("application/json")) {
+            return response.json();
+          } else {
+            return response.text();
+          }
         })
         .then((data) => {
           this.onLoading(false);
