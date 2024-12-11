@@ -1,4 +1,5 @@
 import { parse } from 'node-html-parser';
+import  moment from 'moment';
 
 export function getInnerTextFromHTML(htmlString: string): string {
   // Parse the HTML string
@@ -23,3 +24,7 @@ export function compareTwoArrayAnyOrder<T>(arr1: T[], arr2: T[]): boolean {
 }
 
 export const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+export function formatDate(date: string) {
+  return moment(date).format("DD/MM/YYYY") + " at " + moment(date).format("HH:mm");
+}

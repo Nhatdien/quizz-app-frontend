@@ -48,7 +48,7 @@ export const useReviewStore = defineStore({
       return QuizzAppSDK.getInstance()
         .createReview(reviewInfo)
         .then(async (comment) => {
-          this.getReview({
+          await this.getReview({
             textSearch: comment.quizzId,
           });
         });
@@ -59,8 +59,8 @@ export const useReviewStore = defineStore({
     async createComment(commentInfo: types.CommentRequest): Promise<void> {
       QuizzAppSDK.getInstance()
         .createComment(commentInfo)
-        .then((comment) => {
-          this.getReview({
+        .then(async (comment) => {
+          await this.getReview({
             textSearch: comment.quizzId,
           });
         });

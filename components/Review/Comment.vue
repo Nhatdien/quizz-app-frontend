@@ -7,10 +7,11 @@
         width="40"
         height="40" />
       <h3>{{ comment.username }}</h3>
+       <!-- <h6>{{ comment.id }}</h6> -->
       <CommentDropDown :menu-options="shownReviewDropdown(comment.username)" />
     </div>
     <p v-if="!currentState.editComment">{{ comment.content }}</p>
-    <p v-else>
+    <div v-else>
       <Textarea
         v-model="currentState.inputContent"
         placeholder="Write a comment..."
@@ -31,7 +32,7 @@
         Submit
       </button>
     </div>
-    </p>
+    </div>
 
 
     <ReviewCreateCommentInput
@@ -62,9 +63,11 @@ const currentState = reactive({
 });
 
 const inputInfo = {
-  quizId: props.comment?.quizId || "",
-  parentCommentId: props.comment?.parentCommentId || "",
+  quizzId: props.comment?.quizzId || "",
+  parentCommentId: props.comment?.id || "",
   username: $quizzAppSDK.config.current_username || "",
+  reviewId: props.comment?.reviewId || "",
+  content: ""
 };
 
 const shownReviewDropdown = (createdBy: string) => {

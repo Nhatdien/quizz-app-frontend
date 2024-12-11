@@ -7,16 +7,35 @@
           <img
             class="rounded-circle border border-[black] rounded-full"
             src="@/assets/img/default_avt.jpg"
-            width="40"
-            height="40" />
-          <span>{{ review?.username }}</span>
+            width="50"
+            height="50" />
+          <span class="flex flex-col">
+            <span>{{ review?.username }}</span>
+            <span class="text-gray text-xs">{{ formatDate(review?.createdDate) }}</span>
+          </span>
           <ReviewDropDown
             class="align-middle"
             :menu-options="shownReviewDropdown(review?.username)" />
         </h3>
+
+        <span class="review-rating self-end">
+          <span
+            v-for="n in 5"
+            :key="n"
+            class="star"
+            :class="{
+              filled: n <= Math.floor(review?.rating),
+              // 'half-filled':
+              //   n === Math.ceil(review?.rating) && review?.rating % 1 !== 0,
+            }"
+            >★</span
+          >
+        </span>
       </div>
       <div class="review-meta">
-        <span v-if="!currentState.editReview">{{ review?.comment }} </span>
+        <span class="self-start" v-if="!currentState.editReview"
+          >{{ review?.comment }}
+        </span>
         <span v-else>
           <Textarea
             v-model="currentState.inputContent"
@@ -39,25 +58,14 @@
             </button>
           </div>
         </span>
-        <span class="review-rating">
-          <span
-            v-for="n in 5"
-            :key="n"
-            class="star"
-            :class="{
-              filled: n <= Math.floor(review?.rating),
-              // 'half-filled':
-              //   n === Math.ceil(review?.rating) && review?.rating % 1 !== 0,
-            }"
-            >★</span
-          >
-        </span>
       </div>
     </div>
     <CreateCommentInput
       :input-info="{
-        quizId: review?.quizzId || '',
+        quizzId: route.params.quiz_id as string || '',
         username: $quizzAppSDK.config.current_username || '',
+        reviewId: review?.id || '',
+        parentCommentId: null,
       }"
       v-model:isShow="currentState.addComment"
       v-if="currentState.addComment" />

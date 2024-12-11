@@ -1,8 +1,9 @@
 export interface FilterReviewRes {}
 
 export interface ReviewRequest {
-  id: string;
+  id?: string;
   quizzId: string;
+  username: string;
   comment: string;
   rating: number;
 }
@@ -10,9 +11,10 @@ export interface ReviewRequest {
 export interface CommentRequest {
   commentId?: string;
   reviewId: string;
+  username: string;
   quizzId: string;
   content: string;
-  parentCommentId?: string; // Optional if it can be null or undefined
+  parentCommentId?: string | null; // Optional if it can be null or undefined
 }
 
 export interface Comment {
@@ -31,6 +33,7 @@ export interface Review {
   quizzId: string;
   comment: string;
   username: string;
+  createdDate: string;
   rating: number;
   comments: Comment[];
 }

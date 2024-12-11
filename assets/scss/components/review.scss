@@ -13,7 +13,6 @@
   padding: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  transform: rotate(-1deg);
 
   &::before {
     content: "";
@@ -56,12 +55,15 @@
 
 .review-meta {
   display: flex;
+  flex-direction: column;
+  width: 100%;
   justify-content: space-between;
   align-items: center;
 }
 
 .review-username {
   display: flex;
+  flex: 1;
   gap: 10px;
   font-size: 1em;
   color: #666;
@@ -72,25 +74,25 @@
   color: #f5c518;
 
   .star {
-    font-size: 1.2em;
+    font-size: 2em;
     color: #ddd;
-
+    cursor: pointer;
     &.filled {
       color: #f5c518;
     }
 
-    // &.half-filled {
-    //   color: #ddd;
-    //   position: relative;
+    &.half-filled {
+      color: #ddd;
+      position: relative;
 
-    //   &::before {
-    //     content: "\2605"; // Unicode character for star
-    //     position: absolute;
-    //     left: 0;
-    //     width: 50%;
-    //     overflow: hidden;
-    //     color: #f5c518;
-    //   }
-    // }
+      &::before {
+        content: "\2605"; // Unicode character for star
+        position: absolute;
+        left: 0;
+        width: 50%;
+        overflow: hidden;
+        color: #f5c518;
+      }
+    }
   }
 }
