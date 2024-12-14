@@ -1,5 +1,6 @@
-import { parse } from 'node-html-parser';
-import  moment from 'moment';
+import { parse } from "node-html-parser";
+import moment from "moment";
+import UserService from "~/stores/auth/keycloak_service";
 
 export function getInnerTextFromHTML(htmlString: string): string {
   // Parse the HTML string
@@ -23,8 +24,27 @@ export function compareTwoArrayAnyOrder<T>(arr1: T[], arr2: T[]): boolean {
   return arr1.every((value, index) => value === arr2[index]);
 }
 
-export const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+export const delay = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
 
 export function formatDate(date: string) {
-  return moment(date).format("DD/MM/YYYY") + " at " + moment(date).format("HH:mm");
+  return (
+    moment(date).format("DD/MM/YYYY") + " at " + moment(date).format("HH:mm")
+  );
+}
+
+export async function waitForToken() {
+  return new Promise<void>((resolve, reject) => {
+    const interval = setInterval(() => {
+      if (UserService.getToken()) {
+        clearInterval(interval);
+        resolve();
+      }
+    }, 100);
+
+    setTimeout(() => {
+      clearInterval(interval);
+      reject(new Error("Timeout waiting for token"));
+    }, 10000); // 10 seconds timeout
+  });
 }

@@ -88,6 +88,10 @@ const addQuestion = () => {
 };
 
 const handleClickStartQuiz = async () => {
+  if(!$quizzAppSDK.webSocketClient.connected) {
+    console.log($quizzAppSDK.webSocketClient)
+    $quizzAppSDK.webSocketClient.activate();
+  }
   const room = await $quizzAppSDK.createRoom(currentQuiz.value.id);
   $quizzAppSDK.webSocketClient.subscribe(`/topic/room/${room.id}`, (message) => {
     console.log(message);

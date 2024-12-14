@@ -22,23 +22,31 @@ definePageMeta({
 const route = useRoute();
 const { $keycloak, $quizzAppSDK } = useNuxtApp();
 
-const { data, error } = useAsyncData("preview-quiz", async () => {
-  await useQuizStore().getQuiz(route.params.quiz_id as string);
-  await useNoteStore().getNotes({
-    quizzId: route.params.quiz_id as string,
-  });
+onMounted(async () => {
+  try {
+    await waitForToken();
+  } catch (error) {
+    console.error("Error waiting for token:", error);
+    return;
+  }
+  try {
+    useChatBotStore().getMessages({
+      textSearch: $quizzAppSDK.config.current_username,
+    });
+
+    useQuizStore().getQuiz(route.params.quiz_id as string);
+    useNoteStore().getNotes({
+      quizzId: route.params.quiz_id as string,
+      username: $quizzAppSDK.config.current_username,
+    });
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
 
   return {};
 });
 
 const currentQuiz = computed(() => {
   return useQuizStore().quiz.find((quiz) => quiz.id === route.params.quiz_id);
-});
-
-onMounted(async () => {
-  await delay(1000);
-  await useChatBotStore().getMessages({
-    textSearch: $quizzAppSDK.config.current_username,
-  });
 });
 </script>

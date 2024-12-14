@@ -18,7 +18,10 @@
 </template>
 
 <script setup lang="ts">
+import { ActivationState } from '@stomp/stompjs';
+
 const { $quizzAppSDK } = useNuxtApp();
+
 
 const currentRoom = computed(() => {
   return useRoomStore().room;
@@ -65,6 +68,10 @@ const handleNextQuestion = async () => {
 };
 
 onMounted(async () => {
+  if(!$quizzAppSDK.webSocketClient.connected) {
+    $quizzAppSDK.webSocketClient.activate();
+  }
+  $quizzAppSDK.webSocketClient.activate();
   const room = await useRoomStore().getRoomByCode(route.query.code as string);
   useRoomStore().quizId = route.query.quizId as string;
   await $quizzAppSDK.getQuestionIds(useRoomStore().quizId);

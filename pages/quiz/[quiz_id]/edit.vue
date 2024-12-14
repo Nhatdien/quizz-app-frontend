@@ -20,4 +20,9 @@ const route = useRoute();
 useReviewStore().currentQuizId = route.params.quiz_id as string;
 
 const quizStore = useQuizStore();
+
+onMounted(async () => {
+  await quizStore.getQuiz(route.params.quiz_id as string);
+  await useReviewStore().getReviews(route.params.quiz_id as string);
+});
 </script>

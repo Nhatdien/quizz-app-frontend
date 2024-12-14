@@ -64,12 +64,12 @@ const sendMessage = async () => {
   newMessage.value = "";
 };
 
-onMounted(() => {
-  const response = useChatBotStore().getMessages({
-    textSearch: $keycloak.getTokenParsed()?.preferred_username,
-  });
-  console.log(response);
-});
+// onMounted(() => {
+//   const response = useChatBotStore().getMessages({
+//     textSearch: $keycloak.getTokenParsed()?.preferred_username,
+//   });
+//   console.log(response);
+// });
 </script>
 
 <style scoped>
