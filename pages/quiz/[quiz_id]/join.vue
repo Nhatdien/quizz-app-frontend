@@ -4,8 +4,8 @@
       <PreviewQuiz :quiz="currentQuiz" />
       <ChatBotChatBox />
     </div>
-    <div class="w-[30%]">
-      <NoteCard />
+    <div class="w-[30%] mt-8 pl-6 ">
+      <NoteList />
     </div>
   </div>
 </template>
@@ -30,6 +30,7 @@ onMounted(async () => {
     return;
   }
   try {
+    console.log("fetching api")
     useChatBotStore().getMessages({
       textSearch: $quizzAppSDK.config.current_username,
     });

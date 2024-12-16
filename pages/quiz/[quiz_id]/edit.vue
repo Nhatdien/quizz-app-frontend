@@ -1,16 +1,14 @@
 <template>
   <Button @click="navigateTo('/')">Go back home</Button>
-  <QuizDetailInfo/>
-  <ReivewList/>
-  <CreateReviewInput/>
+  <QuizDetailInfo />
+  <ReivewList />
+  <CreateReviewInput />
 </template>
 
 <script setup lang="ts">
-import ReivewList from '~/components/Review/ReviewList.vue';
-import { useReviewStore } from '~/stores/stores/review';
-import CreateReviewInput from '~/components/Review/CreateReviewInput.vue';
-import type { Quiz } from '~/types/quiz';
-
+import ReivewList from "~/components/Review/ReviewList.vue";
+import { useReviewStore } from "~/stores/stores/review";
+import CreateReviewInput from "~/components/Review/CreateReviewInput.vue";
 
 definePageMeta({
   layout: "custom",
@@ -22,7 +20,10 @@ useReviewStore().currentQuizId = route.params.quiz_id as string;
 const quizStore = useQuizStore();
 
 onMounted(async () => {
-  await quizStore.getQuiz(route.params.quiz_id as string);
-  await useReviewStore().getReviews(route.params.quiz_id as string);
+  await waitForToken();
+  quizStore.getQuiz(route.params.quiz_id as string);
+  useReviewStore().getReview({
+    textSearch: route.params.quiz_id as string,
+  });
 });
 </script>

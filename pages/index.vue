@@ -6,13 +6,16 @@
     <Input v-model="code"> </Input>
 
     <Button @click="hanleClickJoinRoom" class="mt-5">Join Room</Button>
+    <QuizQuizCard v-for="quiz in quizzes" :key="quiz.id" 
+    :title="quiz.title"
+    :description="quiz.description" />
     <NuxtPage />
   </div>
 </template>
 
 <script setup lang="ts">
 import PreviewQuiz from "~/components/Quiz/PreviewQuiz.vue";
-import QuizSearchBox from "~/components/Quiz/QuizSearchBox.vue";
+import QuizCard from "~/components/Quiz/QuizCard.vue";
 import type { Question } from "~/types/quiz";
 
 const { $keycloak, $quizzAppSDK } = useNuxtApp();
@@ -48,7 +51,6 @@ const receiveQuesitonCallback = (question: any) => {
   useRoomStore().currentQuestion = curQuestion;
   useRoomStore().currentSubmission = [];
   useRoomStore().currentQuestionIndex++;
-
 };
 
 const hanleClickJoinRoom = async () => {
@@ -64,5 +66,10 @@ const hanleClickJoinRoom = async () => {
     navigateTo(`/room/${room.id}?code=${code.value}`);
   }
 };
-onMounted(async () => {});
+onMounted(async () => {
+  await waitForToken();
+  useQuizStore().getSuggestionQuiz({
+    textSearch: $keycloak.getTokenParsed()?.preferred_username,
+  });
+});
 </script>

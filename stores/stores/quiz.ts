@@ -6,11 +6,13 @@ import type {
   QuizzAttempt,
 } from "@/types/quiz";
 import QuizzAppSDK from "../quizzapp_sdk";
+import type { BaseFilter } from "~/types/common";
 
 export const useQuizStore = defineStore({
   id: "quiz",
   state: () => ({
     quiz: [] as Quiz[],
+    currentQuestionId: "",
   }),
   actions: {
     async createQuiz(quiz: QuizCreate) {
@@ -43,6 +45,14 @@ export const useQuizStore = defineStore({
         .getQuiz(id)
         .then((quiz) => {
           this.quiz = [quiz];
+        });
+    },
+
+    async getSuggestionQuiz(filter: BaseFilter) {
+      return QuizzAppSDK.getInstance()
+        .getSuggestionQuiz(filter)
+        .then((quizzes) => {
+          this.quiz = quizzes.content;
         });
     },
   },

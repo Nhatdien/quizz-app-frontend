@@ -13,31 +13,33 @@
   padding: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: -10px;
-    left: 50%;
-    width: 20px;
-    height: 20px;
-    background: red;
-    border-radius: 50%;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    transform: translateX(-50%);
-  }
 }
 
-.pin {
+$pin-colors: (
+  "review-pin": #ffeb3b,
+  "note-pin": #4caf50,
+  "section-pin": #2196f3,
+  "alert-pin": #f44336,
+  "info-pin": #00bcd4,
+  "success-pin": #8bc34a,
+) !default;
+
+@mixin pin {
   position: absolute;
   top: -15px;
   left: 50%;
-  width: 10px;
-  height: 10px;
-  background: red;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   transform: translateX(-50%);
+}
+
+@each $pin, $color in $pin-colors {
+  .#{$pin} {
+    @include pin;
+    background-color: $color;
+  }
 }
 
 .review-header {

@@ -191,6 +191,11 @@ const nextPage = () => {
   }
 };
 
+watchEffect(() => {
+  useQuizStore().currentQuestionId = props.quiz?.questions?.[
+    currentQuestionIndex.value
+  ].id as string;
+});
 </script>
 
 <style lang="scss" scoped>

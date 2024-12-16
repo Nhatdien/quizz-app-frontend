@@ -1,6 +1,6 @@
 <template>
   <div class="review-item">
-    <div class="pin"></div>
+    <div class="review-pin"></div>
     <div class="review-header">
       <div>
         <h3 class="review-username">

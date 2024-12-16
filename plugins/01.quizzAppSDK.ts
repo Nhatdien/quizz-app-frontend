@@ -17,7 +17,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     keycloakInitialized = true;
 
     // Initialize Keycloak and ensure it's ready
-    await UserService.initKeycloak(() => {
+     await UserService.initKeycloak(() => {
       // Once Keycloak is initialized, update the SDK with the token and username
       const token = UserService.getToken();
       const username = UserService.getTokenParsed()?.preferred_username;

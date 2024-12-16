@@ -1,6 +1,7 @@
 export interface NoteRequest {
   id?: string;
   note?: string;
+  title?: string;
   questionId?: string;
   quizzId?: string;
   username?: string;
@@ -8,7 +9,8 @@ export interface NoteRequest {
 
 
 export interface NoteResponse {
-  id: string;
+  id: string; 
+  title: string;
   note: string;
   questionId: string;
   quizzId: string;

@@ -9,7 +9,7 @@
             src="@/assets/img/default_avt.jpg"
             width="40"
             height="40" />
-          <span>{{ $quizzAppSDK.config?.current_username }}</span>
+          <span>{{ $keycloak.getTokenParsed()?.preferred_username }}</span>
         </h3>
       </div>
       <div class="review-meta">
@@ -38,9 +38,15 @@ import * as types from "~/types/review";
 const { $quizzAppSDK, $keycloak } = useNuxtApp();
 const route = useRoute();
 
+const currentUsername = computed<string>(
+  () => {
+    return $keycloak?.getTokenParsed()?.preferred_username;
+  }
+);
+
 const currentReviewInput = reactive({
   comment: "",
-  username: $quizzAppSDK.config?.current_username as string,
+  username: currentUsername,
   quizzId: route.params.quiz_id as string,
   rating: 0,
 });
@@ -50,7 +56,7 @@ const submitCreateReview = async () => {
     return;
   }
 
-  await useReviewStore().createReview(currentReviewInput);
+  // await useReviewStore().createReview(currentReviewInput);
   currentReviewInput.comment = "";
   currentReviewInput.rating = 0;
 };

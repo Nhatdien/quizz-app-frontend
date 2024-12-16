@@ -3,16 +3,18 @@
     <div class="chatbox-header">
       <h3>ChatBox</h3>
     </div>
-    <div class="chatbox-messages">
-      <div
-        v-for="(message, index) in currentMessages"
-        :key="index"
-        class="message">
-        <span :class="message.sender + ' paper rounded'">{{
-          message.text
-        }}</span>
+    <ScrollArea class="h-96">
+      <div class="chatbox-messages">
+        <div
+          v-for="(message, index) in currentMessages"
+          :key="index"
+          class="message">
+          <span :class="message.sender + ' paper rounded'">{{
+            message.text
+          }}</span>
+        </div>
       </div>
-    </div>
+    </ScrollArea>
     <div class="chatbox-input">
       <input
         v-model="newMessage"
@@ -25,7 +27,6 @@
 
 <script setup lang="ts">
 import type { MessageModel, BaseContent } from "~/types/chatbot";
-
 
 const currentMessages = computed(() => {
   return useChatBotStore().messages.map((message: BaseContent) => {
@@ -41,9 +42,17 @@ const { $keycloak } = useNuxtApp();
 const newMessage = ref("");
 
 const sendMessage = async () => {
-  const messageSend = {
+  const inputMessageToBot = {
+    role: "user",
+    parts: [
+      {
+        text: newMessage.value + ", answer shortly in below 50 words",
+      },
+    ],
+  };
+
+  const saveInputMessagePayload = {
     contents: [
-      ...useChatBotStore().messages.slice(-4),
       {
         role: "user",
         parts: [
@@ -54,14 +63,17 @@ const sendMessage = async () => {
       },
     ],
   };
-  await useChatBotStore().saveMessage(messageSend);
+  const messageSend = {
+    contents: [...useChatBotStore().messages.slice(-4), inputMessageToBot],
+  };
+  newMessage.value = "";
+  await useChatBotStore().saveMessage(saveInputMessagePayload);
   const responseMessage = await useChatBotStore().sendMessage(messageSend);
   const saveMessagePayload = responseMessage.candidates[0].content;
+  console.log(saveMessagePayload);
   await useChatBotStore().saveMessage({
     contents: [saveMessagePayload],
   });
-
-  newMessage.value = "";
 };
 
 // onMounted(() => {

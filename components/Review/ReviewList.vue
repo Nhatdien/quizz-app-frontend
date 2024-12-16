@@ -14,11 +14,7 @@ import Review from './Review.vue';
 
 const { $quizzAppSDK } = useNuxtApp();
 const route = useRoute();
-onMounted(async () => {
-  useReviewStore().getReview({
-    textSearch: route.params.quiz_id as string,
-  });
-})
+
 </script>
 
 <style scoped lang="scss">

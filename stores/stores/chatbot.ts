@@ -29,7 +29,7 @@ export const useChatBotStore = defineStore({
       QuizzAppSDK.getInstance()
         .getMessages(filter)
         .then((res) => {
-          this.messages = res.content.reverse();
+          this.messages.concat(res.content.reverse());
         });
     },
   },

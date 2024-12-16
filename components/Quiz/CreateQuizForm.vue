@@ -53,7 +53,6 @@ import { ref } from "vue";
 import { Input } from "@/components/ui/input";
 import { useVuelidate } from "@vuelidate/core";
 import { required, minLength } from "@vuelidate/validators";
-import type { DocumentEventName } from "@vueuse/core";
 
 const quizTitle = ref("");
 const quizDescription = ref("");

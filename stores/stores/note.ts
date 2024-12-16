@@ -8,8 +8,12 @@ export const useNoteStore = defineStore({
     notes: [] as NoteResponse[],
   }),
   actions: {
-    createNote(noteInfo: NoteRequest[]): Promise<NoteResponse[]> {
-      return QuizzAppSDK.getInstance().createNote(noteInfo);
+    async createNote(noteInfo: NoteRequest[]): Promise<void> {
+      return QuizzAppSDK.getInstance()
+        .createNote(noteInfo)
+        .then((notes) => {
+          this.notes.push(...notes);
+        });
     },
 
     async deleteNote(noteId: string): Promise<void> {

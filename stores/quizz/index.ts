@@ -7,6 +7,7 @@ import type {
   QuizzAttempt,
   Question,
 } from "~/types/quiz";
+import type { BaseFilter } from "~/types/common";
 
 export class Quizz extends Base {
   searchQuiz(search: SearchParams): Promise<QuizFilterResposne> {
@@ -21,6 +22,14 @@ export class Quizz extends Base {
       method: "GET",
     });
   }
+
+  getSuggestionQuiz(filter: BaseFilter): Promise<QuizFilterResposne> {
+    return this.fetch(`${this.config.base_url}/quiz/top-suggestion`, {
+      method: "GET",
+      body: JSON.stringify(filter),
+    });
+  }
+
 
   createQuiz(quiz: QuizCreate): Promise<Quiz> {
     return this.fetch(`${this.config.base_url}/quiz/create`, {
@@ -64,4 +73,5 @@ export class Quizz extends Base {
       method: "GET",
     });
   }
+
 }
