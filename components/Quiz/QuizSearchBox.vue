@@ -20,8 +20,8 @@ const isLoading = ref(false);
 
 const quizNameMap = computed(() => {
   return searchResults.value.map((quiz) => ({
-    value: quiz.id,
-    label: quiz.title,
+    value: quiz?.id,
+    label: quiz?.title,
   }));
 });
 

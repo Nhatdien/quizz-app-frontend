@@ -1,5 +1,5 @@
 export interface Quiz {
-    id: string
+    id?: string
     title: string
     topicCode: string
     description: string
@@ -20,17 +20,17 @@ export interface Quiz {
     totalPages: number
   }
   export interface Question {
-    id: string
+    id?: string
     content: string
     questionType: number
-    imageUrl: any
+    imageUrl?: any
     time: number
     point: number
     answers: Answer[]
   }
   
   export interface Answer {
-    id: string
+    id?: string
     content: string
     isCorrect: boolean
   }

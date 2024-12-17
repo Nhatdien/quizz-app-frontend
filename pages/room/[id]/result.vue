@@ -1,12 +1,5 @@
 <template>
-
-    <div>
-        Your score is {{ useRoomStore().currentScore }}
-    </div>
+  <div>Your score is {{ useRoomStore().currentScore }}</div>
 </template>
 
-<script lang="ts">
-import { useRoomStore } from "~/stores/stores/room";
-
-
-</script>
+<script lang="ts"></script>
