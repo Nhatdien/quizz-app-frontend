@@ -10,10 +10,17 @@
         class="question-item">
         <div class="question-header">
           <h2>{{ index + 1 }}. {{ question.content }}</h2>
-          <CreateOrEditQuestionDialog
-            :quiz="currentQuiz"
-            :question="question"
-            :is-edit-button="true" />
+          <div class="flex items-center gap-4">
+            <CreateOrEditQuestionDialog
+              :quiz="currentQuiz"
+              :question="question"
+              :is-edit-button="true" />
+            <AlertDialog :option="deleteQuestionAlertOption(question)">
+              <template #trigger>
+                <Button>Delete</Button>
+              </template>
+            </AlertDialog>
+          </div>
         </div>
         <ul class="answers-list">
           <li
@@ -35,7 +42,8 @@
 
 <script setup lang="ts">
 import CreateOrEditQuestionDialog from "../Questions/CreateOrEditQuestionDialog.vue";
-
+import AlertDialog from "../Common/AlertDialog.vue";
+import type { Question } from "~/types/quiz";
 const quizIndexMap = [
   "A",
   "B",
@@ -68,6 +76,17 @@ const { $quizzAppSDK } = useNuxtApp();
 
 const route = useRoute();
 
+const deleteQuestionAlertOption = (question: Question) => {
+  return {
+    title: "Delete Question",
+    description: "Are you sure you want to delete this question?",
+    actionText: "Delete",
+    action: async () => {
+      await useQuizStore().deleteQuestion(question.id);
+    },
+  };
+};
+
 const handleClickPreview = () => {
   // Logic to preview the quiz
   navigateTo(`/quiz/${route.params.quiz_id}/join?preview=true`);
@@ -83,16 +102,21 @@ const addQuestion = () => {
 };
 
 const handleClickStartQuiz = async () => {
-  if(!$quizzAppSDK.webSocketClient.connected) {
-    console.log($quizzAppSDK.webSocketClient)
+  if (!$quizzAppSDK.webSocketClient.connected) {
+    console.log($quizzAppSDK.webSocketClient);
     $quizzAppSDK.webSocketClient.activate();
   }
   const room = await $quizzAppSDK.createRoom(currentQuiz.value.id);
-  $quizzAppSDK.webSocketClient.subscribe(`/topic/room/${room.id}`, (message) => {
-    console.log(message);
-  })
+  $quizzAppSDK.webSocketClient.subscribe(
+    `/topic/room/${room.id}`,
+    (message) => {
+      console.log(message);
+    }
+  );
   await useRoomStore().getQuestionIds(currentQuiz.value.id);
-  navigateTo(`/room/${room.id}?quizId=${currentQuiz.value.id}&code=${room.code}`);
+  navigateTo(
+    `/room/${room.id}?quizId=${currentQuiz.value.id}&code=${room.code}`
+  );
 };
 </script>
 

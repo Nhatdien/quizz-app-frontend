@@ -1,16 +1,39 @@
 <template>
-  <div class="mb-12">
-    <CommonQuill v-model="activeContent" :options="toolbarOptions" />
-  </div>
   <div class="quiz-editor-container">
     <!-- Question input -->
-    <div class="question-section">
+    <!-- {{
+      {
+        content: questionText,
+        questionType: 1,
+        answers: answers,
+        time: questionTimer,
+        point: questionScore,
+      }
+    }} -->
+    <div class="question-section flex flex-col w-full">
+      <div class="flex justify-between w-full">
+        <CommonMySelect
+          v-model="questionScore"
+          :options="[
+            {
+              label: '10 point',
+              value: 10,
+            },
+          ]" />
+        <CommonMySelect
+          v-model="questionTimer"
+          :options="[
+            {
+              label: '30 seconds',
+              value: 30,
+            },
+          ]" />
+      </div>
       <input
-        class="question-editor"
+        class="question-editor w-full mt-4"
         @focus="setActiveEditor('question')"
         v-model="questionText"
-        :placeholder="placeholderText"
-      />
+        :placeholder="placeholderText" />
       <div class="question-icons absolute right-0 top-1">
         <!-- <Button variant="secondary" icon="image">dsadsad </Button>
         <Button variant="secondary" icon="mic">dsada </Button>
@@ -28,9 +51,8 @@
         <input
           class="option-editor"
           @focus="setActiveEditor(index)"
-          v-model="option.text"
-          :placeholder="placeholderText"
-        />
+          v-model="option.content"
+          :placeholder="placeholderText" />
         <div class="option-icons">
           <Button
             variant="destructive"
@@ -94,6 +116,8 @@ const submitPayload = computed(() => {
     content: questionText.value,
     questionType: 1,
     answers: answers,
+    time: questionTimer.value,
+    point: questionScore.value,
   };
 
   if (isEditingQuestion.value) {
@@ -112,15 +136,16 @@ const submitPayload = computed(() => {
 });
 
 const handleSaveQuestion = async () => {
+  // console.log(submitPayload.value);
   await useQuizStore().updateQuiz(submitPayload.value);
 };
 
 watch(props.question, (newVal) => {
   if (newVal) {
-    questionText.value = newVal.text;
+    questionText.value = newVal.content;
 
     answers.forEach((option, index) => {
-      option.text = newVal.options[index].text;
+      option.content = newVal.options[index].content;
       option.isCorrect = newVal.options[index].isCorrect;
     });
 
@@ -130,11 +155,14 @@ watch(props.question, (newVal) => {
 
 const questionText = ref("");
 const answers = reactive([
-  { text: "", isCorrect: false },
-  { text: "", isCorrect: false },
-  { text: "", isCorrect: false },
-  { text: "", isCorrect: false },
+  { content: "", isCorrect: false },
+  { content: "", isCorrect: false },
+  { content: "", isCorrect: false },
+  { content: "", isCorrect: false },
 ]);
+const questionTimer = ref(30);
+const questionScore = ref(10);
+
 const activeEditor = ref(null); // Tracks the currently active editor (question or option index)
 const activeContent = ref(""); // Content bound to the shared toolbar
 const placeholderText = "Type here...";
@@ -161,7 +189,7 @@ function setActiveEditor(editorType) {
   if (editorType === "question") {
     activeContent.value = questionText.value;
   } else if (typeof editorType === "number") {
-    activeContent.value = answers[editorType].text;
+    activeContent.value = answers[editorType].content;
   }
 }
 
@@ -170,7 +198,7 @@ watch(activeContent, (newValue) => {
   if (activeEditor.value === "question") {
     questionText.value = newValue;
   } else if (typeof activeEditor.value === "number") {
-    answers[activeEditor.value].text = newValue;
+    answers[activeEditor.value].content = newValue;
   }
 });
 
@@ -178,7 +206,7 @@ onMounted(() => {
   if (props.question) {
     questionText.value = props.question.content;
     props.question.answers.forEach((option, index) => {
-      answers[index].text = option.content;
+      answers[index].content = option.content;
       answers[index].isCorrect = option.isCorrect;
     });
   }
@@ -202,7 +230,7 @@ watch(
 
 // Function to add a new option field
 function addOption() {
-  answers.push({ text: "", isCorrect: false });
+  answers.push({ content: "", isCorrect: false });
 }
 
 // Function to delete an option

@@ -3,31 +3,21 @@
     <SidebarProvider>
       <Sidebar>
         <SidebarHeader>
-          <h3
-            @click="navigateTo('/')"
-            class="cursor-pointer"
-            >Quizz App</h3
-          >
+          <h3 @click="navigateTo('/')" class="cursor-pointer">Quizz App</h3>
         </SidebarHeader>
         <SidebarContent>
           <QuizCreateQuizDialog />
           <SidebarMenu>
             <SidebarMenuButton
+              :class="{ active: isActive('/quiz'), hover: true }"
+              @click="navigateTo('quiz')">
+              Your Quizzes
+            </SidebarMenuButton>
+            <SidebarMenuButton
               :class="{ active: isActive('/admin/dashboard'), hover: true }"
               to="/admin/dashboard"
               icon="home">
-              Dashboard
-            </SidebarMenuButton>
-            <SidebarMenuButton
-              :class="{ active: isActive('/quiz'), hover: true }"
-              @click="navigateTo('quiz')">
-              Quizzes
-            </SidebarMenuButton>
-            <SidebarMenuButton
-              :class="{ active: isActive('/admin/questions'), hover: true }"
-              to="/admin/questions"
-              icon="question">
-              Questions
+              Explore
             </SidebarMenuButton>
             <SidebarMenuButton
               :class="{ hover: true }"

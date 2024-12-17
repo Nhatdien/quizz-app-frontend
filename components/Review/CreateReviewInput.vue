@@ -56,7 +56,9 @@ const submitCreateReview = async () => {
     return;
   }
 
-  // await useReviewStore().createReview(currentReviewInput);
+  await useReviewStore().createReview(currentReviewInput);
+  // console.log($keycloak.getTokenParsed()?.preferred_username);
+  // console.log(currentReviewInput);
   currentReviewInput.comment = "";
   currentReviewInput.rating = 0;
 };

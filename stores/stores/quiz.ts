@@ -55,5 +55,31 @@ export const useQuizStore = defineStore({
           this.quiz = quizzes.content;
         });
     },
+
+    async deleteQuiz(id: string) {
+      return QuizzAppSDK.getInstance()
+        .deleteQuiz(id)
+        .then(() => {
+          this.quiz = this.quiz.filter((quiz) => quiz.id !== id);
+        });
+    },
+
+    async deleteQuestion(id: string) {
+      return QuizzAppSDK.getInstance()
+        .deleteQuestion(id)
+        .then(() => {
+          const quiz = this.quiz.find((quiz) =>
+            quiz.questions.some((question) => question.id === id)
+          ) as Quiz;
+          try {
+            quiz.questions = quiz.questions.filter(
+              (question) => question.id !== id
+            );
+            this.quiz = [quiz];
+          } catch (error) {
+            console.error("Error deleting question:", error);
+          }
+        });
+    },
   },
 });

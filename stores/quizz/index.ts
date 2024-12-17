@@ -45,6 +45,12 @@ export class Quizz extends Base {
     });
   }
 
+  deleteQuiz(id: string): Promise<Response> {
+    return this.fetch(`${this.config.base_url}/quiz/delete/${id}`, {
+      method: "DELETE",
+    });
+  }
+
   createQuizAttempt(quizAttempt: QuizzAttempt): Promise<Quiz> {
     return this.fetch(`${this.config.base_url}/quiz-attemp/create`, {
       method: "POST",
@@ -71,6 +77,12 @@ export class Quizz extends Base {
   getQuestionById(id: string): Promise<Question> {
     return this.fetch(`${this.config.base_url}/question/detail/${id}`, {
       method: "GET",
+    });
+  }
+
+  deleteQuestion(id: string): Promise<Response> {
+    return this.fetch(`${this.config.base_url}/question/delete/${id}`, {
+      method: "DELETE",
     });
   }
 
