@@ -5,7 +5,7 @@
     {{ useRoomStore().currentScore }}
     <!-- Button display with the host-->
     <Button @click="handleNextQuestion"> Start </Button>
-    {{ useRoomStore().currentSubmission }}
+    {{ useRoomStore().currentQuestionIndex }} {{ useRoomStore().questionIds.length }}
     <div class="mt-5">
       {{ useRoomStore().currentQuestion.content }}
       <QuizOptionType
@@ -18,10 +18,23 @@
 </template>
 
 <script setup lang="ts">
-import { ActivationState } from '@stomp/stompjs';
+import { ActivationState } from "@stomp/stompjs";
 
 const { $quizzAppSDK } = useNuxtApp();
 
+const timer = ref(0);
+let timerInterval: ReturnType<typeof setInterval>;
+
+const startTimer = () => {
+  timer.value = 0;
+  timerInterval = setInterval(() => {
+    timer.value++;
+  }, 1000);
+};
+
+const stopTimer = () => {
+  clearInterval(timerInterval);
+};
 
 const currentRoom = computed(() => {
   return useRoomStore().room;
@@ -39,36 +52,36 @@ const handleNextQuestion = async () => {
     currentRoom.value.id
   );
 
-  useRoomStore().currentQuestionIndex++
+  useRoomStore().currentQuestionIndex++;
 
   const nextQuestionInterval = setInterval(
     async () => {
       const questionId =
         useRoomStore().questionIds[useRoomStore().currentQuestionIndex];
 
-      useRoomStore().currentQuestionIndex++;
-
       $quizzAppSDK.nextQuestion(questionId, currentRoom.value.id);
       if (
         useRoomStore().currentQuestionIndex >= useRoomStore().questionIds.length
       ) {
+        console.log("End of quiz");
         clearInterval(nextQuestionInterval);
         return;
       }
+      useRoomStore().currentQuestionIndex++;
     },
 
     // (
-    //       await $quizzAppSDK.getQuestionById(
-    //         useRoomStore().questionIds[useRoomStore().currentQuestionIndex]
-    //       )
-    //     ).time * 1000
+    //   await $quizzAppSDK.getQuestionById(
+    //     useRoomStore().questionIds[useRoomStore().currentQuestionIndex]
+    //   )
+    // ).time * 1000
 
     useRoomStore().questionIds.length ? 5000 : 0
   );
 };
 
 onMounted(async () => {
-  if(!$quizzAppSDK.webSocketClient.connected) {
+  if (!$quizzAppSDK.webSocketClient.connected) {
     $quizzAppSDK.webSocketClient.activate();
   }
   $quizzAppSDK.webSocketClient.activate();

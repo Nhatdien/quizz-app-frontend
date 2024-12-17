@@ -4,12 +4,13 @@
       <FormItem label="Quiz Title">
         <Input v-model="quizTitle" placeholder="Enter quiz title" />
         <div class="flex flex-col" v-if="v$.quizTitle.$error">
-          <span v-if="v$.quizTitle.required" class="text-red-500">{{
+         <span v-if="v$.quizTitle.required" class="text-red-500">{{
             v$.quizTitle.required.$message
           }}</span>
+           <!-- 
           <span v-if="v$.quizTitle.minLength" class="text-red-500">{{
             v$.quizTitle.minLength.$message
-          }}</span>
+          }}</span> -->
         </div>
       </FormItem>
       <FormItem label="Description">
@@ -23,11 +24,9 @@
           }}</span>
         </div>
       </FormItem>
-      <FormItem label="Quiz Code">
-        <Input
-          @blur="(event: Event) => console.log(event?.target?.value)"
-          v-model="topicCode"
-          placeholder="Enter quiz topic" />
+      <FormItem label="Quiz Topic">
+        <!-- {{topicCode}} -->
+        <QuizTopicSearchBox />
         <div v-if="v$.topicCode.$error">
           <span v-if="v$.topicCode.$pending" class="text-yellow-500"
             >Validating...</span
@@ -73,7 +72,7 @@ const createQuizPayload = computed(() => {
   return {
     title: quizTitle.value,
     description: quizDescription.value,
-    topicCode: topicCode.value,
+    topicCode: useTopicStore().topicCodeSelected,
     questions: [],
   };
 });
@@ -107,23 +106,33 @@ async function uploadFile(): Promise<void> {
 const submitForm = async () => {
   v$.value.$validate();
 
-  let imageLink = ""
+  let imageLink = "";
   if (v$.value.$invalid !== true) {
-    // Add your form submission logic here
     if (uploadImage.value) {
-      const res = await $quizzAppSDK.uploadFile(uploadImage.value, "/upload/image");
+      const res = await $quizzAppSDK.uploadFile(
+        uploadImage.value,
+        "/upload/image"
+      );
       console.log(res);
-      res ? imageLink = res : imageLink = "";
+      res ? (imageLink = res) : (imageLink = "");
     }
 
     const quizStoreLength = useQuizStore().quiz.length || 1;
+    console.log(createQuizPayload.value, useTopicStore().topicCodeSelected);
 
     await useQuizStore().createQuiz({
       ...createQuizPayload.value,
       imageUrl: imageLink ? imageLink : null,
     });
-    navigateTo(`/quiz/${useQuizStore().quiz[quizStoreLength - 1].id}`);
+    navigateTo(`/quiz/${useQuizStore().quiz[quizStoreLength - 1].id}/edit`);
   }
   // Add your form submission logic here
 };
+
+watch(
+  () => useTopicStore().topicCodeSelected,
+  (value) => {
+    topicCode.value = value;
+  }
+);
 </script>

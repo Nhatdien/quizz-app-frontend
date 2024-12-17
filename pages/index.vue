@@ -6,9 +6,11 @@
     <Input v-model="code"> </Input>
 
     <Button @click="hanleClickJoinRoom" class="mt-5">Join Room</Button>
-    <QuizQuizCard v-for="quiz in quizzes" :key="quiz.id" 
-    :title="quiz.title"
-    :description="quiz.description" />
+    <!-- <QuizCard
+      v-for="quiz in quizzes"
+      :key="quiz.id"
+      :title="quiz.title"
+      :description="quiz.description" /> -->
     <NuxtPage />
   </div>
 </template>
@@ -47,10 +49,29 @@ const receiveQuesitonCallback = (question: any) => {
       useRoomStore().currentQuestion
     );
   }
+
   const curQuestion = JSON.parse(question.body);
   useRoomStore().currentQuestion = curQuestion;
   useRoomStore().currentSubmission = [];
-  useRoomStore().currentQuestionIndex++;
+  useRoomStore().currentQuestionIndex += 1;
+
+  if (
+    useRoomStore().currentQuestionIndex >= useRoomStore().questionIds.length
+  ) {
+    const lastQuestionTimeOut = setTimeout(() => {
+      handleAnswerSubmission(
+        useRoomStore().currentSubmission[0][0],
+        useRoomStore().currentQuestion
+      );
+
+      console.log("last question");
+      navigateTo(`/room/${useRoomStore().room.id}/result`);
+      // useRoomStore().currentQuestion = {} as any;
+      // useRoomStore().currentSubmission = [];
+      // useRoomStore().currentQuestionIndex = 0;
+      // clearInterval(lastQuestionInterval);
+    }, useRoomStore().currentQuestion.time * 1000 / 6);
+  }
 };
 
 const hanleClickJoinRoom = async () => {
@@ -61,6 +82,8 @@ const hanleClickJoinRoom = async () => {
     $keycloak.getTokenParsed()?.preferred_username,
     receiveQuesitonCallback
   );
+
+  await useRoomStore().getQuestionIds(room.quizzId);
 
   if (room && room.isActive) {
     navigateTo(`/room/${room.id}?code=${code.value}`);

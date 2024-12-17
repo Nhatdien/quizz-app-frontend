@@ -56,7 +56,7 @@ const onInputQuizSearch = (event: Event) => {
           :key="quiz.value"
           :value="quiz.label"
           :class="'cursor-pointer'"
-          @click="() => navigateTo(`/quiz/${quiz.value}/join?preview=true`)">
+          @click="() => navigateTo(`/quiz/${quiz.value}/edit`)">
           {{ quiz.label }}
         </CommandItem>
       </CommandGroup>

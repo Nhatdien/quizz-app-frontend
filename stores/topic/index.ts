@@ -1,21 +1,26 @@
 import { Base } from "../base";
-import type { TopicType } from "../../types/topic";
+import type { TopicType, TopicRequest, TopicFilterResponse } from "../../types/topic";
+import type { BaseFilter, FilterResponse } from "~/types/common";
 
 export class Topic extends Base {
-  async getTopics(): Promise<TopicType[]> {
+  async getTopics() {
     return this.fetch<TopicType[]>(`${this.config.base_url}/topic`);
   }
 
-  async getTopic(code: string): Promise<TopicType> {
+  async getTopic(code: string) {
     return this.fetch<TopicType>(`${this.config.base_url}/topic/${code}`);
   }
 
-  async createTopic(topic: TopicType): Promise<TopicType> {
-    return this.fetch<TopicType>(`${this.config.base_url}/topic`, {
+  filterTopics(filter: BaseFilter) {
+    return this.fetch<FilterResponse<TopicType>>(`${this.config.base_url}/topic/filter`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      body: JSON.stringify(filter),
+    });
+  }
+
+  async createTopic(topic: TopicRequest) {
+    return this.fetch<TopicRequest>(`${this.config.base_url}/topic`, {
+      method: "POST",
       body: JSON.stringify(topic),
     });
   }

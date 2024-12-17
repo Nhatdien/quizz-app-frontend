@@ -1,17 +1,25 @@
 import { defineStore } from "pinia";
 import QuizzAppSDK from "../quizzapp_sdk";
-import type { TopicType } from "../../types/topic";
+import type { TopicType, TopicRequest } from "../../types/topic";
+import type { BaseFilter } from "~/types/common";
 
 export const useTopicStore = defineStore({
   id: "topic",
   state: () => ({
     topics: [] as TopicType[],
+    topicCodeSelected: "",
   }),
   actions: {
     async getTopics(): Promise<void> {
       console.log(QuizzAppSDK.getInstance().config)
       return QuizzAppSDK.getInstance().getTopics().then((topics) => {
         this.topics = topics;
+      });
+    },
+
+    async filterTopics(filter: any): Promise<void> {
+      return QuizzAppSDK.getInstance().filterTopics(filter).then((topics) => {
+        this.topics = topics.content;
       });
     },
 

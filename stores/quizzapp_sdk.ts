@@ -22,10 +22,15 @@ class QuizzAppSDK extends Base {
   }
 }
 
-interface QuizzAppSDK extends Topic, Auth, Quizz, Room, Note, ChatBot, Review {}
+interface QuizzAppSDK
+  extends Topic,
+    Auth,
+    Quizz,
+    Room,
+    Note,
+    ChatBot,
+    Review {}
 
-applyMixins(QuizzAppSDK, [
-  Topic, Auth, Quizz, Room, Note, ChatBot, Review
-]);
+applyMixins(QuizzAppSDK, [Topic, Auth, Quizz, Room, Note, ChatBot, Review]);
 
 export default QuizzAppSDK;
