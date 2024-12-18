@@ -2,9 +2,11 @@
   <ClientOnly />
   <Dialog v-model:open="isOpen">
     <DialogTrigger v-model="isOpen" as-child>
-      <Button class="m-4">
-        {{ "+ Create" }}
-      </Button>
+      <slot name="trigger">
+        <Button class="m-4">
+          {{ "+ Create" }}
+        </Button>
+      </slot>
     </DialogTrigger>
     <DialogContent class="">
       <DialogHeader>
@@ -60,7 +62,11 @@
         </div>
       </div>
       <QuizCreateQuizForm v-if="step == 2" />
-      <CommonUploadFile :accept="'.xlsx'":show-upload="true" :upload-path="'/quiz/import'" v-if="step == 3" />
+      <CommonUploadFile
+        :accept="'.xlsx'"
+        :show-upload="true"
+        :upload-path="'/quiz/import'"
+        v-if="step == 3" />
     </DialogContent>
   </Dialog>
   <ClientOnly />

@@ -2,23 +2,33 @@
   <div>
     <h1>Live quiz Room</h1>
     <p>Room code: {{ currentRoom.code }}</p>
-    {{ useRoomStore().currentScore }}
     <!-- Button display with the host-->
-    <Button @click="handleNextQuestion"> Start </Button>
-    {{ useRoomStore().currentQuestionIndex }} {{ useRoomStore().questionIds.length }}
-    <div class="mt-5">
-      {{ useRoomStore().currentQuestion.content }}
-      <QuizOptionType
-        v-if="currentQuestion?.questionType === 1"
-        :question="currentQuestion"
-        :current-question-index="0"
-        :current-submissions="useRoomStore().currentSubmission" />
+    <div
+      class="my-4 flex flex-col gap-8"
+      v-if="currentRoom.createdBy === $keycloak.getUsername()">
+      <Button class="w-24" @click="handleNextQuestion"> Start </Button>
+      <QrCode :qrCodeValue="qrValue" />
+    </div>
+    <div v-else>
+      {{ useRoomStore().currentScore }}
+      {{ useRoomStore().currentQuestionIndex }}
+      {{ useRoomStore().questionIds.length }}
+      <div class="mt-5">
+        {{ useRoomStore().currentQuestion.content }}
+
+        <QuizOptionType
+          v-if="currentQuestion?.questionType === 1"
+          :question="currentQuestion"
+          :current-question-index="0"
+          :current-submissions="useRoomStore().currentSubmission" />
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ActivationState } from "@stomp/stompjs";
+import QrCode from "~/components/Common/QrCode.vue";
 
 const { $quizzAppSDK } = useNuxtApp();
 
@@ -35,6 +45,16 @@ const startTimer = () => {
 const stopTimer = () => {
   clearInterval(timerInterval);
 };
+
+const qrValue = computed(() => {
+  return (
+    "localhost:4200" +
+    "/room/" +
+    currentRoom.value.id +
+    "?code=" +
+    currentRoom.value.code
+  );
+});
 
 const currentRoom = computed(() => {
   return useRoomStore().room;

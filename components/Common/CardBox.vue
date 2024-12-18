@@ -1,0 +1,24 @@
+<template>
+  <div
+    class="flex flex-col items-center justify-center bg-[#0F3D42] rounded-lg p-6 shadow-lg text-center max-w-[400px]">
+    <!-- Image -->
+    <div class="mb-4">
+      <slot name="image" />
+    </div>
+
+    <!-- Title -->
+    <h2 class="text-2xl font-bold text-[#FDFD96] mb-2">
+      <slot name="title" />
+    </h2>
+
+    <!-- Description -->
+    <p class="text-[#B2D8D8] text-lg mb-4">
+      <slot name="description" />
+    </p>
+
+    <!-- Button -->
+    <div>
+      <slot name="button" />
+    </div>
+  </div>
+</template>

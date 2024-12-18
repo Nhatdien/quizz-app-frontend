@@ -1,5 +1,5 @@
 <template>
-  
+  Search result for "{{ route.query.search }}""
   <div
     v-loading="loading"
     v-if="quizzes.length > 0"
@@ -14,19 +14,21 @@
 </template>
 
 <script setup lang="ts">
-import type { Fullscreen } from 'lucide-vue-next';
+import type { Fullscreen } from "lucide-vue-next";
 
 const { $keycloak } = useNuxtApp();
-
+const route = useRoute();
 const loading = ref(true);
 const quizzes = computed(() => {
   return useQuizStore().quiz;
 });
 
 onMounted(async () => {
-  const response = await useQuizStore().searchQuiz({
-    textSearch: $keycloak.getTokenParsed()?.preferred_username,
-  });
-  loading.value = false;
+  if (!useQuizStore().quiz.length) {
+    await waitForToken();
+    const response = await useQuizStore().searchQuiz({
+      textSearch: route.query.search as string,
+    });
+  }
 });
 </script>

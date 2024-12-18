@@ -1,7 +1,10 @@
 <template>
-  <div :class="'main-content'" >
-    <slot />
+  <div class="body-container">
+    <div :class="'main-content'">
+      <slot />
+    </div>
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+</script>

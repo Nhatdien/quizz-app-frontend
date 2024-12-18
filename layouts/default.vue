@@ -1,8 +1,12 @@
 <template>
-  <div class="main-content-w-sidebar">
-    <slot />
+  <div class="body-container">
+    <div :class="'main-content'">
+      <LogoSection />
+      <slot />
+    </div>
   </div>
-  <CommonSidebar />
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import LogoSection from '~/components/HomePage/LogoSection.vue';
+</script>

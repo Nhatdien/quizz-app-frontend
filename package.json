@@ -27,6 +27,7 @@
     "moment": "^2.30.1",
     "node-html-parser": "^6.1.13",
     "nuxt": "^3.13.2",
+    "qrcode.vue": "^3.6.0",
     "radix-vue": "^1.9.11",
     "shadcn-nuxt": "^0.10.4",
     "tailwind-merge": "^2.5.4",

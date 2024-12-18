@@ -44,10 +44,10 @@ export class Room extends Base {
     });
   }
 
-  getScore(username: string, score: number, roomId: string) {
+  getScore(roomId: string) {
     return this.fetch(`${this.config.base_url}/participant/get-score`, {
       method: "POST",
-      body: JSON.stringify({ username, score, roomId }),
+      body: JSON.stringify({ roomId }),
     });
   }
 

@@ -13,26 +13,28 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     current_username: "",
   });
 
-  if (!keycloakInitialized) {
-    keycloakInitialized = true;
+  if (import.meta.client) {
+    if (!keycloakInitialized) {
+      keycloakInitialized = true;
 
-    // Initialize Keycloak and ensure it's ready
-     await UserService.initKeycloak(() => {
-      // Once Keycloak is initialized, update the SDK with the token and username
-      const token = UserService.getToken();
-      const username = UserService.getTokenParsed()?.preferred_username;
+      // Initialize Keycloak and ensure it's ready
+      await UserService.initKeycloak(() => {
+        // Once Keycloak is initialized, update the SDK with the token and username
+        const token = UserService.getToken();
+        const username = UserService.getTokenParsed()?.preferred_username;
 
-      // Update QuizzAppSDK configuration with Keycloak details
-      QuizzAppSDK.getInstance().config.access_token = token;
-      QuizzAppSDK.getInstance().config.current_username = username;
-      QuizzAppSDK.getInstance().webSocketClient =
-        QuizzAppSDK.getInstance().config;
+        // Update QuizzAppSDK configuration with Keycloak details
+        QuizzAppSDK.getInstance().config.access_token = token;
+        QuizzAppSDK.getInstance().config.current_username = username;
+        QuizzAppSDK.getInstance().webSocketClient =
+          QuizzAppSDK.getInstance().config;
 
-      console.log(QuizzAppSDK.getInstance().webSocketClient);
+        console.log(QuizzAppSDK.getInstance().webSocketClient);
 
-      // Activate the WebSocket client after initialization
-      QuizzAppSDK.getInstance().webSocketClient.activate();
-    });
+        // Activate the WebSocket client after initialization
+        QuizzAppSDK.getInstance().webSocketClient.activate();
+      });
+    }
   }
 
   return {

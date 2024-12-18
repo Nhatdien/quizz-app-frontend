@@ -14,6 +14,8 @@ export const useRoomStore = defineStore({
     currentScore: 0,
     currentSubmission: [] as string[][],
     questionIds: [] as string[],
+
+    participantScores: [] as { username: string; score: number }[],
   }),
   actions: {
     async createRoom(quizId: string) {
@@ -40,6 +42,17 @@ export const useRoomStore = defineStore({
         .then((room) => {
           this.room = room;
         });
+    },
+
+    async saveScore(username: string, score: number, roomId: string) {
+      return QuizzAppSDK.getInstance().saveScore(username, score, roomId);
+    },
+
+    async getScore(roomId: string) {
+      return QuizzAppSDK.getInstance().getScore(roomId).then((score) => {
+        this.participantScores = score as any;
+      }
+      );
     },
   },
 });
