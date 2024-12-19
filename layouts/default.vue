@@ -2,6 +2,7 @@
   <div class="body-container">
     <div :class="'main-content'">
       <LogoSection />
+      <HomePageUserAuthSection />
       <slot />
     </div>
   </div>

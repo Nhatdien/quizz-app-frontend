@@ -1,40 +1,41 @@
 <template>
   <div class="quiz-detail-info">
     <div class="questions-section">
-      <CreateOrEditQuestionDialog :is-edit-button="false" />
-      <Button @click="handleClickPreview" class="ml-4"> Preview </Button>
-      <Button @click="handleClickStartQuiz" class="ml-4"> Start Quiz </Button>
-      <div
-        v-for="(question, index) in currentQuiz?.questions"
-        :key="question.id"
-        class="question-item">
-        <div class="question-header">
-          <h2>{{ index + 1 }}. {{ question.content }}</h2>
-          <div class="flex items-center gap-4">
-            <CreateOrEditQuestionDialog
-              :quiz="currentQuiz"
-              :question="question"
-              :is-edit-button="true" />
-            <AlertDialog :option="deleteQuestionAlertOption(question)">
-              <template #trigger>
-                <Button>Delete</Button>
-              </template>
-            </AlertDialog>
-          </div>
-        </div>
-        <ul class="answers-list">
-          <li
-            class="self-start"
-            v-for="(answer, index) in question.answers"
-            :key="answer.id">
-            <div class="flex items-center gap-4">
-              <Checkbox v-model:checked="answer.isCorrect" disabled></Checkbox>
-              <p class="justify-self-start text-left">
-                {{ quizIndexMap[index] }}. {{ answer.content }}
-              </p>
+      <div class="comment">
+        <div
+          v-for="(question, index) in currentQuiz?.questions"
+          :key="question.id"
+          class="comment rounded-sm">
+          <div class="question-header">
+            <h2>{{ index + 1 }}. {{ question.content }}</h2>
+            <div v-if="isEditableView" class="flex items-center gap-4">
+              <CreateOrEditQuestionDialog
+                :quiz="currentQuiz"
+                :question="question"
+                :is-edit-button="true" />
+              <AlertDialog :option="deleteQuestionAlertOption(question)">
+                <template #trigger>
+                  <Button :variant="'destructive'">Delete</Button>
+                </template>
+              </AlertDialog>
             </div>
-          </li>
-        </ul>
+          </div>
+          <ul class="answers-list">
+            <li
+              class="self-start"
+              v-for="(answer, index) in question.answers"
+              :key="answer.id">
+              <div class="flex items-center gap-4">
+                <Checkbox
+                  v-model:checked="answer.isCorrect"
+                  disabled></Checkbox>
+                <p class="justify-self-start text-left">
+                  {{ quizIndexMap[index] }}. {{ answer.content }}
+                </p>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
@@ -73,6 +74,7 @@ const quizIndexMap = [
   "Z",
 ];
 const { $quizzAppSDK } = useNuxtApp();
+const currentUserName = ref("");
 
 const route = useRoute();
 
@@ -87,10 +89,10 @@ const deleteQuestionAlertOption = (question: Question) => {
   };
 };
 
-const handleClickPreview = () => {
-  // Logic to preview the quiz
-  navigateTo(`/quiz/${route.params.quiz_id}/join?preview=true`);
-};
+const isEditableView = computed(() => {
+  return currentUserName.value;
+});
+
 
 const currentQuiz = computed(() => {
   return useQuizStore().quiz[0];
@@ -101,23 +103,12 @@ const addQuestion = () => {
   navigateTo("/questions/create");
 };
 
-const handleClickStartQuiz = async () => {
-  if (!$quizzAppSDK.webSocketClient.connected) {
-    console.log($quizzAppSDK.webSocketClient);
-    $quizzAppSDK.webSocketClient.activate();
-  }
-  const room = await $quizzAppSDK.createRoom(currentQuiz.value.id);
-  $quizzAppSDK.webSocketClient.subscribe(
-    `/topic/room/${room.id}`,
-    (message) => {
-      console.log(message);
-    }
-  );
-  await useRoomStore().getQuestionIds(currentQuiz.value.id);
-  navigateTo(
-    `/room/${room.id}?quizId=${currentQuiz.value.id}&code=${room.code}`
-  );
-};
+
+
+onMounted(async () => {
+  await waitForToken();
+  currentUserName.value = $quizzAppSDK.config.current_username || "";
+});
 </script>
 
 <style scoped>

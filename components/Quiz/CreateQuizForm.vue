@@ -124,7 +124,7 @@ const submitForm = async () => {
       ...createQuizPayload.value,
       imageUrl: imageLink ? imageLink : null,
     });
-    navigateTo(`/quiz/${useQuizStore().quiz[quizStoreLength - 1].id}/edit`);
+    navigateTo(`/quiz/${useQuizStore().quiz[quizStoreLength - 1].id}/view`);
   }
   // Add your form submission logic here
 };

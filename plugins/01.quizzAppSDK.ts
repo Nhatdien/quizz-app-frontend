@@ -1,5 +1,6 @@
 import UserService from "~/stores/auth/keycloak_service";
 import QuizzAppSDK from "~/stores/quizzapp_sdk";
+import { computed } from "vue";
 
 let keycloakInitialized = false;
 

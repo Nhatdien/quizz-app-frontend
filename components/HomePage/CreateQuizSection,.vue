@@ -32,7 +32,12 @@
             class="w-20 h-20"
           /> -->
       </template>
-      <template #title>A.I.</template>
+      <template #title>
+        <div class="flex gap-2 items-center" >
+          <Bot :size="32"
+          stroke-width="2"/> A.I
+        </div></template
+      >
       <template #description>
         Generate a quiz from <strong>any subject</strong>
       </template>
@@ -49,4 +54,5 @@
 <script setup>
 import CardBox from "@/components/Common/CardBox.vue";
 import CreateQuizDialog from "../Quiz/CreateQuizDialog.vue";
+import { Bot } from "lucide-vue-next";
 </script>

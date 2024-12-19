@@ -1,15 +1,15 @@
 <template>
-  <div class="absolute right-20 top-5 rounded-full">
-    <div v-if="isLoading" class="text-white text-lg font-bold">
+  <div class="absolute right-[3vw] top-[4vh] rounded-full">
+    <div v-if="isLoading === true" class="text-white text-lg font-bold">
       <LoadSpinner />
     </div>
     <div
-      v-if="!currentUserName && !isLoading"
+      v-if="!currentUserName && isLoading === false"
       class="text-white text-lg font-bold">
       <Button @click="() => $keycloak.doLogin()">Login</Button>
     </div>
     <DropdownMenu
-      v-if="currentUserName && !isLoading"
+      v-if="currentUserName && isLoading === false"
       :menuOptions="menuOptions">
       <template #trigger>
         <div>
@@ -28,9 +28,7 @@
 import DropdownMenu from "~/components/Common/DropDownMenu.vue";
 import LoadSpinner from "../Common/LoadSpinner.vue";
 
-
-
-const isLoading = ref(false);
+const isLoading = ref();
 const { $keycloak, $quizzAppSDK } = useNuxtApp();
 
 const username = computed(() => $quizzAppSDK.config.current_username);
@@ -59,7 +57,11 @@ const menuOptions = {
 
 onMounted(async () => {
   isLoading.value = true;
-  await waitForToken();
+  try {
+    await waitForToken();
+  } catch {
+    alert("You need to login to use this page");
+  }
   isLoading.value = false;
   currentUserName.value = $keycloak.getTokenParsed()?.preferred_username;
 });

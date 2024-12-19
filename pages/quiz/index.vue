@@ -1,15 +1,14 @@
 <template>
-  Search result for "{{ route.query.search }}""
+  <span class="text-3xl">Search result for "{{ route.query.search }}"</span>
   <div
     v-loading="loading"
     v-if="quizzes.length > 0"
-    class="flex flex-1 justify-center items-center gap-4">
+    class="grid grid-cols-3 gap-4 mt-8">
     <QuizCard
       v-for="quiz in quizzes"
-      @click="navigateTo(`/quiz/${quiz?.id}/edit`)"
+      @click="navigateTo(`/quiz/${quiz?.id}/view`)"
       :key="quiz?.id"
-      :title="quiz?.title"
-      :description="quiz?.description" />
+      :quiz />
   </div>
 </template>
 

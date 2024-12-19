@@ -1,15 +1,47 @@
 <template>
   <Card class="quiz-card">
     <CardHeader>
-      <CardTitle>{{ title }}</CardTitle>
-      <CardDescription>{{ description }}</CardDescription>
+      <CardTitle>{{ quiz?.title }}</CardTitle>
+      <CardDescription>{{ quiz?.description }}</CardDescription>
     </CardHeader>
-    <CardContent> Card Content </CardContent>
-    <CardFooter> Card Footer </CardFooter>
+    <CardContent>
+      <div class="aspect-auto max-w-28">
+        <img
+          src="@/assets/img/default_avt.jpg"
+          alt="Quiz Image"
+          class="quiz-image" />
+      </div>
+      <div class="flex">
+        <div class="flex-1">
+          <!-- <p class="text-sm text-gray-500">Questions</p>
+          <p class="text-lg">{{ quiz?.questions.length }}</p> -->
+          Created by:
+          <span @click="navigateTo(`/quiz/?search=${quiz?.createdBy}`)">
+            {{ quiz?.createdBy }}
+          </span>
+        </div>
+        <div class="flex flex-col justify-center">
+          <span class="flex gap-4"
+            >Rating: {{ quiz?.averageRating?.toFixed(1) }}/5
+            <Star :fill="'yellow'"
+          /></span>
+          <div class="flex">
+            Comment: {{ quiz?.reviewCount ?? quiz?.totalComments  }}
+            <MessageCircle :fill="'f1f1f1'" class="ml-auto" />
+          </div>
+          <div class="flex">
+            Quesiton: {{ quiz?.questionCount ?? quiz?.totalComments }}
+            <SquareCheck class="ml-auto" />
+          </div>
+        </div>
+      </div>
+    </CardContent>
+    <CardFooter> </CardFooter>
   </Card>
 </template>
 
 <script setup lang="ts">
+import { Star, MessageCircle, SquareCheck } from "lucide-vue-next";
 import {
   Card,
   CardContent,
@@ -17,23 +49,30 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
+} from "@/components/ui/card";
+import type { Quiz } from "@/types/quiz";
 
-
-const props = defineProps<{
-  title: string;
-  description: string;
-}>();
+const props = defineProps({
+  quiz: {
+    type: Object as PropType<Quiz>,
+    required: true,
+  },
+});
 </script>
 
 <style scoped lang="scss">
-
 .quiz-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-    &:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-    }
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.quiz-image {
+  object-fit: cover;
+  height: auto;
+  margin-bottom: 1rem;
 }
 </style>

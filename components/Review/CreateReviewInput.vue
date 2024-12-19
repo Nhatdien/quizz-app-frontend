@@ -38,11 +38,7 @@ import * as types from "~/types/review";
 const { $quizzAppSDK, $keycloak } = useNuxtApp();
 const route = useRoute();
 
-const currentUsername = computed<string>(
-  () => {
-    return $keycloak?.getTokenParsed()?.preferred_username;
-  }
-);
+const currentUsername = ref($keycloak.getTokenParsed()?.preferred_username);
 
 const currentReviewInput = reactive({
   comment: "",
@@ -55,13 +51,14 @@ const submitCreateReview = async () => {
   if (!currentReviewInput.comment) {
     return;
   }
-
-  await useReviewStore().createReview(currentReviewInput);
+  
   // console.log($keycloak.getTokenParsed()?.preferred_username);
   // console.log(currentReviewInput);
+  await useReviewStore().createReview(currentReviewInput);
   currentReviewInput.comment = "";
   currentReviewInput.rating = 0;
 };
+
 </script>
 
 <style scoped lang="scss"></style>

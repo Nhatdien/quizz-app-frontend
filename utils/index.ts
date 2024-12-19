@@ -45,6 +45,6 @@ export async function waitForToken() {
     setTimeout(() => {
       clearInterval(interval);
       reject(new Error("Timeout waiting for token"));
-    }, 10000); // 10 seconds timeout
+    }, 3000); // 3 seconds timeout
   });
 }

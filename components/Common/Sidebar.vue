@@ -70,7 +70,7 @@ const handleClickCreateQuiz = async () => {
 
   console.log(quizStore.quiz);
 
-  navigateTo(`/quiz/${quiz.id}/edit`);
+  navigateTo(`/quiz/${quiz.id}/view`);
 };
 
 const isActive = (path: string) => {

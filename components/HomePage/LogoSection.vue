@@ -1,6 +1,6 @@
 <template>
   <div class="flex items-center gap-4 rounded-sm p-4">
-    <BrainCogIcon size="60"></BrainCogIcon>
+    <BrainCogIcon fill='#ffa7a0' size="60"></BrainCogIcon>
     <h1 @click="navigateTo('/')" class="rounded-lg cursor-pointer">
       CleverMind
     </h1>

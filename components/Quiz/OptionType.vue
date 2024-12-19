@@ -7,7 +7,7 @@
       :key="index">
       <span class="option-label">{{ questionIndexMap[index] }}</span>
       <div class="option-content">
-        <div class="option-text" v-html="answer.content"></div>
+        <div class="option-text">{{ answer.content }}</div>
       </div>
     </div>
   </div>

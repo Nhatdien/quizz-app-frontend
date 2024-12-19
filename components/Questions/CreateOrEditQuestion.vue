@@ -56,11 +56,15 @@
         <div class="option-icons">
           <Button
             variant="destructive"
-            icon="trash"
+            
             v-if="answers.length > 3"
             @click="deleteOption(index)">
+            <Trash />
           </Button>
-          <Button variant="secondary" icon="image"> </Button>
+          <Button variant="secondary" icon="image">
+            <Image />
+          
+          </Button>
           <Checkbox
             v-model:checked="option.isCorrect"
             :true-value="true"
@@ -95,6 +99,7 @@
 
 <script setup>
 import CommonQuill from "~/components/Common/Quill.vue";
+import { Trash, Image, Clock } from "lucide-vue-next";
 
 const route = useRoute();
 const props = defineProps({
@@ -178,7 +183,7 @@ const toolbarOptions = {
   },
 };
 
-const optionColors = ["#005a99", "#008080", "#ffa500", "#d9534f"]; // Colors for option backgrounds
+const optionColors = ["#005a99", "#008080", "#ffa500", "#005AFF"]; // Colors for option backgrounds
 const isMultipleCorrect = ref(false);
 
 // Function to set the active editor and link it to the toolbar content

@@ -1,5 +1,5 @@
 <template>
-  <div class="review-item">
+  <div>
     <div class="review-pin"></div>
     <div class="review-header">
       <div>

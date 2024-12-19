@@ -24,8 +24,8 @@ export class Quizz extends Base {
   }
 
   getSuggestionQuiz(filter: BaseFilter): Promise<QuizFilterResposne> {
-    return this.fetch(`${this.config.base_url}/quiz/top-suggestion`, {
-      method: "GET",
+    return this.fetch(`${this.config.base_url}/quiz/top-suggestions`, {
+      method: "POST",
       body: JSON.stringify(filter),
     });
   }

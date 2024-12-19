@@ -2,6 +2,12 @@ export interface Quiz {
     id?: string
     title: string
     topicCode: string
+    createdBy: string
+    questionCount?: number
+    totalReviews?: number
+    totalComments?: number
+    averageRating?: number
+    reviewCount?: number
     description: string
     questions: Question[]
   }
