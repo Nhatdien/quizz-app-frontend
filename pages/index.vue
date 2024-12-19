@@ -1,33 +1,32 @@
 <template>
-  <div class="flex gap-8 justify-around items-center flex-col">
-    <UserAuthSection />
-    <LogoSection />
-    <JoinRoomInput />
-    <QuizSearch />
-  </div>
+  <JoinRoomInput v-if="!useScreen().isLargerThanMedium" />
   <CreateQuizSection />
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+  <!-- <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
     <QuizCard
       v-for="quiz in quizzes"
       :quiz="quiz"
       :key="quiz?.id"
       @click="navigateTo(`/quiz/${quiz?.id}/view`)" />
-  </div>
+  </div> -->
+
+  <CommonMyCarousel class="" :items="quizzes">
+    <template #item-component="{ item }"> 
+      <QuizCard class="w-full h-auto" :quiz="item">
+
+      </QuizCard>
+    </template>
+  </CommonMyCarousel>
   <NuxtPage />
 </template>
 
 <script setup lang="ts">
-import UserAuthSection from "~/components/HomePage/UserAuthSection.vue";
-import LogoSection from "~/components/HomePage/LogoSection.vue";
 import QuizCard from "~/components/Quiz/QuizCard.vue";
 import CreateQuizSection from "~/components/HomePage/CreateQuizSection,.vue";
 import JoinRoomInput from "~/components/HomePage/JoinRoomInput.vue";
 import QuizSearch from "~/components/HomePage/QuizSearch.vue";
 import type { Question } from "~/types/quiz";
+import Quiz from "~/layouts/quiz.vue";
 
-definePageMeta({
-  layout: "custom",
-});
 const { $keycloak, $quizzAppSDK } = useNuxtApp();
 const quizzes = computed(() => {
   return useQuizStore().quiz;

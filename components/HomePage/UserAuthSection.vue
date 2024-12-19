@@ -1,5 +1,5 @@
 <template>
-  <div class="absolute right-[3vw] top-[4vh] rounded-full">
+  <div class="rounded-full">
     <div v-if="isLoading === true" class="text-white text-lg font-bold">
       <LoadSpinner />
     </div>

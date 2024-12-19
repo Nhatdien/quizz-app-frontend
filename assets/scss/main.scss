@@ -1,6 +1,5 @@
 @forward "./tailwind.scss";
 @forward "./components/index.scss";
-
 .body-container {
   background-color: #d19c6c;
   width: 100%;
@@ -8,7 +7,41 @@
 }
 
 .main-content {
-  padding: 1rem;
+  padding-left: 8rem;
+  padding-right: 8rem;
+  padding-top: 2rem;
+}
+
+@media (max-width: 1200px) {
+  .main-content {
+    padding-left: 6rem;
+    padding-right: 6rem;
+    padding-top: 1.5rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .main-content {
+    padding-left: 4rem;
+    padding-right: 4rem;
+    padding-top: 1.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-top: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .main-content {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 0.75rem;
+  }
 }
 
 @font-face {
@@ -67,4 +100,35 @@ h6 {
 
 body {
   font-size: 1.25rem;
+}
+
+.logo-text {
+  font-size: 3rem;
+  text-shadow: 4px 0 #fff, -4px 0 #fff, 0 4px #fff, 0 -4px #fff,
+  2.5px 2.5px #fff, -2.5px -2.5px #fff, 2.5px -2.5px #fff, -2.5px 2.5px #fff;
+  -webkit-text-stroke-width: 2px;
+}
+
+@media (max-width: 1200px) {
+  .logo-text {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .logo-text {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .logo-text {
+    font-size: 1.75rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .logo-text {
+    font-size: 1.5rem;
+  }
 }

@@ -1,10 +1,19 @@
 <template>
-  <span class="text-3xl">Search result for "{{ route.query.search }}"</span>
+  <div class="flex">
+    <span v-if="quizzes.length > 0 && loading === false" class="text-3xl"
+      >Search result for "{{ route.query.search }}"</span
+    >
+    <span v-if="!quizzes.length && loading === false" class="text-center w-full"
+      >Sorry, we couldn't find any results matching "{{
+        route.query.search
+      }}"</span
+    >
+  </div>
   <div
     v-loading="loading"
     v-if="quizzes.length > 0"
-    class="grid grid-cols-3 gap-4 mt-8">
-    <QuizCard
+    class="grid grid-cols-1 gap-4 mt-8">
+    <QuizFilterCard
       v-for="quiz in quizzes"
       @click="navigateTo(`/quiz/${quiz?.id}/view`)"
       :key="quiz?.id"
@@ -14,6 +23,7 @@
 
 <script setup lang="ts">
 import type { Fullscreen } from "lucide-vue-next";
+import QuizFilterCard from "~/components/Quiz/QuizFilterCard.vue";
 
 const { $keycloak } = useNuxtApp();
 const route = useRoute();
@@ -23,11 +33,17 @@ const quizzes = computed(() => {
 });
 
 onMounted(async () => {
-  if (!useQuizStore().quiz.length) {
-    await waitForToken();
-    const response = await useQuizStore().searchQuiz({
-      textSearch: route.query.search as string,
-    });
+  try {
+    if (!useQuizStore().quiz.length) {
+      await waitForToken();
+      const response = await useQuizStore().searchQuiz({
+        textSearch: route.query.search as string,
+      });
+    }
+  } catch (error) {
+    console.error("Error fetching quizzes:", error);
+  } finally {
+    loading.value = false;
   }
 });
 </script>

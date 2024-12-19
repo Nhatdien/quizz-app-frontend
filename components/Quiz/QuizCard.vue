@@ -11,7 +11,7 @@
           alt="Quiz Image"
           class="quiz-image" />
       </div>
-      <div class="flex">
+      <div class="flex flex-col">
         <div class="flex-1">
           <!-- <p class="text-sm text-gray-500">Questions</p>
           <p class="text-lg">{{ quiz?.questions.length }}</p> -->
@@ -20,18 +20,17 @@
             {{ quiz?.createdBy }}
           </span>
         </div>
-        <div class="flex flex-col justify-center">
-          <span class="flex gap-4"
-            >Rating: {{ quiz?.averageRating?.toFixed(1) }}/5
-            <Star :fill="'yellow'"
+        <div class="flex justify-start gap-8">
+          <span class="flex gap-2"
+            >{{ quiz?.averageRating?.toFixed(1) }}/5 <Star :fill="'yellow'"
           /></span>
-          <div class="flex">
-            Comment: {{ quiz?.reviewCount ?? quiz?.totalComments  }}
+          <div class="flex self-end gap-2">
             <MessageCircle :fill="'f1f1f1'" class="ml-auto" />
+            {{ quiz?.reviewCount ?? quiz?.totalComments }}
           </div>
-          <div class="flex">
-            Quesiton: {{ quiz?.questionCount ?? quiz?.totalComments }}
+          <div class="flex self-end gap-2">
             <SquareCheck class="ml-auto" />
+            {{ quiz?.questionCount ?? quiz?.totalComments }}
           </div>
         </div>
       </div>
@@ -64,6 +63,8 @@ const props = defineProps({
 .quiz-card {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
+  padding: 1rem;
+  height: 100%;
   &:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);

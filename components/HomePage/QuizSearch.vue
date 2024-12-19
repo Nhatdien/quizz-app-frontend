@@ -1,11 +1,11 @@
 <template>
   <div class="flex items-center gap-4 flex-grow">
-    <Button class="rounded-full w-8 h-8" @click="toggleSearchBox">
-      <Search />
-    </Button>
     <transition name="stretch">
       <QuizSearchBox v-if="isSearchBoxVisible" @blur="hideSearchBox" />
     </transition>
+    <Button class="rounded-full" @click="toggleSearchBox">
+      <Search :size="32" :stroke-width="3" />
+    </Button>
   </div>
 </template>
 

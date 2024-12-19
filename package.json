@@ -22,6 +22,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cookie": "^1.0.2",
+    "embla-carousel-vue": "^8.5.1",
     "keycloak-js": "^26.0.5",
     "lucide-vue-next": "^0.454.0",
     "moment": "^2.30.1",

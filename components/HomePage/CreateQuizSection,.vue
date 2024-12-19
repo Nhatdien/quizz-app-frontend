@@ -1,7 +1,7 @@
 <template>
-  <div class="flex flex-wrap gap-4 justify-center p-6 w-full">
+  <div class="flex flex-wrap gap-4 justify-center py-6 w-full">
     <!-- Box 1 -->
-    <CardBox>
+    <CardBox class="flex-1">
       <template #image>
         <!-- <img
             src="/images/quiz-editor-icon.png"
@@ -24,7 +24,7 @@
     </CardBox>
 
     <!-- Box 2 -->
-    <CardBox>
+    <CardBox class="flex-1">
       <template #image>
         <!-- <img
             src="/images/quiz-generator-icon.png"
@@ -33,9 +33,8 @@
           /> -->
       </template>
       <template #title>
-        <div class="flex gap-2 items-center" >
-          <Bot :size="32"
-          stroke-width="2"/> A.I
+        <div class="flex gap-2 items-center">
+          <Bot :size="32" stroke-width="2" /> A.I
         </div></template
       >
       <template #description>
