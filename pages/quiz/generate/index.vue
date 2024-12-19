@@ -1,11 +1,12 @@
 <template>
-  <div class="ai-quiz-container">
+  <div class="ai-quiz-container relative">
+    <div class="info-pin"></div>
     <h1 class="title">A.I.</h1>
-    <p class="subtitle">Type a subject to generate a quiz</p>
+    <p class="subtitle">Type a command to generate a quiz</p>
     <div class="input-container">
-      <Input type="text" class="subject-input" placeholder="Enter a subject" />
+      <Input type="text" class="subject-input" placeholder="Enter an instruction" />
     </div>
-    <div class="options">
+    <div class="flex w-full justify-center gap-4 my-4">
       <MySelect
         :isFilter="true"
         :class="'dropdown'"

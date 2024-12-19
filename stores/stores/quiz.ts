@@ -60,6 +60,18 @@ export const useQuizStore = defineStore({
         });
     },
 
+    async generateQuiz(
+      prompt: string,
+      topicCode: string,
+      numberOfQuestion: number
+    ) {
+      return QuizzAppSDK.getInstance()
+        .generateQuiz(prompt, topicCode, numberOfQuestion)
+        .then((quiz) => {
+          this.generatedQuiz = quiz;
+        });
+    },
+
     async deleteQuiz(id: string) {
       return QuizzAppSDK.getInstance()
         .deleteQuiz(id)

@@ -5,7 +5,7 @@
       <CardDescription>{{ quiz?.description }}</CardDescription>
     </CardHeader>
     <CardContent>
-      <div class="aspect-auto max-w-28">
+      <div class="aspect-auto max-w-28 my-auto">
         <img
           src="@/assets/img/default_avt.jpg"
           alt="Quiz Image"
