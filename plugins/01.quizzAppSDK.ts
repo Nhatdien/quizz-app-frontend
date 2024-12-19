@@ -1,10 +1,13 @@
 import UserService from "~/stores/auth/keycloak_service";
 import QuizzAppSDK from "~/stores/quizzapp_sdk";
-import { computed } from "vue";
+import { useToast } from "@/components/ui/toast/use-toast";
+import { ToastAction } from "@/components/ui/toast";
+import { h, render } from "vue";
 
 let keycloakInitialized = false;
 
 export default defineNuxtPlugin(async (nuxtApp) => {
+  const { toast } = useToast();
   const config = nuxtApp.$config;
   const quizzAppSDK = QuizzAppSDK.getInstance({
     base_url: config.public.baseURL,
@@ -37,6 +40,26 @@ export default defineNuxtPlugin(async (nuxtApp) => {
       });
     }
   }
+
+  QuizzAppSDK.getInstance().onError = (error: Error) => {
+    if (error.message.includes("Unauthorized")) {
+      toast({
+        title: `Error: ${error.message}`,
+        description: "You need to login to use this website",
+        variant: "destructive",
+        action: h(
+          ToastAction,
+          {
+            altText: "Login",
+          },
+          {
+            default: () => UserService.doLogin(),
+          }
+        ),
+      });
+      return;
+    }
+  };
 
   return {
     provide: {

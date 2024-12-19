@@ -57,12 +57,13 @@ const menuOptions = {
 
 onMounted(async () => {
   isLoading.value = true;
+
   try {
     await waitForToken();
-  } catch {
-    alert("You need to login to use this page");
+  } catch (error) {
+  } finally {
+    isLoading.value = false;
   }
-  isLoading.value = false;
   currentUserName.value = $keycloak.getTokenParsed()?.preferred_username;
 });
 </script>

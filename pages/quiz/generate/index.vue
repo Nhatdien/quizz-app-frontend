@@ -83,15 +83,15 @@ import type { Quiz } from "~/types/quiz";
 const generatedQuiz = ref({} as Quiz);
 const currentInput = reactive({
   prompt: "",
-  numberOfQuestions: 5,
+  numberOfQuestions: '5',
   topic: "",
 });
 const loading = ref(false);
 
 const numberOfQuestionsOption = [
-  { value: 5, label: "5 questions" },
-  { value: 8, label: "8 questions" },
-  { value: 10, label: "10 questions" },
+  { value: "5", label: "5 questions" },
+  { value: "8", label: "8 questions" },
+  { value: '10', label: "10 questions" },
 ];
 
 const topicOption = computed(() => {
@@ -107,7 +107,7 @@ const handleGenerateQuiz = async () => {
   await useQuizStore().generateQuiz(
     currentInput.prompt,
     currentInput.topic,
-    currentInput.numberOfQuestions
+    parseFloat(currentInput.numberOfQuestions)
   );
   loading.value = false;
 };
