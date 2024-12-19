@@ -1,5 +1,5 @@
 <template>
-  <div class="review-list">
+  <div v-if="useReviewStore().reviews?.length > 0" class="review-list">
     <Review
       class="review-item"
       v-for="review in useReviewStore().reviews"

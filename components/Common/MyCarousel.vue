@@ -28,7 +28,7 @@ const props = defineProps<{
         <div class="p-1" style="width: 100%; height: 100%;">
           <Card style="width: 100%; height: 100%;">
             <CardContent style="width: 100%; height: 100%;">
-              <slot name="item-component" :item="item" />
+              <slot :name="`item-component`" :item="item" />
             </CardContent>
           </Card>
         </div>

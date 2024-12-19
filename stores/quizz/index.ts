@@ -58,6 +58,13 @@ export class Quizz extends Base {
     });
   }
 
+  generateQuiz(prompt: string, topicCode: string, numberOfQuestion: number) {
+    return this.fetch<Quiz>(`${this.config.base_url}/quiz/generate-quiz`, {
+      method: "POST",
+      body: JSON.stringify({prompt, topicCode, numberOfQuestion}),
+    });
+  }
+
   uploadFile(file: File | null, path: string): Promise<Response> | void {
     if (!file) {
       return;

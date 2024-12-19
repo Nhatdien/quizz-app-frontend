@@ -3,9 +3,9 @@
     <transition name="stretch">
       <QuizSearchBox v-if="isSearchBoxVisible" @blur="hideSearchBox" />
     </transition>
-    <Button class="rounded-full" @click="toggleSearchBox">
-      <Search :size="32" :stroke-width="3" />
-    </Button>
+    <button class="bg-gray-200 text-black p-2 md:p-4 rounded-full shadow-md hover:bg-gray-300 transition" @click="toggleSearchBox">
+      <Search :stroke-width="3" class="w-4 h-4 md:w-6 md:h-6" />
+    </button>
   </div>
 </template>
 

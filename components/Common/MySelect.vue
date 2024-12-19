@@ -8,14 +8,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { defineProps } from "vue";
+import { defineProps, ref, computed } from "vue";
 
 const props = defineProps<{
   options: { label: string; value: any }[];
-  groupLabel: string;
+  groupLabel?: string;
+  isFilter: boolean;
 }>();
 
 const selectedValue = ref<string>();
+const filterText = ref<string>("");
+
+const filteredOptions = computed(() => {
+  if (!props.isFilter) return props.options;
+  return props.options.filter((option) =>
+    option.label.toLowerCase().includes(filterText.value.toLowerCase())
+  );
+});
 </script>
 
 <template>
@@ -25,9 +34,16 @@ const selectedValue = ref<string>();
     </SelectTrigger>
     <SelectContent>
       <SelectGroup>
-        <SelectLabel>{{ props.groupLabel }}</SelectLabel>
+        <SelectLabel>
+          <input
+            v-if="props.isFilter"
+            v-model="filterText"
+            type="text"
+            placeholder="Filter options"
+            class="filter-input"
+        /></SelectLabel>
         <SelectItem
-          v-for="option in props.options"
+          v-for="option in filteredOptions"
           :key="option.value"
           :value="option.value">
           {{ option.label }}
@@ -36,3 +52,13 @@ const selectedValue = ref<string>();
     </SelectContent>
   </Select>
 </template>
+
+<style scoped>
+.filter-input {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+</style>

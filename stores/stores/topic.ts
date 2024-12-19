@@ -10,10 +10,10 @@ export const useTopicStore = defineStore({
     topicCodeSelected: "",
   }),
   actions: {
-    async getTopics(): Promise<void> {
+    async getTopics(filter: BaseFilter): Promise<void> {
       console.log(QuizzAppSDK.getInstance().config)
-      return QuizzAppSDK.getInstance().getTopics().then((topics) => {
-        this.topics = topics;
+      return QuizzAppSDK.getInstance().getTopics(filter).then((topics) => {
+        this.topics = topics.content;
       });
     },
 

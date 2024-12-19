@@ -1,16 +1,19 @@
 <template>
   <div class="flex">
-    <span v-if="quizzes.length > 0 && loading === false" class="text-3xl"
-      >Search result for "{{ route.query.search }}"</span
+    <span
+      v-if="quizzes.length > 0 && loading === false"
+      class="text-xl sm:text-xxl md:text-3xl"
     >
-    <span v-if="!quizzes.length && loading === false" class="text-center w-full"
-      >Sorry, we couldn't find any results matching "{{
-        route.query.search
-      }}"</span
+      Search result for "{{ route.query.search }}"
+    </span>
+    <span
+      v-if="!quizzes.length && loading === false"
+      class="text-center w-full text-lg sm:text-xl md:text-2xl"
     >
+      Sorry, we couldn't find any results matching "{{ route.query.search }}"
+    </span>
   </div>
   <div
-    v-loading="loading"
     v-if="quizzes.length > 0"
     class="grid grid-cols-1 gap-4 mt-8">
     <QuizFilterCard
@@ -34,12 +37,12 @@ const quizzes = computed(() => {
 
 onMounted(async () => {
   try {
-    if (!useQuizStore().quiz.length) {
-      await waitForToken();
-      const response = await useQuizStore().searchQuiz({
-        textSearch: route.query.search as string,
-      });
-    }
+    // if (!useQuizStore().quiz.length) {
+    await waitForToken();
+    const response = await useQuizStore().searchQuiz({
+      textSearch: route.query.search as string,
+    });
+    // }
   } catch (error) {
     console.error("Error fetching quizzes:", error);
   } finally {

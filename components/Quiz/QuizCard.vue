@@ -62,6 +62,8 @@ const props = defineProps({
 <style scoped lang="scss">
 .quiz-card {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 2px solid #f1f1f1;
+  border-radius: 8px;
   cursor: pointer;
   padding: 1rem;
   height: 100%;

@@ -12,13 +12,18 @@
           v-if="isEditableView"
           :is-edit-button="false" />
         <Button v-else>Clone and Edit</Button>
-        <Button @click="handleClickPreview" class="ml-4"><Eye/> Preview </Button>
-        <Button @click="handleClickStartQuiz" class="ml-4"> <CirclePlay/> Start Quiz </Button>
+        <Button @click="handleClickPreview" class="ml-4"
+          ><Eye /> Preview
+        </Button>
+        <Button @click="handleClickStartQuiz" class="ml-4">
+          <CirclePlay /> Start Quiz
+        </Button>
       </div>
     </div>
-    <div class="flex flex-col md:flex-row py-8 space-y-4 md:space-y-0 md:space-x-4">
+    <div
+      class="flex flex-col lg:flex-row py-8 space-y-4 md:space-y-0 md:space-x-0 lg:space-x-4 lg:space-y-4">
       <QuizDetailInfo class="flex-1" />
-      <div class="flex-1 flex flex-col space-y-4">
+      <div class="flex-1 flex flex-col sm:space-y-0 md:space-y-0">
         <ReivewList />
         <CreateReviewInput />
       </div>
@@ -45,7 +50,7 @@ const isEditableView = computed(() => {
   return enableEdit;
 });
 const currentQuiz = computed(() => {
-  return useQuizStore().quiz?.[0];
+  return useQuizStore().quiz?.find((quiz) => quiz.id === route.params.quiz_id);
 });
 
 const handleClickPreview = () => {
@@ -58,16 +63,16 @@ const handleClickStartQuiz = async () => {
     console.log($quizzAppSDK.webSocketClient);
     $quizzAppSDK.webSocketClient.activate();
   }
-  const room = await $quizzAppSDK.createRoom(currentQuiz.value.id as string);
+  const room = await $quizzAppSDK.createRoom(currentQuiz.value?.id as string);
   $quizzAppSDK.webSocketClient.subscribe(
     `/topic/room/${room.id}`,
     (message) => {
       console.log(message);
     }
   );
-  await useRoomStore().getQuestionIds(currentQuiz.value.id as string);
+  await useRoomStore().getQuestionIds(currentQuiz.value?.id as string);
   navigateTo(
-    `/room/${room.id}?quizId=${currentQuiz.value.id}&code=${room.code}`
+    `/room/${room.id}?quizId=${currentQuiz.value?.id}&code=${room.code}`
   );
 };
 

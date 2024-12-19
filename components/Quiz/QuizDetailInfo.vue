@@ -93,9 +93,9 @@ const isEditableView = computed(() => {
   return currentUserName.value;
 });
 
-
 const currentQuiz = computed(() => {
-  return useQuizStore().quiz[0];
+  const quiz = useQuizStore().quiz[0];
+  return quiz;
 });
 
 const addQuestion = () => {
@@ -103,17 +103,14 @@ const addQuestion = () => {
   navigateTo("/questions/create");
 };
 
-
-
 onMounted(async () => {
   await waitForToken();
   currentUserName.value = $quizzAppSDK.config.current_username || "";
 });
 </script>
-
 <style scoped>
 .quiz-detail-info {
-  padding: 20px;
+  font-size: 1rem; /* Default font size */
 }
 
 .quiz-info {
@@ -147,5 +144,34 @@ onMounted(async () => {
   grid-template-columns: 1fr 1fr;
   list-style-type: none;
   padding: 0;
+}
+
+@media (max-width: 768px) {
+  .quiz-detail-info {
+    font-size: 0.875rem; /* Smaller font size for small screens */
+  }
+
+  .question-header {
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: 1.125rem !important;
+  }
+
+  .answers-list {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .quiz-detail-info {
+    font-size: 1rem; /* Medium font size for tablets */
+  }
+}
+
+@media (min-width: 1025px) {
+  .quiz-detail-info {
+    font-size: 1.125rem; /* Larger font size for desktops */
+  }
 }
 </style>

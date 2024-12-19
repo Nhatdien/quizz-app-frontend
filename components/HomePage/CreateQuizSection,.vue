@@ -42,7 +42,8 @@
       </template>
       <template #button>
         <button
-          class="bg-[#60D4FC] text-black px-4 py-2 rounded-md shadow-md hover:bg-[#47C3ED] transition">
+          class="bg-[#60D4FC] text-black px-4 py-2 rounded-md shadow-md hover:bg-[#47C3ED] transition"
+          @click="navigateTo('/quiz/generate')">
           Quiz generator
         </button>
       </template>

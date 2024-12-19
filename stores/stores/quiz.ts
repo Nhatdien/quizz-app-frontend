@@ -13,13 +13,16 @@ export const useQuizStore = defineStore({
   state: () => ({
     quiz: [] as Quiz[],
     currentQuestionId: "",
+    generatedQuiz: {} as Quiz,
   }),
   actions: {
     async createQuiz(quiz: QuizCreate) {
       return QuizzAppSDK.getInstance()
         .createQuiz(quiz)
         .then(async (quiz) => {
-          const response = await QuizzAppSDK.getInstance().getQuiz(quiz.id);
+          const response = await QuizzAppSDK.getInstance().getQuiz(
+            quiz.id as string
+          );
           this.quiz.push(response);
         });
     },
@@ -36,7 +39,8 @@ export const useQuizStore = defineStore({
       return QuizzAppSDK.getInstance()
         .searchQuiz(search)
         .then(async (quizzes) => {
-          this.quiz = [...quizzes.content];
+          this.quiz = this.quiz.concat(quizzes.content);
+          console.log(this.quiz);
         });
     },
 
