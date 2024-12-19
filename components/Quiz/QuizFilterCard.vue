@@ -41,7 +41,7 @@ const props = defineProps({
   display: flex;
   align-items: center;
   background-color: #fffbea;
-  border: 1px solid #eee;
+  border: 1px solid #030303;
   border-radius: 8px;
   padding: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -49,6 +49,7 @@ const props = defineProps({
 }
 
 .quiz-image {
+  border: 1px solid #030303;
   width: 80px;
   height: 80px;
   object-fit: cover;

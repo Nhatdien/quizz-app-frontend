@@ -2,40 +2,46 @@
   <Card class="quiz-card">
     <CardHeader>
       <CardTitle>{{ quiz?.title }}</CardTitle>
-      <CardDescription>{{ quiz?.description }}</CardDescription>
     </CardHeader>
     <CardContent>
-      <div class="aspect-auto max-w-28 my-auto">
+      <div class="image-container">
         <img
           src="@/assets/img/default_avt.jpg"
           alt="Quiz Image"
           class="quiz-image" />
       </div>
-      <div class="flex flex-col">
-        <div class="flex-1">
-          <!-- <p class="text-sm text-gray-500">Questions</p>
-          <p class="text-lg">{{ quiz?.questions.length }}</p> -->
-          Created by:
-          <span @click="navigateTo(`/quiz/?search=${quiz?.createdBy}`)">
+      <div class="quiz-details">
+        <div class="creator-info">
+          <span>Created by:</span>
+          <span
+            class="creator-name"
+            @click="navigateTo(`/quiz/?search=${quiz?.createdBy}`)">
             {{ quiz?.createdBy }}
           </span>
         </div>
-        <div class="flex justify-start gap-8">
-          <span class="flex gap-2"
-            >{{ quiz?.averageRating?.toFixed(1) }}/5 <Star :fill="'yellow'"
-          /></span>
-          <div class="flex self-end gap-2">
-            <MessageCircle :fill="'f1f1f1'" class="ml-auto" />
-            {{ quiz?.reviewCount ?? quiz?.totalComments }}
+        <div class="stats-container">
+          <div class="stat">
+            <span class="stat-value">
+              {{ quiz?.averageRating?.toFixed(1) || "0.0" }}/5
+            </span>
+            <Star :fill="'yellow'" class="stat-icon" />
           </div>
-          <div class="flex self-end gap-2">
-            <SquareCheck class="ml-auto" />
-            {{ quiz?.questionCount ?? quiz?.totalComments }}
+          <div class="stat">
+            <MessageCircle :fill="'f1f1f1'" class="stat-icon" />
+            <span class="stat-value">
+              {{ quiz?.reviewCount || quiz?.totalComments || 0 }}
+            </span>
+          </div>
+          <div class="stat">
+            <SquareCheck class="stat-icon" />
+            <span class="stat-value">
+              {{ quiz?.questionCount || 0 }}
+            </span>
           </div>
         </div>
       </div>
     </CardContent>
-    <CardFooter> </CardFooter>
+    <CardFooter />
   </Card>
 </template>
 
@@ -44,7 +50,6 @@ import { Star, MessageCircle, SquareCheck } from "lucide-vue-next";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -67,15 +72,71 @@ const props = defineProps({
   cursor: pointer;
   padding: 1rem;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
   &:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
   }
 }
 
-.quiz-image {
-  object-fit: cover;
-  height: auto;
+.image-container {
+  display: flex;
+  align-items: center;
   margin-bottom: 1rem;
+}
+
+.quiz-image {
+  border: 1px solid #030303;
+  margin-top: 1rem;
+  object-fit: cover;
+  max-width: 100px;
+  max-height: 100px;
+  border-radius: 50%;
+}
+
+.quiz-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.creator-info {
+  font-size: 0.9rem;
+  display: flex;
+  gap: 0.5rem;
+
+  .creator-name {
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: underline;
+
+    &:hover {
+      color: #007acc;
+    }
+  }
+}
+
+.stats-container {
+  display: flex;
+  gap: 1rem;
+
+  .stat {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    .stat-icon {
+      width: 20px;
+      height: 20px;
+    }
+
+    .stat-value {
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+  }
 }
 </style>

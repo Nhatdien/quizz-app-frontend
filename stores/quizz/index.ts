@@ -58,10 +58,10 @@ export class Quizz extends Base {
     });
   }
 
-  generateQuiz(prompt: string, topicCode: string, numberOfQuestion: number) {
+  generateQuiz(prompt: string, topicCode: string, numberOfQuestions: number) {
     return this.fetch<Quiz>(`${this.config.base_url}/quiz/generate-quiz`, {
       method: "POST",
-      body: JSON.stringify({prompt, topicCode, numberOfQuestion}),
+      body: JSON.stringify({prompt, topicCode, numberOfQuestions}),
     });
   }
 

@@ -1,8 +1,9 @@
 @forward "./tailwind.scss";
 @forward "./components/index.scss";
 .body-container {
-  background-color: #d19d6cb7;
+  background-color: #d19d6c;
   width: 100%;
+  overflow-y: auto;
   min-height: 100vh;
   position: relative;
   &::before {

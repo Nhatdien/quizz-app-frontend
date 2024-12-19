@@ -14,7 +14,12 @@ const props = defineProps<{
   options: { label: string; value: any }[];
   groupLabel?: string;
   isFilter: boolean;
+  placeholder?: {
+    placeholderFilter?: string;
+    placeholderSelect?: string;
+  };
 }>();
+
 
 const selectedValue = ref<string>();
 const filterText = ref<string>("");
@@ -30,7 +35,7 @@ const filteredOptions = computed(() => {
 <template>
   <Select>
     <SelectTrigger class="max-w-36 text-black">
-      <SelectValue placeholder="Select time" />
+      <SelectValue :placeholder="placeholder?.placeholderSelect" />
     </SelectTrigger>
     <SelectContent>
       <SelectGroup>
@@ -39,7 +44,7 @@ const filteredOptions = computed(() => {
             v-if="props.isFilter"
             v-model="filterText"
             type="text"
-            placeholder="Filter options"
+           :placeholder="placeholder?.placeholderFilter"
             class="filter-input"
         /></SelectLabel>
         <SelectItem

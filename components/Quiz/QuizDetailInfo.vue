@@ -7,7 +7,7 @@
           :key="question.id"
           class="comment rounded-sm">
           <div class="question-header">
-            <h2>{{ index + 1 }}. {{ question.content }}</h2>
+            <h5>{{ index + 1 }}. {{ question.content }}</h5>
             <div v-if="isEditableView" class="flex items-center gap-4">
               <CreateOrEditQuestionDialog
                 :quiz="currentQuiz"
@@ -44,7 +44,7 @@
 <script setup lang="ts">
 import CreateOrEditQuestionDialog from "../Questions/CreateOrEditQuestionDialog.vue";
 import AlertDialog from "../Common/AlertDialog.vue";
-import type { Question } from "~/types/quiz";
+import type { Question, Quiz } from "~/types/quiz";
 const quizIndexMap = [
   "A",
   "B",
@@ -78,6 +78,13 @@ const currentUserName = ref("");
 
 const route = useRoute();
 
+const props = defineProps({
+  quiz: {
+    type: Object as PropType<Quiz>,
+    required: true,
+  },
+});
+
 const deleteQuestionAlertOption = (question: Question) => {
   return {
     title: "Delete Question",
@@ -95,7 +102,7 @@ const isEditableView = computed(() => {
 
 const currentQuiz = computed(() => {
   const quiz = useQuizStore().quiz[0];
-  return quiz;
+  return props.quiz?.title ? props.quiz : quiz;
 });
 
 const addQuestion = () => {

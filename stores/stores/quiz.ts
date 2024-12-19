@@ -13,7 +13,11 @@ export const useQuizStore = defineStore({
   state: () => ({
     quiz: [] as Quiz[],
     currentQuestionId: "",
-    generatedQuiz: {} as Quiz,
+    quizGenerateState: {
+      loading: false,
+      error: "",
+      generatedQuiz: {} as Quiz ,
+    },
   }),
   actions: {
     async createQuiz(quiz: QuizCreate) {
@@ -68,7 +72,7 @@ export const useQuizStore = defineStore({
       return QuizzAppSDK.getInstance()
         .generateQuiz(prompt, topicCode, numberOfQuestion)
         .then((quiz) => {
-          this.generatedQuiz = quiz;
+          this.quizGenerateState.generatedQuiz = quiz;
         });
     },
 
