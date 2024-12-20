@@ -27,6 +27,7 @@
 </template>
 
 <script setup lang="ts">
+import { Trash, Image, Clock } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,

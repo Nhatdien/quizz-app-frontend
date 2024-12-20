@@ -148,6 +148,17 @@
   padding: 8px 16px;
   border-radius: 5px;
   font-weight: bold;
+
+  background-color: transparent;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  &:disabled {
+    background-color: #d1d1d1;
+    cursor: not-allowed;
+  }
 }
 
 .move-buttons {
@@ -155,24 +166,17 @@
   justify-content: space-between;
   .continue-button {
     @extend .move-button;
-    background-color: #4caf50;
 
-    &:hover {
-      background-color: #3e8e41;
-    }
 
-    &:disabled {
-      background-color: #d1d1d1;
-      cursor: not-allowed;
-    }
+
   }
 
   .back-button {
     @extend .move-button;
-    background-color: #c30a0a;
+    background-color: transparent;
 
     &:hover {
-      background-color: #720909;
+      background-color: rgba(0, 0, 0, 0.1);
     }
 
     &:disabled {

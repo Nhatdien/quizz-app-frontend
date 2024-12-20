@@ -1,0 +1,146 @@
+.quiz-page {
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  align-items: center;
+  background-color: #012a2e;
+  position: relative;
+  color: #f1f6f9;
+  height: 100%;
+  box-shadow: #012a2e 0px 0px 5px;
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 20px;
+  background-color: #013a3e;
+  border-radius: 10px;
+  flex-wrap: wrap;
+}
+
+.join-info {
+  text-align: center;
+  flex: 1;
+}
+
+.pin-info {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-content: space-between;
+  align-items: center;
+  flex: 1;
+}
+
+.pin {
+  font-weight: bold;
+  color: #a4f784;
+  text-shadow: 0px 0px 20px #052c2f;
+}
+
+.pin-actions button {
+  margin: 5px;
+  background-color: #f1f6f9;
+  color: #013a3e;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.qr-code {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.qr-code img {
+  width: 100px;
+  height: 100px;
+}
+
+.main-content-host {
+  display: flex;
+  width: 100%;
+  gap: 2rem;
+  height: 100%;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.waiting-area {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+  text-align: center;
+  background-color: #014d4e;
+  border-radius: 10px;
+  min-height: 25rem;
+  padding: 20px;
+}
+
+.start-game-btn {
+  background-color: #4fd11c;
+  border: none;
+  flex-shrink: 0;
+  border-radius: 5px;
+  padding: 10px 20px;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #2f7a11;
+  }
+}
+
+.presentation-info img {
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+}
+
+.slider-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.slider-group input[type="range"] {
+  flex: 1;
+  margin-left: 10px;
+}
+
+.new {
+  background-color: #ff6f61;
+  color: #fff;
+  border-radius: 5px;
+  padding: 2px 5px;
+  font-size: 12px;
+  margin-left: 5px;
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .main-content-host {
+    flex-direction: column;
+  }
+
+  .waiting-area,
+  .settings {
+    width: 100%;
+  }
+}

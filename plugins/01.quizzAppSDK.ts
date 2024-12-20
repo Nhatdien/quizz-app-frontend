@@ -57,7 +57,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
             },
           },
           {
-            default: "Login",
+            default: () => "Login",
           }
         ),
       });

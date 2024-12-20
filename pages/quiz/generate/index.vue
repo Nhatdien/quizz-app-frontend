@@ -4,7 +4,7 @@
       <div class="info-pin"></div>
       <h1 class="title text-center">A.I.</h1>
       <p class="subtitle text-center flex items-center gap-2">
-        <span>Type a command to generate a quiz</span> <Bot :fill="'#FFF9CC'" />
+        <span>Type a command to generate a quiz</span> <Bot :fill="'#000888'" />
       </p>
       <div class="input-container">
         <Input
@@ -152,7 +152,6 @@ const handleReset = () => {
   currentInput.topic = "";
   currentInput.numberOfQuestions = "5";
   useQuizStore().quizGenerateState.generatedQuiz = {} as Quiz;
-
 };
 
 watch(
@@ -194,20 +193,30 @@ watch(
   padding: 50px 20px;
   border-radius: 15px;
   box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1);
+  color: #f1f1f1;
   max-width: 1200px;
   margin: 20px auto;
   flex-wrap: wrap;
 }
 
+.quiz-detail-container {
+  color: #121212 !important;
+}
+
 .input-section,
 .view-section {
   padding: 20px;
-  border: 2px solid #e0e0e0;
   border-radius: 10px;
-  background-color: #e8f6f3;
+  border: 1px solid #024a50;
+  background-color: #013a3e;
+
   flex: 1; // Ensure both sections take equal width
   display: flex;
   flex-direction: column;
+}
+
+.input-section input {
+  color: #121212 !important;
 }
 
 .title {
@@ -246,7 +255,7 @@ watch(
   font-size: 18px;
   border-radius: 30px;
   outline: none;
-  box-shadow: 0 30px 30px rgba(255, 255, 255, 0.3);
+  box-shadow: 0 30px 30px rgba(0, 0, 0, 0.3);
 }
 
 .options {

@@ -1,6 +1,6 @@
 <template>
   <NoteCreateNoteDialog :currentQuizInfo />
-  <NoteCard v-for="note in currentNotes" :key="note.id" :note  />
+  <NoteCard v-for="note in currentNotes" :currentQuizInfo :key="note.id" :note  />
 </template>
 
 <script setup lang="ts">

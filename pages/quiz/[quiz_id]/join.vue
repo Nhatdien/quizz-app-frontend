@@ -4,7 +4,7 @@
       <PreviewQuiz :quiz="currentQuiz" />
       <ChatBotChatBox />
     </div>
-    <div class="w-full lg:w-1/3 mt-8 lg:mt-0 lg:pl-6">
+    <div class="w-full justify-self-center lg:w-1/3 mt-8 lg:mt-0 lg:pl-6">
       <NoteList />
     </div>
   </div>

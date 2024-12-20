@@ -36,7 +36,11 @@ export const useNoteStore = defineStore({
       return QuizzAppSDK.getInstance()
         .updateNote(updatedNotes)
         .then((notes) => {
-          this.notes = notes;
+          const updatingNoteIndex = this.notes.findIndex(
+            (note) => note.id === notes[0].id
+          );
+
+          this.notes[updatingNoteIndex] = notes[0];
         });
     },
   },

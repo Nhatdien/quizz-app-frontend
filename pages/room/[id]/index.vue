@@ -1,24 +1,21 @@
 <template>
-  <div>
-    <h1>Live quiz Room</h1>
-    <p>Room code: {{ currentRoom.code }}</p>
-    <!-- Button display with the host-->
-    <div
-      class="my-4 flex flex-col gap-8"
-      v-if="currentRoom.createdBy === $keycloak.getUsername()">
-      <Button class="w-24" @click="handleNextQuestion"> Start </Button>
-      <QrCode :qrCodeValue="qrValue" />
+  <!-- Button display with the host-->
+  <div v-if="!isPlayer">
+    <div class="quiz-page">
+      <HostView :room="currentRoom" />
     </div>
-    <div v-else>
-      {{ useRoomStore().currentScore }}
-      {{ useRoomStore().currentQuestionIndex }}
-      {{ useRoomStore().questionIds.length }}
-      <div class="mt-5">
-        {{ useRoomStore().currentQuestion.content }}
+  </div>
+  <div v-else>
+    <div class="mt-5">
+      {{ useRoomStore().currentQuestion.content }}
 
+      <div class="quiz-page">
+        <PlayerView
+          v-if="false"
+          :room="currentRoom"
+          :question="currentQuestion" />
         <QuizOptionType
-          v-if="currentQuestion?.questionType === 1"
-          :question="currentQuestion"
+          :question="testQuestion"
           :current-question-index="0"
           :current-submissions="useRoomStore().currentSubmission" />
       </div>
@@ -29,22 +26,15 @@
 <script setup lang="ts">
 import { ActivationState } from "@stomp/stompjs";
 import QrCode from "~/components/Common/QrCode.vue";
+import HostView from "~/components/Room/HostView.vue";
+import PlayerView from "~/components/Room/PlayerView.vue";
+import { toast } from "~/components/ui/toast";
 
-const { $quizzAppSDK } = useNuxtApp();
-
-const timer = ref(0);
-let timerInterval: ReturnType<typeof setInterval>;
-
-const startTimer = () => {
-  timer.value = 0;
-  timerInterval = setInterval(() => {
-    timer.value++;
-  }, 1000);
-};
-
-const stopTimer = () => {
-  clearInterval(timerInterval);
-};
+definePageMeta({
+  layout: "quiz",
+});
+const { $quizzAppSDK, $keycloak } = useNuxtApp();
+const isPlayer = ref(false);
 
 const qrValue = computed(() => {
   return (
@@ -64,40 +54,54 @@ const currentQuestion = computed(() => {
   return useRoomStore().currentQuestion;
 });
 
+const testQuestion = {
+  id: "19c9550713a94e82acd249b9a29958ac",
+  content: "Ký hiệu nào dùng để gán giá trị trong JavaScript?",
+  point: 10.0,
+  time: 30,
+  questionType: 1,
+  imageUrl: null,
+  answers: [
+    {
+      id: "53e0475c7819419787b56a51512c5425",
+      content: "=>",
+      isCorrect: false,
+    },
+    {
+      id: "6fcf582f503f47a9a5d7a0c728e0d263",
+      content: "==",
+      isCorrect: false,
+    },
+    {
+      id: "b6b70b513b514826b9abda9f6d4d1b87",
+      content: ":=",
+      isCorrect: false,
+    },
+    {
+      id: "fdd0081879684896bc33b147b6ff4137",
+      content: "=",
+      isCorrect: true,
+    },
+  ],
+}
+
 const route = useRoute();
 
-const handleNextQuestion = async () => {
-  $quizzAppSDK.nextQuestion(
-    useRoomStore().questionIds[useRoomStore().currentQuestionIndex],
-    currentRoom.value.id
-  );
-
-  useRoomStore().currentQuestionIndex++;
-
-  const nextQuestionInterval = setInterval(
-    async () => {
-      const questionId =
-        useRoomStore().questionIds[useRoomStore().currentQuestionIndex];
-
-      $quizzAppSDK.nextQuestion(questionId, currentRoom.value.id);
-      if (
-        useRoomStore().currentQuestionIndex >= useRoomStore().questionIds.length
-      ) {
-        console.log("End of quiz");
-        clearInterval(nextQuestionInterval);
-        return;
-      }
-      useRoomStore().currentQuestionIndex++;
-    },
-
-    // (
-    //   await $quizzAppSDK.getQuestionById(
-    //     useRoomStore().questionIds[useRoomStore().currentQuestionIndex]
-    //   )
-    // ).time * 1000
-
-    useRoomStore().questionIds.length ? 5000 : 0
-  );
+const joinRoon = async () => {
+  if (isPlayer.value && !useRoomStore().roomStarted) {
+    $quizzAppSDK.joinRoom(
+      currentRoom.value.id,
+      currentRoom.value.code,
+      $keycloak.getUsername() as string,
+      useRoomStore().receiveQuesitonCallback
+    );
+  } else {
+    toast({
+      title: "Room already started",
+      description: "You can't join the room now",
+      variant: "destructive",
+    });
+  }
 };
 
 onMounted(async () => {
@@ -105,14 +109,21 @@ onMounted(async () => {
     $quizzAppSDK.webSocketClient.activate();
   }
   $quizzAppSDK.webSocketClient.activate();
-  const room = await useRoomStore().getRoomByCode(route.query.code as string);
-  useRoomStore().quizId = route.query.quizId as string;
-  await $quizzAppSDK.getQuestionIds(useRoomStore().quizId);
+  await waitForToken();
+  isPlayer.value = $keycloak.getUsername() !== currentRoom.value.createdBy;
+
+  await useRoomStore().getRoomByCode(route.query.code as string);
+  useQuizStore().searchQuiz({
+    textSearch: currentRoom.value?.quizzId,
+  });
+  await $quizzAppSDK.getQuestionIds(currentRoom.value?.quizzId);
 });
 
 onUnmounted(() => {
   $quizzAppSDK.webSocketClient.unsubscribe(
     `/topic/room/${currentRoom.value.id}`
   );
+
+  isPlayer.value = false;
 });
 </script>

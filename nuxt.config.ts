@@ -8,7 +8,7 @@ export default defineNuxtConfig({
     },
   },
   compatibilityDate: "2024-04-03",
-  devtools: { enabled: true },
+  // devtools: { enabled: true },
   modules: ["@nuxtjs/tailwindcss", "shadcn-nuxt", "@pinia/nuxt", "@nuxt/image"],
   vite: {
     css: {

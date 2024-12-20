@@ -1,5 +1,5 @@
 <template>
-  <div class="quiz-container paper rounded stacked">
+  <div class="quiz-container paper bg-yellow-600 stacked">
     <div class="progress-container">
       <div class="progress-bar">
         <div
@@ -44,18 +44,18 @@
         :class="`back-button ${enableMoveButtons.back ? 'disabled' : ''}`"
         @click="() => handleClickContinue('back')"
         :disabled="enableMoveButtons.back">
-        BACK
+        <ArrowLeft />
       </button>
-      <button @click="handleClickSubmit" :class="`continue-button`">
+      <Button @click="handleClickSubmit" class="py-2 px-4">
         SUBMIT
-      </button>
+      </Button>
       <button
         :class="`continue-button ${
           enableMoveButtons.continue ? 'disabled' : ''
         }`"
         @click="() => handleClickContinue('continue')"
         :disabled="enableMoveButtons.continue">
-        CONTINUE
+        <ArrowRight />
       </button>
     </div>
     <div class="navigation-bar">
@@ -91,6 +91,7 @@
 <script lang="ts" setup>
 import FillTheBlackType from "./FillTheBlankType.vue";
 import OptionTypeQuiz from "./OptionType.vue";
+import { ArrowLeft, ArrowRight } from "lucide-vue-next";
 import type { Quiz, Question, QuizzAttempt } from "~/types/quiz";
 
 const props = defineProps({

@@ -9,32 +9,32 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
+} from "@/components/ui/alert-dialog";
 
 const props = defineProps({
-    option:{
-        type: Object,
-        required: true
-    }
-})
+  option: {
+    type: Object,
+    required: true,
+  },
+});
 </script>
-
 
 <template>
   <AlertDialog>
     <AlertDialogTrigger>
-        <slot name="trigger" />
-
+      <slot name="trigger" />
     </AlertDialogTrigger>
     <AlertDialogContent>
       <AlertDialogHeader>
         <AlertDialogTitle>{{ option.title }}</AlertDialogTitle>
         <AlertDialogDescription>
-            {{ option.description }}
+          {{ option.description }}
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
-        <AlertDialogAction @click="option.action">{{ option.actionText }}</AlertDialogAction>
+        <Button @click="option.action" :variant="'destructive'">{{
+          option.actionText
+        }}</Button>
         <AlertDialogCancel>Cancel</AlertDialogCancel>
       </AlertDialogFooter>
     </AlertDialogContent>
