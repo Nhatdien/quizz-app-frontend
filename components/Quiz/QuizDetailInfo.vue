@@ -83,6 +83,11 @@ const props = defineProps({
     type: Object as PropType<Quiz>,
     required: true,
   },
+
+  enableEdit: {
+    type: Boolean,
+    required: true,
+  },
 });
 
 const deleteQuestionAlertOption = (question: Question) => {
@@ -91,13 +96,13 @@ const deleteQuestionAlertOption = (question: Question) => {
     description: "Are you sure you want to delete this question?",
     actionText: "Delete",
     action: async () => {
-      await useQuizStore().deleteQuestion(question.id);
+      await useQuizStore().deleteQuestion(question.id as string);
     },
   };
 };
 
 const isEditableView = computed(() => {
-  return currentUserName.value;
+  return  props.enableEdit;
 });
 
 const currentQuiz = computed(() => {
@@ -149,6 +154,7 @@ onMounted(async () => {
 .answers-list {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  gap: 1rem;
   list-style-type: none;
   padding: 0;
 }

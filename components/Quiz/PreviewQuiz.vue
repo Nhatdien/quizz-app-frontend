@@ -16,14 +16,12 @@
       </div>
     </div>
     <h2 class="quiz-title">{{ quiz?.title }}</h2>
-    <transition name="fade">
       <h3
         class="quiz-question flex flex-col"
         key="question-{{ currentQuestionIndex }}">
         #{{ currentQuestionIndex + 1 }}
         <span class="" v-html="currentQuestion?.content"></span>
       </h3>
-    </transition>
     <div class="min-h-[360px]">
       <div v-if="currentQuestion?.questionType === 1">
         <OptionTypeQuiz
@@ -231,11 +229,4 @@ button {
   margin: 0 5px;
 }
 
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.5s;
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
-  opacity: 0;
-}
 </style>

@@ -7,12 +7,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { PropType } from "vue";
+import type { DefineComponent, PropType } from "vue";
 
 type menuOptions = {
   label: string;
   items: {
     label: string;
+    icon?: DefineComponent;
     eventHandlers: {
       [key: string]: () => void;
     };
@@ -41,7 +42,7 @@ const props = defineProps({
         v-for="item in menuOptions.items"
         :key="item.label"
         v-on="item?.eventHandlers">
-        {{ item.label }}
+        {{ item.label }} <component class="ml-auto" :is="item.icon" />
       </DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>

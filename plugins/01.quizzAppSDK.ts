@@ -3,6 +3,7 @@ import QuizzAppSDK from "~/stores/quizzapp_sdk";
 import { useToast } from "@/components/ui/toast/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { h, render } from "vue";
+import { User } from "lucide-vue-next";
 
 let keycloakInitialized = false;
 
@@ -51,13 +52,23 @@ export default defineNuxtPlugin(async (nuxtApp) => {
           ToastAction,
           {
             altText: "Login",
+            onClick: () => {
+              UserService.doLogin();
+            },
           },
           {
-            default: () => UserService.doLogin(),
+            default: "Login",
           }
         ),
       });
       return;
+    } else {
+      console.log(error);
+      toast({
+        title: `Error: ${error.message}`,
+        description: "Please try again later",
+        variant: "destructive",
+      });
     }
   };
 

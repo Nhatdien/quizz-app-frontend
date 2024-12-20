@@ -1,10 +1,10 @@
 <template>
   <div class="ai-quiz-container relative flex gap-8">
-    <div class="input-section flex flex-col items-center flex-1">
+    <div class="input-section flex flex-col items-center justify-center flex-1">
       <div class="info-pin"></div>
       <h1 class="title text-center">A.I.</h1>
       <p class="subtitle text-center flex items-center gap-2">
-        <span>Type a command to generate a quiz</span> <Bot :fill="'#FFF9CC'"/>
+        <span>Type a command to generate a quiz</span> <Bot :fill="'#FFF9CC'" />
       </p>
       <div class="input-container">
         <Input
@@ -58,7 +58,10 @@
           </p>
         </div>
         <div class="quiz-detail-container">
-          <QuizDetailInfo v-if="!loading && generatedQuiz.title" :quiz="generatedQuiz" />
+          <QuizDetailInfo
+            v-if="!loading && generatedQuiz.title"
+            :enableEdit="false"
+            :quiz="generatedQuiz" />
         </div>
       </ScrollArea>
       <div class="flex w-full justify-center gap-4 my-4">
@@ -68,7 +71,7 @@
           :disabled="!generatedQuiz.title"
           >💾 Save Quiz</Button
         >
-        <Button @click="handleBack" class="back-btn">🔙 Back</Button>
+        <Button @click="handleReset" class="back-btn">🔙 Back</Button>
       </div>
     </div>
   </div>
@@ -79,11 +82,12 @@ import { ref, reactive, computed, watch, nextTick } from "vue";
 import MySelect from "~/components/Common/MySelect.vue";
 import { Bot } from "lucide-vue-next";
 import type { Quiz } from "~/types/quiz";
+import { toast, useToast } from "~/components/ui/toast/use-toast";
 
 const generatedQuiz = ref({} as Quiz);
 const currentInput = reactive({
   prompt: "",
-  numberOfQuestions: '5',
+  numberOfQuestions: "5",
   topic: "",
 });
 const loading = ref(false);
@@ -91,7 +95,7 @@ const loading = ref(false);
 const numberOfQuestionsOption = [
   { value: "5", label: "5 questions" },
   { value: "8", label: "8 questions" },
-  { value: '10', label: "10 questions" },
+  { value: "10", label: "10 questions" },
 ];
 
 const topicOption = computed(() => {
@@ -103,22 +107,52 @@ const topicOption = computed(() => {
 
 const handleGenerateQuiz = async () => {
   loading.value = true;
-  useQuizStore().quizGenerateState.loading = true;
-  await useQuizStore().generateQuiz(
-    currentInput.prompt,
-    currentInput.topic,
-    parseFloat(currentInput.numberOfQuestions)
-  );
-  loading.value = false;
+  try {
+    useQuizStore().quizGenerateState.loading = true;
+    await useQuizStore().generateQuiz(
+      currentInput.prompt,
+      currentInput.topic,
+      parseFloat(currentInput.numberOfQuestions)
+    );
+  } catch (error) {
+    console.error("Error generating quiz:", error);
+  } finally {
+    loading.value = false;
+  }
 };
 
-const handleSaveQuiz = () => {
-  alert("Quiz saved!");
-  useQuizStore().quizGenerateState.generatedQuiz = {} as Quiz;
+const handleSaveQuiz = async () => {
+  try {
+    await useQuizStore().createQuiz(generatedQuiz.value);
+
+    useToast().toast({
+      title: "Quiz saved",
+      description: "Your quiz has been saved successfully",
+      variant: "success",
+    });
+
+    const lastQuizInStore =
+      useQuizStore().quiz[useQuizStore().quiz.length || 1 - 1];
+    navigateTo(`/quiz/${lastQuizInStore.id}`);
+    // Reset the input fields
+    handleReset();
+  } catch (error) {
+    console.error("Error saving quiz:", error);
+    useToast().toast({
+      title: "Error saving quiz",
+      description: "An error occurred while saving the quiz",
+      variant: "destructive",
+    });
+  }
 };
 
-const handleBack = () => {
+const handleReset = () => {
   // Implement back functionality
+  currentInput.prompt = "";
+  currentInput.topic = "";
+  currentInput.numberOfQuestions = "5";
+  useQuizStore().quizGenerateState.generatedQuiz = {} as Quiz;
+
 };
 
 watch(

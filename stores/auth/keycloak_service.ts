@@ -32,7 +32,7 @@ class KeycloakService {
     if (!KeycloakService._initPromise) {
       KeycloakService._initPromise = KeycloakService._kc.init({
         flow: 'standard',
-        onLoad: 'check-sso',
+        onLoad: 'login-required',
         enableLogging: true,
         scope: 'openid email',
         pkceMethod: 'S256',

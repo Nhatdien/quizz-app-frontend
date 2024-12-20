@@ -1,10 +1,10 @@
 <template>
-  <div class="flex justify-center h-full">
-    <div class="flex flex-col h-fit w-full gap-6">
+  <div class="flex flex-col lg:flex-row justify-center h-full">
+    <div class="flex flex-col h-fit w-full lg:w-2/3 gap-6">
       <PreviewQuiz :quiz="currentQuiz" />
       <ChatBotChatBox />
     </div>
-    <div class="w-[30%] mt-8 pl-6 ">
+    <div class="w-full lg:w-1/3 mt-8 lg:mt-0 lg:pl-6">
       <NoteList />
     </div>
   </div>
@@ -16,7 +16,7 @@ import { useChatBotStore } from "~/stores/stores/chatbot";
 import { useNoteStore } from "~/stores/stores/note";
 
 definePageMeta({
-  layout: "custom",
+  layout: "quiz",
 });
 
 const route = useRoute();

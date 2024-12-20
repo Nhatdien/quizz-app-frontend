@@ -6,34 +6,32 @@
         src="@/assets/img/default_avt.jpg"
         width="40"
         height="40" />
-      <h3>{{ comment.username }}</h3>
-       <!-- <h6>{{ comment.id }}</h6> -->
+      <h3 class="username">{{ comment.username }}</h3>
       <CommentDropDown :menu-options="shownReviewDropdown(comment.username)" />
     </div>
-    <p v-if="!currentState.editComment">{{ comment.content }}</p>
+    <p v-if="!currentState.editComment" class="comment-content">{{ comment.content }}</p>
     <div v-else>
       <Textarea
         v-model="currentState.inputContent"
         placeholder="Write a comment..."
         class="w-full mt-4"
         type="textarea" />
-        <div class="flex gap-4 justify-end">
-      <button
-        @click="
-          () => {
-            currentState.editComment = false;
-            currentState.inputContent = '';
-          }
-        "
-        class="underline">
-        Cancel
-      </button>
-      <button @click="submitEditComment(comment)" class="underline">
-        Submit
-      </button>
+      <div class="flex gap-4 justify-end">
+        <button
+          @click="
+            () => {
+              currentState.editComment = false;
+              currentState.inputContent = '';
+            }
+          "
+          class="underline">
+          Cancel
+        </button>
+        <button @click="submitEditComment(comment)" class="underline">
+          Submit
+        </button>
+      </div>
     </div>
-    </div>
-
 
     <ReviewCreateCommentInput
       :input-info="inputInfo"
@@ -136,4 +134,40 @@ const submitEditComment = async (comment: types.Comment) => {
 };
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.comment {
+  font-size: 1rem;
+
+  .username {
+    font-size: 1.25rem;
+  }
+
+  .comment-content {
+    font-size: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 0.875rem;
+
+    .username {
+      font-size: 1rem;
+    }
+
+    .comment-content {
+      font-size: 0.875rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.75rem;
+
+    .username {
+      font-size: 0.875rem;
+    }
+
+    .comment-content {
+      font-size: 0.75rem;
+    }
+  }
+}
+</style>

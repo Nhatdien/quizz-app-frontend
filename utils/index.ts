@@ -34,7 +34,7 @@ export function formatDate(date: string) {
   );
 }
 
-export async function waitForToken() {
+export async function waitForToken(callback: () => void = () => {}) {
   const { toast } = useToast();
   return new Promise<void>((resolve, reject) => {
     const interval = setInterval(() => {
@@ -44,14 +44,10 @@ export async function waitForToken() {
       }
     }, 100);
 
-    // setTimeout(() => {
-    //   clearInterval(interval);
-    //   reject(toast({
-    //     title: "Error",
-    //     description: "Unable to fetch token",
-    //     variant: "destructive",
-    //   }));
-    // }, 2000); // 2 seconds timeout
+    setTimeout(() => {
+      clearInterval(interval);
+      reject(callback());
+    }, 1000); // 2 seconds timeout
   });
 }
 

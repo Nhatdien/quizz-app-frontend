@@ -1,9 +1,11 @@
 <template>
   <div class="flex items-center gap-4 flex-grow">
     <transition name="stretch">
-      <QuizSearchBox v-if="isSearchBoxVisible" @blur="hideSearchBox" />
+      <QuizSearchBox v-if="model" @blur="toggleSearchBox" />
     </transition>
-    <button class="bg-gray-200 text-black p-2 md:p-4 rounded-full shadow-md hover:bg-gray-300 transition" @click="toggleSearchBox">
+    <button
+      class="bg-gray-200 text-black p-2 md:p-4 rounded-full shadow-md hover:bg-gray-300 transition"
+      @click="toggleSearchBox">
       <Search :stroke-width="3" class="w-4 h-4 md:w-6 md:h-6" />
     </button>
   </div>
@@ -16,8 +18,10 @@ import Button from "../ui/button/Button.vue";
 
 const isSearchBoxVisible = ref(false);
 
+const model = defineModel<boolean>();
+
 function toggleSearchBox() {
-  isSearchBoxVisible.value = !isSearchBoxVisible.value;
+    model.value = !model.value;
 }
 
 function hideSearchBox() {

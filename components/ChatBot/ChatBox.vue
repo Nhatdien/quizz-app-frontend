@@ -1,28 +1,43 @@
 <template>
-  <div class="chatbox">
-    <div class="chatbox-header">
-      <h3>ChatBox</h3>
-    </div>
-    <ScrollArea class="h-96">
-      <div class="chatbox-messages">
-        <div
-          v-for="(message, index) in currentMessages"
-          :key="index"
-          class="message">
-          <span :class="message.sender + ' paper rounded'">{{
-            message.text
-          }}</span>
-        </div>
+  <CommonMyDrawer
+    title="Ask A.I for some helps"
+    description="Please enter your question below"
+>
+    <template #trigger>
+      <Input placeholder="Feeling struggled? Ask A.I for some helps" />
+    </template>
+    <!--
+    <template #submit>
+      <button @click="submitAddComment">Add Comment</button>
+    </template>
+    <template #cancel>
+      <button @click="currentState.addComment = false">Cancel</button>
+    </template> -->
+    <div class="chatbox">
+      <div class="chatbox-header">
+        <h3>ChatBox</h3>
       </div>
-    </ScrollArea>
-    <div class="chatbox-input">
-      <input
-        v-model="newMessage"
-        @keyup.enter="sendMessage"
-        placeholder="Type a message..." />
-      <button @click="sendMessage">Send</button>
+      <ScrollArea class="h-96">
+        <div class="chatbox-messages">
+          <div
+            v-for="(message, index) in currentMessages"
+            :key="index"
+            class="message">
+            <span :class="message.sender + ' paper rounded'">{{
+              message.text
+            }}</span>
+          </div>
+        </div>
+      </ScrollArea>
+      <div class="chatbox-input">
+        <input
+          v-model="newMessage"
+          @keyup.enter="sendMessage"
+          placeholder="Type a message..." />
+        <button @click="sendMessage">Send</button>
+      </div>
     </div>
-  </div>
+  </CommonMyDrawer>
 </template>
 
 <script setup lang="ts">
@@ -64,7 +79,7 @@ const sendMessage = async () => {
     ],
   };
   const messageSend = {
-    contents: [...useChatBotStore().messages.slice(-4), inputMessageToBot],
+    contents: [inputMessageToBot],
   };
   newMessage.value = "";
   await useChatBotStore().saveMessage(saveInputMessagePayload);
@@ -91,6 +106,7 @@ const sendMessage = async () => {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  max-width: 100%;
 }
 
 .chatbox-header {
@@ -101,9 +117,13 @@ const sendMessage = async () => {
 }
 
 .chatbox-messages {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
   flex: 1;
   padding: 10px;
   overflow-y: auto;
+  min-height: 24rem;
   background-color: #f9f9f9;
 }
 
@@ -155,5 +175,38 @@ const sendMessage = async () => {
 
 .chatbox-input button:hover {
   background-color: #0056b3;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .chatbox {
+    border-radius: 0;
+  }
+
+  .chatbox-header {
+    padding: 8px;
+  }
+
+  .chatbox-messages {
+    padding: 8px;
+  }
+
+  .message .bot,
+  .message .user {
+    max-width: 100%;
+  }
+
+  .chatbox-input {
+    flex-direction: column;
+  }
+
+  .chatbox-input input {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+
+  .chatbox-input button {
+    width: 100%;
+  }
 }
 </style>

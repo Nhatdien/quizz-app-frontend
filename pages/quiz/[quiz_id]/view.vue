@@ -1,6 +1,6 @@
 <template>
   <div class="container mx-auto p-4">
-    <div class="review-item bg-white shadow-md rounded-lg p-6 mb-6">
+    <div class="review-item bg-white shadow-md rounded-lg p-6">
       <div class="section-pin"></div>
       <div class="quiz-info mb-4">
         <h1 class="text-2xl font-bold">{{ currentQuiz?.title }}</h1>
@@ -22,7 +22,7 @@
     </div>
     <div
       class="flex flex-col lg:flex-row py-8 space-y-4 md:space-y-0 md:space-x-0 lg:space-x-4 lg:space-y-4">
-      <QuizDetailInfo class="flex-1" />
+      <QuizDetailInfo :enable-edit="isEditableView" class="flex-1" />
       <div class="flex-1 flex flex-col sm:space-y-0 md:space-y-0">
         <ReivewList />
         <CreateReviewInput />
@@ -45,7 +45,7 @@ useReviewStore().currentQuizId = route.params.quiz_id as string;
 const currentUserName = ref($quizzAppSDK.config.current_username);
 
 const isEditableView = computed(() => {
-  const enableEdit = currentUserName.value;
+  const enableEdit = currentUserName.value === currentQuiz.value?.createdBy;
 
   return enableEdit;
 });

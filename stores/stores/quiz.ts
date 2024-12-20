@@ -43,8 +43,7 @@ export const useQuizStore = defineStore({
       return QuizzAppSDK.getInstance()
         .searchQuiz(search)
         .then(async (quizzes) => {
-          this.quiz = this.quiz.concat(quizzes.content);
-          console.log(this.quiz);
+          this.quiz = quizzes.content;
         });
     },
 

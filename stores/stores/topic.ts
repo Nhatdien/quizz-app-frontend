@@ -11,7 +11,6 @@ export const useTopicStore = defineStore({
   }),
   actions: {
     async getTopics(filter: BaseFilter): Promise<void> {
-      console.log(QuizzAppSDK.getInstance().config)
       return QuizzAppSDK.getInstance().getTopics(filter).then((topics) => {
         this.topics = topics.content;
       });

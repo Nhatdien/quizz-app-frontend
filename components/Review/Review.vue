@@ -25,8 +25,6 @@
             class="star"
             :class="{
               filled: n <= Math.floor(review?.rating),
-              // 'half-filled':
-              //   n === Math.ceil(review?.rating) && review?.rating % 1 !== 0,
             }"
             >★</span
           >
@@ -165,4 +163,58 @@ const submitEditReview = async (review: types.Review) => {
 };
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.review-username {
+  font-size: 1rem;
+}
+
+.review-meta {
+  font-size: 0.875rem;
+}
+
+.review-rating {
+  font-size: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .review-username {
+    font-size: 1.125rem;
+  }
+
+  .review-meta {
+    font-size: 1rem;
+  }
+
+  .review-rating {
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .review-username {
+    font-size: 1.25rem;
+  }
+
+  .review-meta {
+    font-size: 1.125rem;
+  }
+
+  .review-rating {
+    font-size: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .review-username {
+    font-size: 1.5rem;
+  }
+
+  .review-meta {
+    font-size: 1.25rem;
+  }
+
+  .review-rating {
+    font-size: 2rem;
+  }
+}
+</style>
