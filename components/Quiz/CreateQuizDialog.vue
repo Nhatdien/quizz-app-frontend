@@ -62,17 +62,19 @@
         </div>
       </div>
       <QuizCreateQuizForm v-model="isShow" v-if="step == 2" />
-      <CommonUploadFile
-        :accept="'.xlsx'"
-        :show-upload="true"
-        :upload-path="'/quiz/import'"
-        v-if="step == 3" />
-
-      <a
-        href="https://docs.google.com/spreadsheets/d/1ic9jFZXZxCQm5m2VM6tp-zuApT3SAJOoD6e-Mk6ffJg/edit?gid=525658875#gid=525658875"
-        target="_blank">
-        Go here for the template
-      </a>
+      <div v-if="step === 3">
+        <a
+          href="https://docs.google.com/spreadsheets/d/1ic9jFZXZxCQm5m2VM6tp-zuApT3SAJOoD6e-Mk6ffJg/edit?gid=525658875#gid=525658875"
+          target="_blank"
+          class="underline text-blue-500">
+          Go here Excel for the template
+        </a>
+        <CommonUploadFile
+          :accept="'.xlsx'"
+          :show-upload="true"
+          :upload-path="'/quiz/import'"
+         />
+      </div>
     </DialogContent>
   </Dialog>
   <ClientOnly />

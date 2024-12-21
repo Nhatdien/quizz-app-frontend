@@ -43,9 +43,13 @@
           </div>
         </div>
       </div>
-      <button @click="handleNextQuestion" class="start-game-btn">
+      <Button
+        :variant="'success'"
+        @click="handleNextQuestion"
+        class="start-game-btn"
+        :disabled="useRoomStore().roomParticipants?.length === 0">
         Start game
-      </button>
+      </Button>
     </div>
     <div class="settings flex flex-col justify-center items-center gap-4">
       <!-- <div class="presentation-info">
@@ -106,7 +110,7 @@ const handleNextQuestion = async () => {
   $quizzAppSDK.nextQuestion(
     useRoomStore().questionIds[useRoomStore().currentQuestionIndex],
     props.room.id
-  )
+  );
 
   useRoomStore().currentQuestion = await $quizzAppSDK.getDetailQuestion(
     useRoomStore().questionIds[useRoomStore().currentQuestionIndex]

@@ -176,6 +176,7 @@ const handleClickSubmit = async () => {
   };
 
   await useQuizStore().createQuizAttempt(quizAttemptPayload as QuizzAttempt);
+  navigateTo("result")
 };
 
 const prevPage = () => {

@@ -3,15 +3,21 @@
     <div class="review-item bg-white shadow-md rounded-lg p-6">
       <div class="section-pin"></div>
       <div class="quiz-info mb-4">
-        <h1 class="text-2xl font-bold">{{ currentQuiz?.title }}</h1>
-        <p class="text-gray-700">{{ currentQuiz?.description }}</p>
-        <p class="text-gray-500">Created by: {{ currentQuiz?.createdBy }}</p>
+        <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold">
+          {{ currentQuiz?.title }}
+        </h1>
+        <p class="text-gray-700 text-base md:text-lg lg:text-xl">
+          {{ currentQuiz?.description }}
+        </p>
+        <p class="text-gray-500 text-sm md:text-base lg:text-lg">
+          Created by: {{ currentQuiz?.createdBy }}
+        </p>
       </div>
       <div class="flex justify-end space-x-4">
         <CreateOrEditQuestionDialog
           v-if="isEditableView"
           :is-edit-button="false" />
-        <Button v-else>Clone and Edit</Button>
+        <Button @click="handleClickCloneAndEdit" v-else>Clone and Edit</Button>
         <Button @click="handleClickPreview" class="ml-4"
           ><Eye /> Preview
         </Button>
@@ -37,6 +43,7 @@ import { Eye, CirclePlay } from "lucide-vue-next";
 import ReivewList from "~/components/Review/ReviewList.vue";
 import { useReviewStore } from "~/stores/stores/review";
 import CreateReviewInput from "~/components/Review/CreateReviewInput.vue";
+import type { Quiz } from "~/types/quiz";
 
 const route = useRoute();
 const { $quizzAppSDK } = useNuxtApp();
@@ -74,6 +81,24 @@ const handleClickStartQuiz = async () => {
   navigateTo(
     `/room/${room.id}?quizId=${currentQuiz.value?.id}&code=${room.code}`
   );
+};
+
+const handleClickCloneAndEdit = async () => {
+  const quiz = { ...currentQuiz.value };
+
+  delete quiz.id;
+  delete quiz.createdBy;
+
+  quiz.questions = quiz.questions?.map((question) => {
+    delete question.id;
+    question.answers = question.answers?.map((answer) => {
+      delete answer.id;
+      return answer;
+    });
+    return question;
+  });
+
+  await useQuizStore().createQuiz(quiz as Quiz);
 };
 
 const quizStore = useQuizStore();

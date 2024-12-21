@@ -2,7 +2,7 @@
   <div class="flex">
     <span
       v-if="quizzes.length > 0 && loading === false"
-      class="text-xl sm:text-xxl md:text-3xl"
+      class="text-xl sm:text-xxl md:text-3xl font-bold"
     >
       Search result for "{{ route.query.search }}"
     </span>

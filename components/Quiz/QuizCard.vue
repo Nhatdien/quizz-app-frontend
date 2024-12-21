@@ -1,12 +1,17 @@
 <template>
-  <Card class="quiz-card">
+  <Card class="quiz-card relative">
+    <div class="review-pin"></div>
     <CardHeader>
       <CardTitle>{{ quiz?.title }}</CardTitle>
     </CardHeader>
     <CardContent>
       <div class="image-container">
-        <img
-          src="@/assets/img/default_avt.jpg"
+        <NuxtImg
+          :src="
+            quiz.imageUrl
+              ? quiz.imageUrl
+              : useAsset('@/assets/img/default_avt.jpg')
+          "
           alt="Quiz Image"
           class="quiz-image" />
       </div>
@@ -41,9 +46,7 @@
         </div>
       </div>
     </CardContent>
-    <CardFooter >
-
-  </CardFooter>
+    <CardFooter> </CardFooter>
   </Card>
 </template>
 
@@ -66,8 +69,6 @@ const props = defineProps({
     required: true,
   },
 });
-
-
 </script>
 
 <style scoped lang="scss">

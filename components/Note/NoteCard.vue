@@ -1,5 +1,5 @@
 <template>
-  <div class="review-item sm:mb-4 md:mb-0">
+  <div class="comment sm:mb-4 md:mb-0">
     <div class="review-pin"></div>
     <div class="paper__content">
       <div class="paper__header">

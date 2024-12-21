@@ -11,7 +11,9 @@
             height="50" />
           <span class="flex flex-col">
             <span>{{ review?.username }}</span>
-            <span class="text-gray text-xs">{{ formatDate(review?.createdDate) }}</span>
+            <span class="text-gray text-xs">{{
+              formatDate(review?.createdDate)
+            }}</span>
           </span>
           <ReviewDropDown
             class="align-middle"
@@ -116,7 +118,9 @@ const shownReviewDropdown = (createdBy: string) => {
         label: "Delete",
         eventHandlers: {
           click: () => {
-            useReviewStore().deleteReview(props.review.id);
+            useTryCatch().tryCatch(() =>
+              useReviewStore().deleteReview(props.review.id)
+            );
           },
         },
       },

@@ -19,6 +19,8 @@ export const useQuizStore = defineStore({
       error: "",
       generatedQuiz: {} as Quiz,
     },
+
+    quizAttempt: [] as QuizzAttempt[],
   }),
   actions: {
     async createQuiz(quiz: QuizCreate) {
@@ -47,6 +49,12 @@ export const useQuizStore = defineStore({
 
     async createQuizAttempt(quizAttempt: QuizzAttempt) {
       return QuizzAppSDK.getInstance().createQuizAttempt(quizAttempt);
+    },
+
+    async getQuizAttempt(filter: BaseFilter, isPass?: boolean) {
+      return QuizzAppSDK.getInstance().getQuizAttempt(filter, isPass).then((res) => {
+        this.quizAttempt = res.content;
+      });
     },
 
     async searchQuiz(search: SearchParams) {

@@ -7,6 +7,7 @@ export interface Quiz {
     totalReviews?: number
     totalComments?: number
     averageRating?: number
+    imageUrl?: string | null
     reviewCount?: number
     description: string
     questions: Question[]
@@ -55,4 +56,5 @@ export interface Quiz {
     quizzId: string
     score: number
     isPass: boolean
+    time : string
   }

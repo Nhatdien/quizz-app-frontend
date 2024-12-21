@@ -15,7 +15,7 @@
         <CreateQuizDialog>
           <template #trigger>
             <button
-              class="bg-[#60D4FC] text-black px-4 py-2 rounded-md shadow-md hover:bg-[#47C3ED] transition">
+              class="bg-[#60D4FC] text-black px-4 py-2 rounded-md shadow-md hover:bg-[#47C3ED] transition font-bold">
               + Create quiz
             </button>
           </template>
@@ -42,7 +42,7 @@
       </template>
       <template #button>
         <button
-          class="bg-[#60D4FC] text-black px-4 py-2 rounded-md shadow-md hover:bg-[#47C3ED] transition"
+          class="bg-[#60D4FC] text-black px-4 py-2 rounded-md shadow-md hover:bg-[#47C3ED] transition font-bold"
           @click="navigateTo('/quiz/generate')">
           Quiz generator
         </button>

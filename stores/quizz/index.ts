@@ -7,7 +7,7 @@ import type {
   QuizzAttempt,
   Question,
 } from "~/types/quiz";
-import type { BaseFilter } from "~/types/common";
+import type { BaseFilter, FilterResponse } from "~/types/common";
 
 export class Quizz extends Base {
   searchQuiz(search: SearchParams): Promise<QuizFilterResposne> {
@@ -29,7 +29,6 @@ export class Quizz extends Base {
       body: JSON.stringify(filter),
     });
   }
-
 
   createQuiz(quiz: QuizCreate): Promise<Quiz> {
     return this.fetch(`${this.config.base_url}/quiz/create`, {
@@ -58,10 +57,20 @@ export class Quizz extends Base {
     });
   }
 
+  getQuizAttempt(
+    filter: BaseFilter,
+    isPass?: boolean
+  ): Promise<FilterResponse<QuizzAttempt>> {
+    return this.fetch(`${this.config.base_url}/quiz-attemp/filter`, {
+      method: "POST",
+      body: JSON.stringify({ ...filter, isPass }),
+    });
+  }
+
   generateQuiz(prompt: string, topicCode: string, numberOfQuestions: number) {
     return this.fetch<Quiz>(`${this.config.base_url}/quiz/generate-quiz`, {
       method: "POST",
-      body: JSON.stringify({prompt, topicCode, numberOfQuestions}),
+      body: JSON.stringify({ prompt, topicCode, numberOfQuestions }),
     });
   }
 
@@ -92,5 +101,4 @@ export class Quizz extends Base {
       method: "DELETE",
     });
   }
-
 }

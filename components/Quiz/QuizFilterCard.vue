@@ -1,9 +1,12 @@
 <template>
-  <div class="quiz-card">
-    <img
-      class="quiz-image"
-      src="@/assets/img/default_avt.jpg"
-      :alt="quiz?.title" />
+  <div class="quiz-card relative">
+    <div class="review-pin"></div>
+    <NuxtImg
+      :src="
+        quiz.imageUrl ? quiz.imageUrl : useAsset('@/assets/img/default_avt.jpg')
+      "
+      alt="Quiz Image"
+      class="quiz-image bg-slate-100" />
     <div class="quiz-info">
       <h3
         @click="navigateTo(`/quiz/${quiz?.id}/view`)"
@@ -13,7 +16,11 @@
       <div class="quiz-details">
         <span class="quiz-rating">⭐ {{ quiz?.averageRating }}/5</span>
         <span class="quiz-comments"
-          >💬 {{ quiz.totalComments ?? quiz.totalReviews }}</span
+          >💬 {{ quiz.totalComments ?? quiz.reviewCount }}</span
+        >
+
+        <span class="quiz-comments ml-2"
+          ><span class="font-extrabold">?</span> {{ quiz?.questionCount }}</span
         >
         <span class="quiz-date ml-4">By: {{ quiz.createdBy }}</span>
       </div>
@@ -21,7 +28,6 @@
         <span v-for="tag in tags" :key="tag" class="quiz-tag">{{ tag }}</span>
       </div> -->
     </div>
-    {{ isOpen }}
     <AlertDialog v-model:open="isOpen" class="" :option="deleteQuizAlertOption">
       <template #trigger>
         <Button variant="destructive"><Trash /></Button>

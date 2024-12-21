@@ -110,7 +110,9 @@ export abstract class Base {
             if (response.status === 401) {
               throw new Error("401 Unauthorized");
             }
-            throw new Error(response.statusText + response.status);
+            if (response.status >= 400 && response.status < 500) {
+              throw new Error(response.statusText + response.status);
+            }
           }
           const contentType = response.headers.get("content-type");
           if (contentType && contentType.includes("application/json")) {

@@ -160,6 +160,7 @@ watch(props.question, (newVal) => {
     questionText.value = newVal.content;
 
     answers.forEach((option, index) => {
+      option.id = newVal.options[index].id;
       option.content = newVal.options[index].content;
       option.isCorrect = newVal.options[index].isCorrect;
     });
@@ -221,6 +222,7 @@ onMounted(() => {
   if (props.question) {
     questionText.value = props.question.content;
     props.question.answers.forEach((option, index) => {
+      answers[index].id = option.id;
       answers[index].content = option.content;
       answers[index].isCorrect = option.isCorrect;
     });

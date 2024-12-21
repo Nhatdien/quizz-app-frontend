@@ -9,7 +9,7 @@
       @click="navigateTo(`/quiz/${quiz?.id}/view`)" />
   </div> -->
 
-  <div class="font-bold text-xl mb-4 mt-6">Recommended for you:</div>
+  <div class="font-extrabold sm:text-2xl md:text-3xl mb-4 mt-6">Recommended for you:</div>
   <CommonMyCarousel class="" :items="quizzes">
     <template #[`item-component`]="{ item }">
       <QuizCard

@@ -20,6 +20,9 @@ export default defineNuxtConfig({
       },
     },
   },
+  image:{
+
+  },
   shadcn: {
     /**
      * Prefix for all the imported component

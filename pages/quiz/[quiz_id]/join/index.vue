@@ -1,11 +1,19 @@
 <template>
-  <div class="flex flex-col lg:flex-row justify-center h-full">
+  <div class="flex flex-col gap-8 lg:flex-row justify-center h-full">
     <div class="flex flex-col h-fit w-full lg:w-2/3 gap-6">
       <PreviewQuiz :quiz="currentQuiz" />
       <ChatBotChatBox />
     </div>
-    <div class="w-full justify-self-center lg:w-1/3 mt-8 lg:mt-0 lg:pl-6">
-      <NoteList />
+    <div
+      class="review-item w-full flex flex-col gap-4 justify-self-center lg:w-1/3 mt-8 lg:mt-0 lg:pl-6">
+      <div class="bg-[#f9f9f9] p-4 relative">
+        <div class="info-pin"></div>
+        <ScrollArea class="h-96">
+          <NoteList />
+        </ScrollArea>
+      </div>
+
+      <QuizAttempts />
     </div>
   </div>
 </template>
@@ -22,7 +30,14 @@ definePageMeta({
 const route = useRoute();
 const { $keycloak, $quizzAppSDK } = useNuxtApp();
 
+const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+  event.preventDefault();
+  event.returnValue = ""; // This is required for some browsers to show the confirmation dialog
+};
+
 onMounted(async () => {
+  window.addEventListener("beforeunload", handleBeforeUnload);
+
   try {
     await waitForToken();
   } catch (error) {
@@ -30,7 +45,7 @@ onMounted(async () => {
     return;
   }
   try {
-    console.log("fetching api")
+    console.log("fetching api");
     useChatBotStore().getMessages({
       textSearch: $quizzAppSDK.config.current_username,
     });
@@ -45,6 +60,10 @@ onMounted(async () => {
   }
 
   return {};
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("beforeunload", handleBeforeUnload);
 });
 
 const currentQuiz = computed(() => {
