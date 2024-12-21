@@ -27,7 +27,28 @@
   <div class="main-content-host">
     <div class="waiting-area">
       <p>Join on this device</p>
-      <h3>Waiting for players</h3>
+      <h3 v-if="useRoomStore().roomParticipants?.length === 0">
+        Waiting for players
+      </h3>
+      <div v-else class="player-container">
+        <div
+          v-for="player in useRoomStore().roomParticipants.slice(0, 2)"
+          :key="player.username">
+          <div class="player w-24 flex flex-col items-center gap-2">
+            <img
+              src="@/assets/img/default_avt.jpg"
+              alt="Player Avatar"
+              class="rounded-full w-16 h-16" />
+            <p class="text-sm">{{ player.username }}</p>
+          </div>
+        </div>
+
+        <div
+          v-if="useRoomStore().roomParticipants?.length > 2"
+          class="border-2 border-gray-200 rounded-full p-2">
+          <p>+ {{ useRoomStore().roomParticipants?.length - 2 }}</p>
+        </div>
+      </div>
     </div>
     <div class="settings flex flex-col justify-center items-center gap-4">
       <!-- <div class="presentation-info">

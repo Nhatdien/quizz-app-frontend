@@ -80,19 +80,28 @@
 .waiting-area {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   flex: 1;
+  height: 100%;
   text-align: center;
   background-color: #014d4e;
   border-radius: 10px;
   min-height: 25rem;
   padding: 20px;
+
+  .player-container {
+    display: grid;
+    flex: 1;
+    height: 100%;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
 }
 
 .start-game-btn {
+  justify-self: flex-end;
   background-color: #4fd11c;
   border: none;
   flex-shrink: 0;
+  margin-top: auto;
   border-radius: 5px;
   padding: 10px 20px;
   transition: background-color 0.3s ease;

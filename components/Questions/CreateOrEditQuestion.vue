@@ -14,20 +14,10 @@
       <div class="flex justify-between w-full">
         <CommonMySelect
           v-model="questionScore"
-          :options="[
-            {
-              label: '10 point',
-              value: 10,
-            },
-          ]" />
+          :options="questionPointOptions" />
         <CommonMySelect
           v-model="questionTimer"
-          :options="[
-            {
-              label: '30 seconds',
-              value: 30,
-            },
-          ]" />
+          :options="questionTimeOptions" />
       </div>
       <input
         class="question-editor w-full mt-4"
@@ -154,11 +144,15 @@ const submitPayload = computed(() => {
   return payload;
 });
 
+const showDialogModelValue = defineModel();
 const handleSaveQuestion = async () => {
   // console.log(submitPayload.value);
   useTryCatch().tryCatch(() => {
     return useQuizStore().updateQuiz(submitPayload.value);
   });
+
+  // Close the dialog
+  showDialogModelValue.value = false;
 };
 
 watch(props.question, (newVal) => {

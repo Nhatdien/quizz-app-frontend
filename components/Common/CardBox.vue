@@ -8,7 +8,7 @@
     </div>
 
     <!-- Title -->
-    <h2 class="text-2xl font-bold text-[#FDFD96] mb-2">
+    <h2 class="text-3xl font-extrabold text-[#FDFD96] mb-2">
       <slot name="title" />
     </h2>
 

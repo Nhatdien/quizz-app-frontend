@@ -1,7 +1,7 @@
 
 <template>
   <ClientOnly />
-  <Dialog>
+  <Dialog v-model:open="isOpen">
     <DialogTrigger as-child>
       <Button variant="outline">
         {{ isEditButton ? "Edit" : "+ Add question" }}
@@ -20,7 +20,7 @@
           }}
         </DialogDescription>
       </DialogHeader>
-      <QuestionsCreateOrEditQuestion :question="question"/>
+      <QuestionsCreateOrEditQuestion v-model="isOpen" :question="question"/>
     </DialogContent>
   </Dialog>
   <ClientOnly />
@@ -40,6 +40,8 @@ import {
 } from "@/components/ui/dialog";
 import type { Quiz, Question } from "~/types/quiz";
 
+
+const isOpen = ref();
 const props = defineProps({
   question: {
     type: Object as PropType<Question>,

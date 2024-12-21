@@ -60,7 +60,7 @@ const topicCode = ref("");
 const uploadImage = ref<File | null>(null);
 
 const { $quizzAppSDK } = useNuxtApp();
-const showDialogModelValue = defineModel<boolean>()
+const showDialogModelValue = defineModel<boolean>();
 
 const rules = {
   quizTitle: { required, minLength: minLength(3) },
@@ -108,21 +108,38 @@ async function uploadFile(): Promise<void> {
 const submitForm = async () => {
   v$.value.$validate();
 
-  let imageLink = "";
+  let imageLink = "" as string | null;
   if (v$.value.$invalid !== true) {
     if (uploadImage.value) {
-      const res = await $quizzAppSDK.uploadFile(
+      const res = (await $quizzAppSDK.uploadFile(
         uploadImage.value,
         "/upload/image"
-      );
-      console.log(res);
-      res ? (imageLink = res) : (imageLink = "");
+      )) as Response;
+      if (!res.body) {
+        throw new Error("Response body is null");
+      }
+      const reader = res.body.getReader();
+      const stream = new ReadableStream({
+        async start(controller) {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) {
+              break;
+            }
+            controller.enqueue(value);
+          }
+          controller.close();
+        },
+      });
+      const responseText = await new Response(stream).text();
+      imageLink = responseText ? responseText : null;
+      
+      responseText ? (imageLink = responseText) : (imageLink = null);
     }
 
     const quizStoreLength = useQuizStore().quiz.length || 1;
     console.log(createQuizPayload.value, useTopicStore().topicCodeSelected);
-    try{
-
+    try {
       useTryCatch().tryCatch(async () => {
         await useQuizStore().createQuiz({
           ...createQuizPayload.value,
@@ -142,7 +159,6 @@ const submitForm = async () => {
       // })
 
       // navigateTo(`/quiz/${useQuizStore().quiz[quizStoreLength - 1].id}/view`);
-
     } catch (error) {
       console.error("Error creating quiz:", error);
     }

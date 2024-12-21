@@ -41,7 +41,8 @@
       </button>
     </div>
     <div class="view-section flex-1">
-      <h3>Generated Quiz</h3>
+      <h3>Generated Quiz {{ loading }} {{ generatedQuiz.title }}</h3>
+
       <ScrollArea class="w-full" style="height: 450px">
         <div v-if="!generatedQuiz.title" class="loading-container h-full">
           <img
@@ -105,23 +106,27 @@ const topicOption = computed(() => {
 });
 
 const generateQuiz = async () => {
-  loading.value = true;
   await useQuizStore().generateQuiz(
     currentInput.prompt,
     currentInput.topic,
     parseFloat(currentInput.numberOfQuestions)
   );
-
-  loading.value = false;
 };
 
 const handleGenerateQuiz = async () => {
-  useTryCatch().tryCatch(generateQuiz);
+  // generatedQuiz.value = {} as Quiz;
+  loading.value = true;
+
+  useQuizStore().quizGenerateState.generatedQuiz = {} as Quiz;
+  await useTryCatch().tryCatch(generateQuiz);
+  loading.value = false;
+  handleReset();
 };
 
 const handleSaveQuiz = async () => {
   useTryCatch().tryCatch(() => {
     // Reset the input fields
+    console.log(generatedQuiz.value);
     handleReset();
     return useQuizStore().createQuiz(generatedQuiz.value);
   });
@@ -132,7 +137,16 @@ const handleReset = () => {
   currentInput.prompt = "";
   currentInput.topic = "";
   currentInput.numberOfQuestions = "5";
-  useQuizStore().quizGenerateState.generatedQuiz = {} as Quiz;
+  loading.value = false;
+};
+
+const addDefaultTimeAndScoreValueToQuestions = (quiz: Quiz) => {
+  quiz.questions?.forEach((question) => {
+    question.time = 30;
+    question.point = 10;
+  });
+
+  return quiz;
 };
 
 watch(
@@ -140,7 +154,7 @@ watch(
   async (newVal) => {
     await nextTick();
     if (newVal) {
-      generatedQuiz.value = newVal;
+      generatedQuiz.value = addDefaultTimeAndScoreValueToQuestions(newVal);
     }
   },
   {

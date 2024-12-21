@@ -1,5 +1,6 @@
+import type { Question } from "~/types/quiz";
 import { Base } from "../base";
-import type { RoomRes } from "@/types/room";
+import type { RoomRes, Participant } from "@/types/room";
 
 export class Room extends Base {
   async createRoom(quizId: string) {
@@ -20,8 +21,8 @@ export class Room extends Base {
     );
   }
 
-  pollingForParticipants(roomId: string) {
-    return this.fetch(`${this.config.base_url}/room/polling/${roomId}`, {
+  getParticipants(roomCode: string) {
+    return this.fetch<Participant>(`${this.config.base_url}/room/participants?roomCode=${roomCode}`, {
       method: "GET",
     });
   }
@@ -85,6 +86,12 @@ export class Room extends Base {
     this.webSocketClient.publish({
       destination: `/app/room/${roomId}/next-question`,
       body: questionId,
+    });
+  }
+
+  getDetailQuestion(questionId: string): Promise<Question> {
+    return this.fetch(`${this.config.base_url}/question/detail/${questionId}`, {
+      method: "GET",
     });
   }
 }

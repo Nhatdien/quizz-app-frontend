@@ -96,7 +96,7 @@ const deleteQuestionAlertOption = (question: Question) => {
     description: "Are you sure you want to delete this question?",
     actionText: "Delete",
     action: async () => {
-      await useQuizStore().deleteQuestion(question.id as string);
+       useQuizStore().deleteQuestion(question.id as string);
     },
   };
 };

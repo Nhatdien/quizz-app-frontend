@@ -8,6 +8,7 @@ export type RoomRes = {
 
 export type Participant = {
   username: string;
+  isActive: boolean;
   score: number;
   roomId: string;
 };

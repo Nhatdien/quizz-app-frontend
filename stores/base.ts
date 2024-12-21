@@ -108,7 +108,7 @@ export abstract class Base {
         .then((response: Response) => {
           if (response.status !== 200) {
             if (response.status === 401) {
-              throw new Error("Unauthorized");
+              throw new Error("401 Unauthorized");
             }
             throw new Error(response.statusText + response.status);
           }
@@ -119,10 +119,13 @@ export abstract class Base {
             return response.text();
           }
         })
-        .catch((error) => {
+        .then((data) => {
+          resolve(data);
+        })
+        .catch((error: Error) => {
           useToast().toast({
             title: `Error: ${error.message}`,
-            description: "An error occurred while fetching data",
+            description: `An error occurred while fetching data`,
             variant: "destructive",
           });
           reject(error);

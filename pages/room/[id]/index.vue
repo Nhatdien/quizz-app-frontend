@@ -72,37 +72,6 @@ const currentQuestion = computed(() => {
   return useRoomStore().currentQuestion;
 });
 
-const testQuestion = {
-  id: "19c9550713a94e82acd249b9a29958ac",
-  content: "Ký hiệu nào dùng để gán giá trị trong JavaScript?",
-  point: 10.0,
-  time: 30,
-  questionType: 2,
-  imageUrl: null,
-  answers: [
-    {
-      id: "53e0475c7819419787b56a51512c5425",
-      content: "=>",
-      isCorrect: false,
-    },
-    {
-      id: "6fcf582f503f47a9a5d7a0c728e0d263",
-      content: "==",
-      isCorrect: false,
-    },
-    {
-      id: "b6b70b513b514826b9abda9f6d4d1b87",
-      content: ":=",
-      isCorrect: false,
-    },
-    {
-      id: "fdd0081879684896bc33b147b6ff4137",
-      content: "=",
-      isCorrect: true,
-    },
-  ],
-};
-
 const route = useRoute();
 
 const joinRoon = async () => {
@@ -121,6 +90,8 @@ const joinRoon = async () => {
     });
   }
 };
+
+const pollInterVal = ref();
 
 onMounted(async () => {
   if (!$quizzAppSDK.webSocketClient.connected) {
@@ -145,9 +116,22 @@ onMounted(async () => {
   });
   await useRoomStore().getQuestionIds(currentRoom.value?.quizzId);
   console.log("questionIds", useRoomStore().questionIds);
+
+  pollInterVal.value = setInterval(() => {
+    if (!useRoomStore().roomStarted) {
+      useRoomStore().getParticipants(currentRoom.value.code);
+    }
+  }, 5000);
 });
 
-onUnmounted(() => {
-  // $quizzAppSDK.webSocketClient.deactivate();
+onBeforeUnmount(() => {
+  clearInterval(pollInterVal.value);
+  if (isPlayer.value) {
+    useRoomStore().leaveRoom(
+      currentRoom.value.id,
+      currentRoom.value.code,
+      $keycloak.getUsername() as string
+    );
+  }
 });
 </script>

@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import QuizzAppSDK from "../quizzapp_sdk";
-import type { RoomRes } from "../../types/room";
+import type { RoomRes, Participant } from "../../types/room";
 import type { Question } from "../../types/quiz";
 
 export const useRoomStore = defineStore({
@@ -17,6 +17,7 @@ export const useRoomStore = defineStore({
     questionIds: [] as string[],
     clockTime: 0,
 
+    roomParticipants: [] as Participant[],
     participantScores: [] as { username: string; score: number }[],
     clockInterval: null as any,
   }),
@@ -60,6 +61,27 @@ export const useRoomStore = defineStore({
         });
     },
 
+    async getParticipants(roomCode: string) {
+      return QuizzAppSDK.getInstance()
+        .getParticipants(roomCode)
+        .then((participants) => {
+          this.roomParticipants = participants as any;
+          this.roomParticipants = this.roomParticipants.filter(
+            (participant) => participant.isActive
+          );
+        });
+    },
+
+    async leaveRoom(roomId: string, roomCode: string, username: string) {
+      return QuizzAppSDK.getInstance()
+        .leaveRoom(roomId, roomCode, username)
+        .then(() => {
+          this.roomParticipants = this.roomParticipants.filter(
+            (participant) => participant.username !== username
+          );
+        });
+    },
+
     async handleAnswerSubmission(answer: string, question: Question) {
       const isCorrect =
         question.answers.find((ans) => ans.isCorrect)?.content === answer;
@@ -86,7 +108,7 @@ export const useRoomStore = defineStore({
 
       //set current question
       const curQuestion = JSON.parse(question.body);
-      this.clockTime = curQuestion.time / 1000 / 6;
+      this.clockTime = curQuestion.time;
       this.currentQuestion = curQuestion;
       this.currentSubmission = [];
       this.currentQuestionIndex += 1;
@@ -124,7 +146,7 @@ export const useRoomStore = defineStore({
           // this.currentSubmission = [];
           // this.currentQuestionIndex = 0;
           // clearInterval(lastQuestionInterval);
-        }, this.currentQuestion.time * 1000 / 6);
+        }, (this.currentQuestion.time * 1000));
       }
     },
   },

@@ -27,7 +27,22 @@
   <div class="main-content-host">
     <div class="waiting-area">
       <p>Join on this device</p>
-      <h3>Waiting for players</h3>
+      <h3 v-if="useRoomStore().roomParticipants?.length === 0">
+        Waiting for players
+      </h3>
+      <div v-else class="player-container">
+        <div
+          v-for="player in useRoomStore().roomParticipants"
+          :key="player.username">
+          <div class="player w-24 flex flex-col items-center gap-2">
+            <img
+              src="@/assets/img/default_avt.jpg"
+              alt="Player Avatar"
+              class="rounded-full w-16 h-16" />
+            <p class="text-sm">{{ player.username }}</p>
+          </div>
+        </div>
+      </div>
       <button @click="handleNextQuestion" class="start-game-btn">
         Start game
       </button>
@@ -91,6 +106,10 @@ const handleNextQuestion = async () => {
   $quizzAppSDK.nextQuestion(
     useRoomStore().questionIds[useRoomStore().currentQuestionIndex],
     props.room.id
+  )
+
+  useRoomStore().currentQuestion = await $quizzAppSDK.getDetailQuestion(
+    useRoomStore().questionIds[useRoomStore().currentQuestionIndex]
   );
 
   useRoomStore().currentQuestionIndex++;
@@ -101,6 +120,10 @@ const handleNextQuestion = async () => {
         useRoomStore().questionIds[useRoomStore().currentQuestionIndex];
 
       $quizzAppSDK.nextQuestion(questionId, props.room.id);
+      useRoomStore().currentQuestion = await $quizzAppSDK.getDetailQuestion(
+        useRoomStore().questionIds[useRoomStore().currentQuestionIndex]
+      );
+      useRoomStore().currentQuestionIndex++;
       if (
         useRoomStore().currentQuestionIndex >= useRoomStore().questionIds.length
       ) {
@@ -108,7 +131,6 @@ const handleNextQuestion = async () => {
         clearInterval(nextQuestionInterval);
         return;
       }
-      useRoomStore().currentQuestionIndex++;
     },
 
     useRoomStore().currentQuestion.time * 1000

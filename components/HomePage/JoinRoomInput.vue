@@ -2,7 +2,7 @@
   <div class="review-item bg-[#FFF3E0] flex justify-center items-center">
     <div class="review-pin "></div>
     <div class="flex gap-4">
-      <span class="w-full">Join Game? Enter PIN:</span>
+      <span class="w-full font-bold">Join Game? Enter PIN:</span>
       <Input v-model="code" @keyup.enter="hanleClickJoinRoom"> </Input>
     </div>
   </div>
