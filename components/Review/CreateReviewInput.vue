@@ -40,6 +40,10 @@ const route = useRoute();
 
 const currentUsername = ref($keycloak.getTokenParsed()?.preferred_username);
 
+const emit = defineEmits({
+  afterCreate: () => {},
+})
+
 const currentReviewInput = reactive({
   comment: "",
   username: currentUsername,
@@ -47,16 +51,21 @@ const currentReviewInput = reactive({
   rating: 0,
 });
 
+
+const createReview = async () => {
+
+  emit("afterCreate");
+  useReviewStore().createReview(currentReviewInput);
+  
+  currentReviewInput.comment = "";
+  currentReviewInput.rating = 0;
+};
 const submitCreateReview = async () => {
   if (!currentReviewInput.comment) {
     return;
   }
   
-  // console.log($keycloak.getTokenParsed()?.preferred_username);
-  // console.log(currentReviewInput);
-  await useReviewStore().createReview(currentReviewInput);
-  currentReviewInput.comment = "";
-  currentReviewInput.rating = 0;
+  useTryCatch().tryCatch(createReview)
 };
 
 </script>

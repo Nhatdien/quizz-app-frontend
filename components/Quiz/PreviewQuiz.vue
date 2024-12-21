@@ -16,12 +16,12 @@
       </div>
     </div>
     <h2 class="quiz-title">{{ quiz?.title }}</h2>
-      <h3
-        class="quiz-question flex flex-col"
-        key="question-{{ currentQuestionIndex }}">
-        #{{ currentQuestionIndex + 1 }}
-        <span class="" v-html="currentQuestion?.content"></span>
-      </h3>
+    <h3
+      class="quiz-question flex flex-col"
+      key="question-{{ currentQuestionIndex }}">
+      #{{ currentQuestionIndex + 1 }}
+      <span class="" v-html="currentQuestion?.content"></span>
+    </h3>
     <div class="min-h-[360px]">
       <div v-if="currentQuestion?.questionType === 1">
         <OptionTypeQuiz
@@ -47,7 +47,7 @@
         <ArrowLeft />
       </button>
       <Button @click="handleClickSubmit" class="py-2 px-4">
-        SUBMIT
+        SUBMIT {{ getScore }}
       </Button>
       <button
         :class="`continue-button ${
@@ -105,6 +105,7 @@ const countdownDuration = 60;
 const currentQuestionIndex = ref(0);
 const currentPage = ref(0);
 const questionsPerPage = 5;
+const currentScore = ref(0);
 
 const currentQuestion = computed(() => {
   return props.quiz?.questions?.[currentQuestionIndex.value] as Question;
@@ -141,7 +142,7 @@ const handleClickContinue = (backOrContinue: "back" | "continue") => {
   }
 };
 
-const countCorrectAnswers = computed(() => {
+const getScore = computed(() => {
   const rightAnswers = props.quiz?.questions.map((question) => {
     return question.answers
       .filter((answer) => answer.isCorrect)
@@ -159,12 +160,17 @@ const countCorrectAnswers = computed(() => {
     );
   });
 
-  return correctAnswers.filter((answer) => answer).length;
+  return correctAnswers.reduce((total, isCorrect, index) => {
+    if (isCorrect) {
+      return total + (props.quiz?.questions[index].point || 0);
+    }
+    return total;
+  }, 0);
 });
 
 const isPassedSubmission = computed(() => {
   const scoreOutOf10 =
-    (countCorrectAnswers.value / (props.quiz?.questions?.length || 1)) * 10;
+    (getScore.value / (props.quiz?.questions?.length || 1)) * 10;
   return scoreOutOf10 >= 4;
 });
 
@@ -172,11 +178,11 @@ const handleClickSubmit = async () => {
   const quizAttemptPayload = {
     quizzId: props.quiz?.id,
     isPass: isPassedSubmission.value,
-    score: countCorrectAnswers.value,
+    score: getScore.value,
   };
 
   await useQuizStore().createQuizAttempt(quizAttemptPayload as QuizzAttempt);
-  navigateTo("result")
+  navigateTo("result");
 };
 
 const prevPage = () => {
@@ -230,5 +236,4 @@ watchEffect(() => {
 button {
   margin: 0 5px;
 }
-
 </style>

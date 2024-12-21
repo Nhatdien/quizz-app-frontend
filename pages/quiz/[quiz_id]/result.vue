@@ -12,57 +12,88 @@
 
       <p class="text-lg md:text-xl font-medium mb-6">Nice job, you passed!</p>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 relative">
-        <div class="bg-gray-50 p-4 rounded-lg shadow-md">
+      <div class="grid grid-cols-1 gap-4 mb-6 relative">
+        <div class="bg-gray-50 p-8 rounded-lg shadow-md">
           <h2 class="text-sm md:text-base font-semibold text-gray-500">
             YOUR SCORE
           </h2>
           <p class="text-3xl md:text-4xl font-bold text-green-600">
             {{ currentScore }} / {{ quizMaxScore }}
           </p>
+          <div class="relative">
+            <Progress v-model="progressValue" class="w-full mt-4" />
+            <span class="absolute top-[-8px] left-[40%] text-red-600">|</span>
+          </div>
           <p class="text-sm md:text-base text-gray-400">PASSING SCORE: 40%</p>
         </div>
-        <div class="bg-gray-50 p-4 rounded-lg shadow-md">
+        <!-- <div class="bg-gray-50 p-4 rounded-lg shadow-md">
           <h2 class="text-sm md:text-base font-semibold text-gray-500">
             YOUR POINTS
           </h2>
           <p class="text-3xl md:text-4xl font-bold text-green-600">10</p>
           <p class="text-sm md:text-base text-gray-400">PASSING POINTS: 10</p>
-        </div>
+        </div> -->
       </div>
-
-      <button
-        class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition"
-        @click="reviewQuiz">
-        Review Quiz
-      </button>
+      <div class="flex justify-center w-full items-center gap-4 mt-6">
+        <Button
+          @click="
+            () => {
+              isDialogOpen = false;
+              navigateTo(`/quiz/${useRoute().params.quiz_id}/join`);
+            }
+          ">
+          Retry
+        </Button>
+        <MyDialog
+          v-model:open="isDialogOpen"
+          title="Review Quiz"
+          @close="isDialogOpen = false">
+          <template #trigger>
+            <div class="flex justify-center">
+              <Button @click="reviewQuiz" :variant="'success'">
+                Review Quiz
+              </Button>
+            </div>
+          </template>
+          <template #title>
+            <span class="text-2xl font-bold"
+              >Show your thoughs about this quiz</span
+            >
+          </template>
+          <ReviewCreateReviewInput
+            @afterCreate="
+              () => {
+                isDialogOpen = false;
+              }
+            " />
+        </MyDialog>
+      </div>
     </div>
 
-    <div
+    <!-- <div
       class="bg-white rounded-lg shadow-md p-10 w-full max-w-lg text-center relative mt-8">
-      <h2 class="text-xl md:text-2xl font-semibold mb-4">Your Answers</h2>
-      <!-- <div
+      <h2 class="text-xl md:text-2xl font-semibold mb-8">Your Answers</h2>
+      <div
         v-for="(question, index) in currentQuiz?.questions"
         :key="index"
-        class="mb-4">
+        class="mb-8">
         <p class="text-lg font-medium">{{ question?.content }}</p>
         <p
           :class="{
-            'text-green-600': isCorrect(question),
-            'text-red-600': !isCorrect(question),
+            'text-green-600': true,
+            'text-red-600': false,
           }">
-          Your answer: {{ getAnswerText(question) }}
+          Your answer: aaa
         </p>
-        <p class="text-gray-500">
-          Correct answer: {{ getCorrectAnswerText(question) }}
-        </p>
-      </div> -->
-    </div>
+        <p class="text-gray-500">Correct answer: aaa</p>
+      </div>
+    </div> -->
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
+import MyDialog from "~/components/Common/MyDialog.vue";
 import Progress from "~/components/ui/progress/Progress.vue";
 import type { Question } from "~/types/quiz";
 
@@ -70,6 +101,7 @@ const { $quizzAppSDK } = useNuxtApp();
 const quizAttempt = computed(() => useQuizStore().quizAttempt);
 const currentUser = ref($quizzAppSDK.config.current_username);
 
+const isDialogOpen = ref();
 const currentQuiz = computed(() => {
   return useQuizStore().quiz[0];
 });
@@ -80,11 +112,17 @@ const currentScore = computed(() => {
   )[0]?.score;
 });
 
+const progressValue = ref(0);
+
 const quizMaxScore = computed(() => {
   return currentQuiz.value?.questions?.reduce(
     (acc, question) => acc + question.point,
     0
   );
+});
+
+watchEffect(() => {
+  progressValue.value = (currentScore.value / quizMaxScore.value) * 100;
 });
 
 // const isCorrect = (question: Question) => {
