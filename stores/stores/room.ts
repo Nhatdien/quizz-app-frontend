@@ -67,7 +67,7 @@ export const useRoomStore = defineStore({
         .then((participants) => {
           this.roomParticipants = participants as any;
           this.roomParticipants = this.roomParticipants.filter(
-            (participant) => participant.isActive
+            (participant) => participant.isActive || !participant.isActive
           );
         });
     },
@@ -141,12 +141,12 @@ export const useRoomStore = defineStore({
             this.currentScore,
             this.room.id
           );
-          navigateTo(`/room/${this.room.id}/result`);
+          navigateTo(`/room/${this.room.id}/result?code=${this.room.code}`);
           // this.currentQuestion = {} as any;
           // this.currentSubmission = [];
           // this.currentQuestionIndex = 0;
           // clearInterval(lastQuestionInterval);
-        }, (this.currentQuestion.time * 1000));
+        }, (this.currentQuestion.time * 1000 / 6));
       }
     },
   },

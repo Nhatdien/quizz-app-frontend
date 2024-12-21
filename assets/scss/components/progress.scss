@@ -1,0 +1,26 @@
+.progress-bar {
+  width: 100%;
+  background-color: hsla(var(--primary));
+
+  border-radius: 25px;
+  overflow: hidden;
+  position: relative;
+  height: 20px;
+}
+
+progress::-webkit-progress-value {
+  background-color: hsla(var(--primary)) !important;
+}
+
+progress::-webkit-progress-bar {
+    background-color: white !important;
+  }
+
+@keyframes progress-animation {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}

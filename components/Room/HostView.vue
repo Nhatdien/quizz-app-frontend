@@ -112,32 +112,44 @@ const handleNextQuestion = async () => {
     props.room.id
   );
 
-  useRoomStore().currentQuestion = await $quizzAppSDK.getDetailQuestion(
-    useRoomStore().questionIds[useRoomStore().currentQuestionIndex]
-  );
+  const currentQuestionId =
+    useRoomStore().questionIds[useRoomStore().currentQuestionIndex];
+
+  if (currentQuestionId) {
+    useRoomStore().currentQuestion = await $quizzAppSDK.getDetailQuestion(
+      currentQuestionId
+    );
+  }
 
   useRoomStore().currentQuestionIndex++;
 
   const nextQuestionInterval = setInterval(
     async () => {
-      const questionId =
-        useRoomStore().questionIds[useRoomStore().currentQuestionIndex];
+      try {
+        const questionId =
+          useRoomStore().questionIds[useRoomStore().currentQuestionIndex];
 
-      $quizzAppSDK.nextQuestion(questionId, props.room.id);
-      useRoomStore().currentQuestion = await $quizzAppSDK.getDetailQuestion(
-        useRoomStore().questionIds[useRoomStore().currentQuestionIndex]
-      );
+        $quizzAppSDK.nextQuestion(questionId, props.room.id);
+        useRoomStore().currentQuestion = await $quizzAppSDK.getDetailQuestion(
+          useRoomStore().questionIds[useRoomStore().currentQuestionIndex]
+        );
+      } catch (error) {
+        console.error("Error fetching next question:", error);
+      }
       useRoomStore().currentQuestionIndex++;
       if (
-        useRoomStore().currentQuestionIndex >= useRoomStore().questionIds.length
+        useRoomStore().currentQuestionIndex > useRoomStore().questionIds.length
       ) {
         console.log("End of quiz");
+        navigateTo(
+          "/room/" + props.room.id + "/result" + "?code=" + props.room.code
+        );
         clearInterval(nextQuestionInterval);
         return;
       }
     },
 
-    useRoomStore().currentQuestion.time * 1000
+    (useRoomStore().currentQuestion.time * 1000) / 6
   );
 };
 </script>

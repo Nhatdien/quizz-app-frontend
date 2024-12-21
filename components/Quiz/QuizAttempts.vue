@@ -7,12 +7,16 @@
       <div class="attempt highlight">
         <p class="recent-attempt">Last Attempt:</p>
 
-        <Progress class="relative" v-model="quizAttempt[0].score" />
+        <progress
+          class="progress-bar"
+          :aria-label="`Score: ${quizAttempt[0].score}`"
+          :max="quizMaxScore"
+          :value="quizAttempt[0].score" />
         <span
           :class="{
             score: true,
-            'score-passed': quizAttempt[0].score >= 50,
-            'score-failed': quizAttempt[0].score < 50,
+            'score-passed': quizAttempt[0].score >= quizMaxScore * 0.4,
+            'score-failed': quizAttempt[0].score < quizMaxScore * 0.4,
           }"
           >Score: {{ quizAttempt[0].score }}</span
         >
@@ -23,8 +27,11 @@
           v-for="(attempt, index) in quizAttempt.slice(1)"
           :key="index"
           class="attempt">
-          <p>User: {{ currentUser }}</p>
-          <Progress v-model="attempt.score" />
+          <p>{{ formatDate(attempt.time) }}</p>
+          <progress
+            class="progress-bar"
+            v-bind:max="quizMaxScore"
+            :value="attempt.score" />
         </div>
       </ScrollArea>
     </div>
@@ -53,7 +60,7 @@ const quizMaxScore = computed(() => {
   );
 });
 const scoreInProgress = computed(() => {
-  return 
+  return;
 });
 
 onMounted(async () => {
@@ -105,17 +112,17 @@ h1 {
 }
 .score {
   font-size: 1em;
-  font-weight: bold;
+  font-weight: 900;
   position: absolute;
   right: calc(50% - 4.5rem / 2);
-  bottom: 5px;
+  bottom: 11px;
 
   &-passed {
-    color: #28a745;
+    color: #41cd62;
   }
 
   &-failed {
-    color: #dc3545;
+    color: #e55462;
   }
 }
 
