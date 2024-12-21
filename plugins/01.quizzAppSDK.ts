@@ -12,6 +12,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   const config = nuxtApp.$config;
   const quizzAppSDK = QuizzAppSDK.getInstance({
     base_url: config.public.baseURL,
+    base_frontend_url: config.public.baseFrontendURL,
     websocket_url: config.public.websocketURL,
     client_id: config.public.clientId,
     access_token: "",
@@ -64,6 +65,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
       return;
     } else {
       console.log(error);
+      console.log("Error: ", error.message);
       toast({
         title: `Error: ${error.message}`,
         description: "Please try again later",

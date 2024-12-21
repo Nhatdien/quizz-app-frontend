@@ -4,6 +4,7 @@ import type {
   QuizCreate,
   SearchParams,
   QuizzAttempt,
+  Question,
 } from "@/types/quiz";
 import QuizzAppSDK from "../quizzapp_sdk";
 import type { BaseFilter } from "~/types/common";
@@ -16,7 +17,7 @@ export const useQuizStore = defineStore({
     quizGenerateState: {
       loading: false,
       error: "",
-      generatedQuiz: {} as Quiz ,
+      generatedQuiz: {} as Quiz,
     },
   }),
   actions: {
@@ -24,15 +25,24 @@ export const useQuizStore = defineStore({
       return QuizzAppSDK.getInstance()
         .createQuiz(quiz)
         .then(async (quiz) => {
+          const baseFrontendURL =
+            QuizzAppSDK.getInstance().config.base_frontend_url;
+          console.log(baseFrontendURL);
           const response = await QuizzAppSDK.getInstance().getQuiz(
             quiz.id as string
           );
-          this.quiz.push(response);
+          navigateTo(`${baseFrontendURL}/quiz/${response.id}/view`, {
+            external: true,
+          });
         });
     },
 
     async updateQuiz(quiz: Quiz) {
-      return QuizzAppSDK.getInstance().updateQuiz(quiz);
+      return QuizzAppSDK.getInstance()
+        .updateQuiz(quiz)
+        .then((quiz) => {
+          this.getQuiz(quiz.id as string);
+        });
     },
 
     async createQuizAttempt(quizAttempt: QuizzAttempt) {
@@ -78,7 +88,7 @@ export const useQuizStore = defineStore({
     async deleteQuiz(id: string) {
       return QuizzAppSDK.getInstance()
         .deleteQuiz(id)
-        .then(() => {
+        .then((res) => {
           this.quiz = this.quiz.filter((quiz) => quiz.id !== id);
         });
     },
@@ -99,6 +109,20 @@ export const useQuizStore = defineStore({
             console.error("Error deleting question:", error);
           }
         });
+    },
+
+    checkCorrectAnswer(answer: string[], question: Question) {
+      const rightAnswer = question.answers?.find((ans) => ans.isCorrect)
+        ?.content as string;
+
+      if (question.questionType === 2) {
+        return answer?.join("") || "" === rightAnswer;
+      }
+
+      return (
+        answer?.length > 0 &&
+        compareTwoArrayAnyOrder<string>(answer, [rightAnswer])
+      );
     },
   },
 });

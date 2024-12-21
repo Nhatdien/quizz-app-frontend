@@ -7,17 +7,34 @@
   </div>
   <div v-else>
     <div class="mt-5">
-      {{ useRoomStore().currentQuestion.content }}
-
       <div class="quiz-page">
+        <div class="text-3xl text-center my-4 flex flex-col items-center gap-8">
+          <div>time left: {{ useRoomStore().clockTime }}</div>
+
+          isCorrect:
+          {{
+            useQuizStore().checkCorrectAnswer(
+              useRoomStore().currentSubmission[0],
+              useRoomStore().currentQuestion
+            )
+          }}
+          {{ useRoomStore().currentSubmission }}
+          {{ useRoomStore().currentQuestionIndex + 1 }}/{{
+            useRoomStore().questionIds.length
+          }}
+          <span>{{ useRoomStore().currentQuestion.content }}</span>
+        </div>
+        <Question
+          v-if="useRoomStore().currentQuestion.questionType"
+          :question="useRoomStore().currentQuestion" />
         <PlayerView
-          v-if="false"
+          v-if="
+            isPlayer &&
+            !useRoomStore().roomStarted &&
+            !useRoomStore().currentQuestion.questionType
+          "
           :room="currentRoom"
           :question="currentQuestion" />
-        <QuizOptionType
-          :question="testQuestion"
-          :current-question-index="0"
-          :current-submissions="useRoomStore().currentSubmission" />
       </div>
     </div>
   </div>
@@ -26,6 +43,7 @@
 <script setup lang="ts">
 import { ActivationState } from "@stomp/stompjs";
 import QrCode from "~/components/Common/QrCode.vue";
+import Question from "~/components/Questions/Question.vue";
 import HostView from "~/components/Room/HostView.vue";
 import PlayerView from "~/components/Room/PlayerView.vue";
 import { toast } from "~/components/ui/toast";
@@ -59,7 +77,7 @@ const testQuestion = {
   content: "Ký hiệu nào dùng để gán giá trị trong JavaScript?",
   point: 10.0,
   time: 30,
-  questionType: 1,
+  questionType: 2,
   imageUrl: null,
   answers: [
     {
@@ -83,7 +101,7 @@ const testQuestion = {
       isCorrect: true,
     },
   ],
-}
+};
 
 const route = useRoute();
 
@@ -95,7 +113,7 @@ const joinRoon = async () => {
       $keycloak.getUsername() as string,
       useRoomStore().receiveQuesitonCallback
     );
-  } else {
+  } else if (isPlayer.value && useRoomStore().roomStarted) {
     toast({
       title: "Room already started",
       description: "You can't join the room now",
@@ -110,20 +128,26 @@ onMounted(async () => {
   }
   $quizzAppSDK.webSocketClient.activate();
   await waitForToken();
-  isPlayer.value = $keycloak.getUsername() !== currentRoom.value.createdBy;
 
   await useRoomStore().getRoomByCode(route.query.code as string);
+  isPlayer.value =
+    $quizzAppSDK.config.current_username !== currentRoom.value.createdBy;
+  console.log(
+    "isPlayer",
+    isPlayer.value,
+    $quizzAppSDK.config.current_username,
+    currentRoom.value.createdBy
+  );
+  joinRoon();
+
   useQuizStore().searchQuiz({
     textSearch: currentRoom.value?.quizzId,
   });
-  await $quizzAppSDK.getQuestionIds(currentRoom.value?.quizzId);
+  await useRoomStore().getQuestionIds(currentRoom.value?.quizzId);
+  console.log("questionIds", useRoomStore().questionIds);
 });
 
 onUnmounted(() => {
-  $quizzAppSDK.webSocketClient.unsubscribe(
-    `/topic/room/${currentRoom.value.id}`
-  );
-
-  isPlayer.value = false;
+  // $quizzAppSDK.webSocketClient.deactivate();
 });
 </script>

@@ -61,12 +61,18 @@
           </p>
         </div>
       </div>
-      <QuizCreateQuizForm v-if="step == 2" />
+      <QuizCreateQuizForm v-model="isShow" v-if="step == 2" />
       <CommonUploadFile
         :accept="'.xlsx'"
         :show-upload="true"
         :upload-path="'/quiz/import'"
         v-if="step == 3" />
+
+      <a
+        href="https://docs.google.com/spreadsheets/d/1ic9jFZXZxCQm5m2VM6tp-zuApT3SAJOoD6e-Mk6ffJg/edit?gid=525658875#gid=525658875"
+        target="_blank">
+        Go here for the template
+      </a>
     </DialogContent>
   </Dialog>
   <ClientOnly />

@@ -82,7 +82,6 @@ import { ref, reactive, computed, watch, nextTick } from "vue";
 import MySelect from "~/components/Common/MySelect.vue";
 import { Bot } from "lucide-vue-next";
 import type { Quiz } from "~/types/quiz";
-import { toast, useToast } from "~/components/ui/toast/use-toast";
 
 const generatedQuiz = ref({} as Quiz);
 const currentInput = reactive({
@@ -105,45 +104,27 @@ const topicOption = computed(() => {
   }));
 });
 
-const handleGenerateQuiz = async () => {
+const generateQuiz = async () => {
   loading.value = true;
-  try {
-    useQuizStore().quizGenerateState.loading = true;
-    await useQuizStore().generateQuiz(
-      currentInput.prompt,
-      currentInput.topic,
-      parseFloat(currentInput.numberOfQuestions)
-    );
-  } catch (error) {
-    console.error("Error generating quiz:", error);
-  } finally {
-    loading.value = false;
-  }
+  await useQuizStore().generateQuiz(
+    currentInput.prompt,
+    currentInput.topic,
+    parseFloat(currentInput.numberOfQuestions)
+  );
+
+  loading.value = false;
+};
+
+const handleGenerateQuiz = async () => {
+  useTryCatch().tryCatch(generateQuiz);
 };
 
 const handleSaveQuiz = async () => {
-  try {
-    await useQuizStore().createQuiz(generatedQuiz.value);
-
-    useToast().toast({
-      title: "Quiz saved",
-      description: "Your quiz has been saved successfully",
-      variant: "success",
-    });
-
-    const lastQuizInStore =
-      useQuizStore().quiz[useQuizStore().quiz.length || 1 - 1];
-    navigateTo(`/quiz/${lastQuizInStore.id}`);
+  useTryCatch().tryCatch(() => {
     // Reset the input fields
     handleReset();
-  } catch (error) {
-    console.error("Error saving quiz:", error);
-    useToast().toast({
-      title: "Error saving quiz",
-      description: "An error occurred while saving the quiz",
-      variant: "destructive",
-    });
-  }
+    return useQuizStore().createQuiz(generatedQuiz.value);
+  });
 };
 
 const handleReset = () => {

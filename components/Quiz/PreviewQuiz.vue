@@ -145,7 +145,7 @@ const countCorrectAnswers = computed(() => {
   const rightAnswers = props.quiz?.questions.map((question) => {
     return question.answers
       .filter((answer) => answer.isCorrect)
-      .map((answer) => getInnerTextFromHTML(answer.content));
+      .map((answer) => answer.content);
   }) as string[][];
 
   const correctAnswers = currentSubmissions.value.map((submission, index) => {

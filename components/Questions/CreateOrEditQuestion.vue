@@ -56,14 +56,12 @@
         <div class="option-icons">
           <Button
             variant="destructive"
-            
             v-if="answers.length > 3"
             @click="deleteOption(index)">
             <Trash />
           </Button>
           <Button variant="secondary" icon="image">
             <Image />
-          
           </Button>
           <Checkbox
             v-model:checked="option.isCorrect"
@@ -109,6 +107,22 @@ const props = defineProps({
   },
 });
 
+const questionPointOptions = [
+  { label: "10 point", value: 10 },
+  { label: "20 point", value: 20 },
+  { label: "30 point", value: 30 },
+  { label: "40 point", value: 40 },
+  { label: "50 point", value: 50 },
+];
+
+const questionTimeOptions = [
+  { label: "30 seconds", value: 30 },
+  { label: "60 seconds", value: 60 },
+  { label: "90 seconds", value: 90 },
+  { label: "120 seconds", value: 120 },
+  { label: "150 seconds", value: 150 },
+];
+
 const isEditingQuestion = ref(!!props?.question?.id);
 
 const currentQuiz = computed(() => {
@@ -142,7 +156,9 @@ const submitPayload = computed(() => {
 
 const handleSaveQuestion = async () => {
   // console.log(submitPayload.value);
-  await useQuizStore().updateQuiz(submitPayload.value);
+  useTryCatch().tryCatch(() => {
+    return useQuizStore().updateQuiz(submitPayload.value);
+  });
 };
 
 watch(props.question, (newVal) => {

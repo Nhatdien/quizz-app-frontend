@@ -20,6 +20,7 @@ class QuizzAppSDK extends Base {
     const result = this._instance || (this._instance = new this(config));
     return result;
   }
+
 }
 
 interface QuizzAppSDK

@@ -15,8 +15,10 @@ export const useRoomStore = defineStore({
     roomStarted: false,
     currentSubmission: [] as string[][],
     questionIds: [] as string[],
+    clockTime: 0,
 
     participantScores: [] as { username: string; score: number }[],
+    clockInterval: null as any,
   }),
   actions: {
     async createRoom(quizId: string) {
@@ -41,6 +43,7 @@ export const useRoomStore = defineStore({
       return QuizzAppSDK.getInstance()
         .getRoomByCode(roomCode)
         .then((room) => {
+          console.log(room);
           this.room = room;
         });
     },
@@ -73,6 +76,7 @@ export const useRoomStore = defineStore({
     receiveQuesitonCallback(question: any) {
       console.log(JSON.parse(question.body));
 
+      //handling answer submission
       if (this.currentQuestionIndex > 0) {
         this.handleAnswerSubmission(
           this.currentSubmission[0][0],
@@ -80,11 +84,28 @@ export const useRoomStore = defineStore({
         );
       }
 
+      //set current question
       const curQuestion = JSON.parse(question.body);
+      this.clockTime = curQuestion.time / 1000 / 6;
       this.currentQuestion = curQuestion;
       this.currentSubmission = [];
       this.currentQuestionIndex += 1;
 
+      // Clear any existing interval
+      if (this.clockInterval) {
+        clearInterval(this.clockInterval);
+      }
+
+      // Start a new interval for the clock timer
+      this.clockInterval = setInterval(() => {
+        if (this.clockTime > 0) {
+          this.clockTime -= 1;
+        } else {
+          clearInterval(this.clockInterval);
+        }
+      }, 1000);
+
+      //hanlding last question
       if (this.currentQuestionIndex >= this.questionIds.length) {
         const lastQuestionTimeOut = setTimeout(() => {
           this.handleAnswerSubmission(
@@ -103,7 +124,7 @@ export const useRoomStore = defineStore({
           // this.currentSubmission = [];
           // this.currentQuestionIndex = 0;
           // clearInterval(lastQuestionInterval);
-        }, (this.currentQuestion.time * 1000) / 6);
+        }, this.currentQuestion.time * 1000 / 6);
       }
     },
   },

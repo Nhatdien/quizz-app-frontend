@@ -111,7 +111,7 @@ const handleNextQuestion = async () => {
       useRoomStore().currentQuestionIndex++;
     },
 
-    useRoomStore().questionIds.length ? 5000 : 0
+    useRoomStore().currentQuestion.time * 1000
   );
 };
 </script>

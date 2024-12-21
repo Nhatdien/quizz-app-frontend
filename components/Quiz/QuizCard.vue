@@ -41,12 +41,16 @@
         </div>
       </div>
     </CardContent>
-    <CardFooter />
+    <CardFooter >
+
+  </CardFooter>
   </Card>
 </template>
 
 <script setup lang="ts">
 import { Star, MessageCircle, SquareCheck } from "lucide-vue-next";
+import AlertDialog from "@/components/Common/AlertDialog.vue";
+
 import {
   Card,
   CardContent,
@@ -62,6 +66,8 @@ const props = defineProps({
     required: true,
   },
 });
+
+
 </script>
 
 <style scoped lang="scss">

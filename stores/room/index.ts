@@ -20,7 +20,18 @@ export class Room extends Base {
     );
   }
 
-  joinRoom(roomId: string, roomCode: string, username: string, onMessageCallback: (message: any) => void) {
+  pollingForParticipants(roomId: string) {
+    return this.fetch(`${this.config.base_url}/room/polling/${roomId}`, {
+      method: "GET",
+    });
+  }
+
+  joinRoom(
+    roomId: string,
+    roomCode: string,
+    username: string,
+    onMessageCallback: (message: any) => void
+  ) {
     super.webSocketClient.subscribe(
       `/topic/room/${roomId}/questions`,
       onMessageCallback
@@ -51,9 +62,13 @@ export class Room extends Base {
     });
   }
 
-  leaveRoom(roomId: string) {
-    super.webSocketClient.unsubscribe(
-      `/topic/room/${roomId}/questions`
+  leaveRoom(roomId: string, roomCode: string, username: string) {
+    super.webSocketClient.unsubscribe(`/topic/room/${roomId}/questions`);
+    return this.fetch(
+      `${this.config.base_url}/participant/leave?roomCode=${roomCode}&username=${username}`,
+      {
+        method: "POST",
+      }
     );
   }
 
@@ -69,7 +84,7 @@ export class Room extends Base {
   nextQuestion(questionId: string, roomId: string): void {
     this.webSocketClient.publish({
       destination: `/app/room/${roomId}/next-question`,
-      body: questionId
+      body: questionId,
     });
   }
 }

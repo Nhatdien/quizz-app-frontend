@@ -1,8 +1,10 @@
 import { Client } from "@stomp/stompjs";
 import type { IFrame, ActivationState } from "@stomp/stompjs";
+import { useToast } from "@/components/ui/toast/use-toast";
 
 export type Config = {
   base_url: string;
+  base_frontend_url?: string;
   current_username?: string;
   websocket_url?: string;
   access_token?: string;
@@ -17,6 +19,7 @@ export abstract class Base {
   public config: Config = {
     base_url: "",
     current_username: "",
+    base_frontend_url: "",
     websocket_url: "",
     access_token: "",
     client_id: "",
@@ -86,8 +89,6 @@ export abstract class Base {
   };
 
   protected async fetch<T>(input: RequestInfo, init?: RequestInit): Promise<T> {
-    this.onLoading(true);
-
     // Add default headers
     const defaultProperty: RequestInit = {
       ...init,
@@ -109,6 +110,7 @@ export abstract class Base {
             if (response.status === 401) {
               throw new Error("Unauthorized");
             }
+            throw new Error(response.statusText + response.status);
           }
           const contentType = response.headers.get("content-type");
           if (contentType && contentType.includes("application/json")) {
@@ -117,13 +119,12 @@ export abstract class Base {
             return response.text();
           }
         })
-        .then((data) => {
-          this.onLoading(false);
-          resolve(data);
-        })
         .catch((error) => {
-          this.onError(error);
-          this.onLoading(false);
+          useToast().toast({
+            title: `Error: ${error.message}`,
+            description: "An error occurred while fetching data",
+            variant: "destructive",
+          });
           reject(error);
         });
     });

@@ -1,30 +1,61 @@
 <template>
   <div class="quiz-card">
-    <img class="quiz-image" src="@/assets/img/default_avt.jpg" :alt="quiz?.title" />
+    <img
+      class="quiz-image"
+      src="@/assets/img/default_avt.jpg"
+      :alt="quiz?.title" />
     <div class="quiz-info">
-      <h3 class="quiz-title">{{ quiz?.title }}</h3>
+      <h3
+        @click="navigateTo(`/quiz/${quiz?.id}/view`)"
+        class="quiz-title hover:cursor-pointer hover:underline">
+        {{ quiz?.title }}
+      </h3>
       <div class="quiz-details">
         <span class="quiz-rating">⭐ {{ quiz?.averageRating }}/5</span>
-        <span class="quiz-comments">💬 {{ quiz.totalComments ?? quiz.totalReviews }}</span>
+        <span class="quiz-comments"
+          >💬 {{ quiz.totalComments ?? quiz.totalReviews }}</span
+        >
         <span class="quiz-date ml-4">By: {{ quiz.createdBy }}</span>
       </div>
       <!-- <div class="quiz-tags">
         <span v-for="tag in tags" :key="tag" class="quiz-tag">{{ tag }}</span>
       </div> -->
     </div>
+    {{ isOpen }}
+    <AlertDialog v-model:open="isOpen" class="" :option="deleteQuizAlertOption">
+      <template #trigger>
+        <Button variant="destructive"><Trash /></Button>
+      </template>
+    </AlertDialog>
   </div>
 </template>
 
 <script setup lang="ts">
 import { Star, MessageCircle, SquareCheck } from "lucide-vue-next";
 import type { Quiz } from "~/types/quiz";
+import AlertDialog from "@/components/Common/AlertDialog.vue";
+import { Trash } from "lucide-vue-next";
 
+const isOpen = ref();
 const props = defineProps({
   quiz: {
     type: Object as PropType<Quiz>,
     required: true,
   },
 });
+
+const deleteQuizAlertOption = {
+  title: "Delete Quiz",
+  description: "Are you sure you want to delete this quiz?",
+  actionText: "Delete",
+  action: () => {
+    useTryCatch().tryCatch(() => {
+      isOpen.value = false;
+      console.log(isOpen.value);
+      return useQuizStore().deleteQuiz(props.quiz.id as string);
+    });
+  },
+};
 </script>
 
 <style scoped lang="scss">

@@ -2,9 +2,11 @@
   <ClientOnly />
   <Dialog v-model:open="isOpen">
     <DialogTrigger v-model="isOpen" as-child>
-      <div class="flex w-full justify-end items-center" :class="{
-        'mb-4': !isEdingNote,
-      }">
+      <div
+        class="flex w-full justify-end items-center"
+        :class="{
+          'mb-4': !isEdingNote,
+        }">
         <Button
           :variant="isEdingNote ? 'info' : 'default'"
           class="justify-self-end">
@@ -115,24 +117,28 @@ const submitForm = () => {
 
   if (v$.value.$invalid !== true) {
     if (props.isEdingNote) {
-      useNoteStore().updateNote([
-        {
-          id: props.note?.id,
-          title: editTingNote.noteTitle,
-          note: editTingNote.noteContent,
-          quizzId: props.currentQuizInfo.quizId,
-          questionId: props.currentQuizInfo.questionId,
-        },
-      ]);
+      useTryCatch().tryCatch(() =>
+        useNoteStore().updateNote([
+          {
+            id: props.note?.id,
+            title: editTingNote.noteTitle,
+            note: editTingNote.noteContent,
+            quizzId: props.currentQuizInfo.quizId,
+            questionId: props.currentQuizInfo.questionId,
+          },
+        ])
+      );
     } else {
-      useNoteStore().createNote([
-        {
-          title: formData.noteTitle,
-          note: formData.noteContent,
-          quizzId: props.currentQuizInfo.quizId,
-          questionId: props.currentQuizInfo.questionId,
-        },
-      ]);
+      useTryCatch().tryCatch(() =>
+        useNoteStore().createNote([
+          {
+            title: formData.noteTitle,
+            note: formData.noteContent,
+            quizzId: props.currentQuizInfo.quizId,
+            questionId: props.currentQuizInfo.questionId,
+          },
+        ])
+      );
 
       // formData.noteTitle = "";
       // formData.noteContent = "";

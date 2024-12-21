@@ -43,7 +43,7 @@ const handleDeleteNoteOption = (noteID: string) => {
     description: "Are you sure you want to delete this question?",
     actionText: "Delete",
     action: async () => {
-      await useNoteStore().deleteNote(noteID);
+      useTryCatch().tryCatch(() => useNoteStore().deleteNote(noteID));
     },
   };
 };

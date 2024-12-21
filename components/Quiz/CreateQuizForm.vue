@@ -4,10 +4,10 @@
       <FormItem label="Quiz Title">
         <Input v-model="quizTitle" placeholder="Enter quiz title" />
         <div class="flex flex-col" v-if="v$.quizTitle.$error">
-         <span v-if="v$.quizTitle.required" class="text-red-500">{{
+          <span v-if="v$.quizTitle.required" class="text-red-500">{{
             v$.quizTitle.required.$message
           }}</span>
-           <!-- 
+          <!-- 
           <span v-if="v$.quizTitle.minLength" class="text-red-500">{{
             v$.quizTitle.minLength.$message
           }}</span> -->
@@ -52,6 +52,7 @@ import { ref } from "vue";
 import { Input } from "@/components/ui/input";
 import { useVuelidate } from "@vuelidate/core";
 import { required, minLength } from "@vuelidate/validators";
+import { useToast } from "@/components/ui/toast/use-toast";
 
 const quizTitle = ref("");
 const quizDescription = ref("");
@@ -59,6 +60,7 @@ const topicCode = ref("");
 const uploadImage = ref<File | null>(null);
 
 const { $quizzAppSDK } = useNuxtApp();
+const showDialogModelValue = defineModel<boolean>()
 
 const rules = {
   quizTitle: { required, minLength: minLength(3) },
@@ -119,12 +121,31 @@ const submitForm = async () => {
 
     const quizStoreLength = useQuizStore().quiz.length || 1;
     console.log(createQuizPayload.value, useTopicStore().topicCodeSelected);
+    try{
 
-    await useQuizStore().createQuiz({
-      ...createQuizPayload.value,
-      imageUrl: imageLink ? imageLink : null,
-    });
-    navigateTo(`/quiz/${useQuizStore().quiz[quizStoreLength - 1].id}/view`);
+      useTryCatch().tryCatch(async () => {
+        await useQuizStore().createQuiz({
+          ...createQuizPayload.value,
+          imageUrl: imageLink ? imageLink : null,
+        });
+      });
+      showDialogModelValue.value = false;
+      // await useQuizStore().createQuiz({
+      //   ...createQuizPayload.value,
+      //   imageUrl: imageLink ? imageLink : null,
+      // });
+
+      // useToast().toast({
+      //   title: "Quiz created successfully!",
+      //   description: "You can now add questions to the quiz.",
+      //   variant: "success",
+      // })
+
+      // navigateTo(`/quiz/${useQuizStore().quiz[quizStoreLength - 1].id}/view`);
+
+    } catch (error) {
+      console.error("Error creating quiz:", error);
+    }
   }
   // Add your form submission logic here
 };
