@@ -93,15 +93,16 @@ const props = defineProps({
   display: flex;
   align-items: center;
   margin-bottom: 1rem;
+  object-fit: cover;
 }
 
 .quiz-image {
   border: 1px solid #030303;
-  margin-top: 1rem;
+  width: 80px;
+  height: 80px;
   object-fit: cover;
-  max-width: 100px;
-  max-height: 100px;
-  border-radius: 50%;
+  border-radius: 6px;
+  margin-top: 1rem;
 }
 
 .quiz-details {

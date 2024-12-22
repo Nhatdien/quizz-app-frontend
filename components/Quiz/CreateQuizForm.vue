@@ -95,6 +95,7 @@ import MySelect from "../Common/MySelect.vue";
 const quizTitle = ref("");
 const quizDescription = ref("");
 const topicCode = ref("");
+const currentImageLink = ref<string | null>("");
 const uploadImage = ref<File | null>(null);
 const currentTab = ref("existing");
 const newTopicInput = reactive({
@@ -180,29 +181,7 @@ async function uploadFile(): Promise<void> {
   }
 }
 
-const createQuiz = async () => {
-  const payload = { ...createQuizPayload.value };
-  if (currentTab.value === "new") {
-    await useTopicStore().createTopic({
-      code: newTopicInput.topicCode,
-      title: newTopicInput.topicTitle,
-      description: newTopicInput.topicDescription,
-    });
-    await delay(500);
-    payload.topicCode = useTopicStore().createdTopic.code;
-    await useQuizStore().createQuiz(payload);
-  }
-
-  if (currentTab.value === "existing") {
-    await useQuizStore().createQuiz(createQuizPayload.value);
-  }
-};
-
-const submitForm = async () => {
-  // v$.value.$validate();
-
-  let imageLink = "" as string | null;
-  // if (v$.value.$invalid !== true) {
+const submitUploadFile = async () => {
   if (uploadImage.value) {
     const res = (await $quizzAppSDK.uploadFile(
       uploadImage.value,
@@ -225,10 +204,46 @@ const submitForm = async () => {
       },
     });
     const responseText = await new Response(stream).text();
-    imageLink = responseText ? responseText : null;
+    currentImageLink.value = responseText ? responseText : null;
 
-    responseText ? (imageLink = responseText) : (imageLink = null);
+    responseText
+      ? (currentImageLink.value = responseText)
+      : (currentImageLink.value = null);
   }
+};
+
+const createQuiz = async () => {
+  const payload = { ...createQuizPayload.value };
+  if (currentTab.value === "new") {
+    await useTopicStore().createTopic({
+      code: newTopicInput.topicCode,
+      title: newTopicInput.topicTitle,
+      description: newTopicInput.topicDescription,
+    });
+    await delay(500);
+    payload.topicCode = useTopicStore().createdTopic.code;
+    await submitUploadFile();
+    await useQuizStore().createQuiz({
+      ...payload,
+      imageUrl: currentImageLink.value,
+    });
+  }
+
+  if (currentTab.value === "existing") {
+    await submitUploadFile();
+
+    await useQuizStore().createQuiz({
+      ...createQuizPayload.value,
+      imageUrl: currentImageLink.value,
+    });
+  }
+};
+
+const submitForm = async () => {
+  // v$.value.$validate();
+
+  let imageLink = "" as string | null;
+  // if (v$.value.$invalid !== true) {
 
   const quizStoreLength = useQuizStore().quiz.length || 1;
   console.log(createQuizPayload.value, useTopicStore().topicCodeSelected);
