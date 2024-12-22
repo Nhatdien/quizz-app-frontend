@@ -7,7 +7,7 @@ COPY package.json yarn.lock ./
 RUN yarn install
 
 COPY . .
-RUN rm -rf ./output && yarn build
+RUN yarn build
 
 # Run the application
 FROM node:20.18.1-alpine3.19

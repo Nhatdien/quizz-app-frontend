@@ -24,18 +24,54 @@
           }}</span>
         </div>
       </FormItem>
-      <FormItem label="Quiz Topic">
-        <!-- {{topicCode}} -->
-        <QuizTopicSearchBox />
-        <div v-if="v$.topicCode.$error">
-          <span v-if="v$.topicCode.$pending" class="text-yellow-500"
-            >Validating...</span
-          >
-          <span v-if="v$.topicCode.required" class="text-red-500">{{
-            v$.topicCode.required.$message
-          }}</span>
-        </div>
-      </FormItem>
+      <MyTabs v-model="currentTab" :tabOptions="tabOptions">
+        <template #tab-trigger-new> Create new topic </template>
+
+        <template #tab-trigger-existing> Use existing topic </template>
+        <template #tab-content-new>
+          <!-- <TopicSearchBox /> -->
+          <FormItem label="Topic Name">
+            <Input
+              v-model="newTopicInput.topicTitle"
+              placeholder="Enter topic title" />
+            <Input
+              v-model="newTopicInput.topicCode"
+              placeholder="Enter topic code" />
+            <Textarea
+              v-model="newTopicInput.topicDescription"
+              placeholder="Enter topic description" />
+            <div v-if="v$.topicCode.$error">
+              <span v-if="v$.topicCode.$pending" class="text-yellow-500"
+                >Validating...</span
+              >
+              <span v-if="v$.topicCode.required" class="text-red-500">{{
+                v$.topicCode.required.$message
+              }}</span>
+            </div>
+          </FormItem>
+        </template>
+        <template #tab-content-existing>
+          <FormItem label="Quiz Topic">
+            <MySelect
+              class="w-full"
+              v-model="topicCode"
+              :isFilter="true"
+              :options="topicNameMap"
+              :placeholderFlte="{
+                placeholderFilter: 'Type to search for topic...',
+                placeholderSelect: 'Select a topic...',
+              }" />
+            <div v-if="v$.topicCode.$error">
+              <span v-if="v$.topicCode.$pending" class="text-yellow-500"
+                >Validating...</span
+              >
+              <span v-if="v$.topicCode.required" class="text-red-500">{{
+                v$.topicCode.required.$message
+              }}</span>
+            </div>
+          </FormItem>
+        </template>
+      </MyTabs>
 
       <FormItem label="Upload Image">
         <CommonUploadFile :accept="'image/*'" v-model="uploadImage" />
@@ -53,14 +89,38 @@ import { Input } from "@/components/ui/input";
 import { useVuelidate } from "@vuelidate/core";
 import { required, minLength } from "@vuelidate/validators";
 import { useToast } from "@/components/ui/toast/use-toast";
+import MyTabs from "../Common/MyTabs.vue";
+import MySelect from "../Common/MySelect.vue";
 
 const quizTitle = ref("");
 const quizDescription = ref("");
 const topicCode = ref("");
 const uploadImage = ref<File | null>(null);
+const currentTab = ref("existing");
+const newTopicInput = reactive({
+  topicCode: "",
+  topicTitle: "",
+  topicDescription: "",
+});
+
+const isNewTopicValid = computed(() => {
+  return (
+    newTopicInput.topicCode.length > 0 &&
+    newTopicInput.topicTitle.length > 0 &&
+    newTopicInput.topicDescription.length > 0
+  );
+});
+
+const topicNameMap = computed(() => {
+  return useTopicStore().topics.map((topic) => ({
+    value: topic.code,
+    label: topic.title,
+  }));
+});
 
 const { $quizzAppSDK } = useNuxtApp();
 const showDialogModelValue = defineModel<boolean>();
+const showDialogNewTopic = ref(false);
 
 const rules = {
   quizTitle: { required, minLength: minLength(3) },
@@ -68,13 +128,28 @@ const rules = {
   topicCode: { required },
 };
 
-const v$ = useVuelidate(rules, { quizTitle, quizDescription, topicCode });
+const tabOptions = [
+  {
+    value: "new",
+    label: "Create new topic",
+  },
+  {
+    value: "existing",
+    label: "Use existing topic",
+  },
+];
+
+const v$ = useVuelidate(rules, {
+  quizTitle,
+  quizDescription,
+  topicCode: currentTab.value === "new" ? newTopicInput.topicCode : topicCode,
+});
 
 const createQuizPayload = computed(() => {
   return {
     title: quizTitle.value,
     description: quizDescription.value,
-    topicCode: useTopicStore().topicCodeSelected,
+    topicCode: topicCode.value,
     questions: [],
   };
 });
@@ -105,64 +180,73 @@ async function uploadFile(): Promise<void> {
   }
 }
 
+const createQuiz = async () => {
+  const payload = { ...createQuizPayload.value };
+  if (currentTab.value === "new") {
+    await useTopicStore().createTopic({
+      code: newTopicInput.topicCode,
+      title: newTopicInput.topicTitle,
+      description: newTopicInput.topicDescription,
+    });
+    await delay(500);
+    payload.topicCode = useTopicStore().createdTopic.code;
+    await useQuizStore().createQuiz(payload);
+  }
+
+  if (currentTab.value === "existing") {
+    await useQuizStore().createQuiz(createQuizPayload.value);
+  }
+};
+
 const submitForm = async () => {
-  v$.value.$validate();
+  // v$.value.$validate();
 
   let imageLink = "" as string | null;
-  if (v$.value.$invalid !== true) {
-    if (uploadImage.value) {
-      const res = (await $quizzAppSDK.uploadFile(
-        uploadImage.value,
-        "/upload/image"
-      )) as Response;
-      if (!res.body) {
-        throw new Error("Response body is null");
-      }
-      const reader = res.body.getReader();
-      const stream = new ReadableStream({
-        async start(controller) {
-          while (true) {
-            const { done, value } = await reader.read();
-            if (done) {
-              break;
-            }
-            controller.enqueue(value);
+  // if (v$.value.$invalid !== true) {
+  if (uploadImage.value) {
+    const res = (await $quizzAppSDK.uploadFile(
+      uploadImage.value,
+      "/upload/image"
+    )) as Response;
+    if (!res.body) {
+      throw new Error("Response body is null");
+    }
+    const reader = res.body.getReader();
+    const stream = new ReadableStream({
+      async start(controller) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) {
+            break;
           }
-          controller.close();
-        },
-      });
-      const responseText = await new Response(stream).text();
-      imageLink = responseText ? responseText : null;
-      
-      responseText ? (imageLink = responseText) : (imageLink = null);
-    }
+          controller.enqueue(value);
+        }
+        controller.close();
+      },
+    });
+    const responseText = await new Response(stream).text();
+    imageLink = responseText ? responseText : null;
 
-    const quizStoreLength = useQuizStore().quiz.length || 1;
-    console.log(createQuizPayload.value, useTopicStore().topicCodeSelected);
-    try {
-      useTryCatch().tryCatch(async () => {
-        await useQuizStore().createQuiz({
-          ...createQuizPayload.value,
-          imageUrl: imageLink ? imageLink : null,
-        });
-      });
-      showDialogModelValue.value = false;
-      // await useQuizStore().createQuiz({
-      //   ...createQuizPayload.value,
-      //   imageUrl: imageLink ? imageLink : null,
-      // });
-
-      // useToast().toast({
-      //   title: "Quiz created successfully!",
-      //   description: "You can now add questions to the quiz.",
-      //   variant: "success",
-      // })
-
-      // navigateTo(`/quiz/${useQuizStore().quiz[quizStoreLength - 1].id}/view`);
-    } catch (error) {
-      console.error("Error creating quiz:", error);
-    }
+    responseText ? (imageLink = responseText) : (imageLink = null);
   }
+
+  const quizStoreLength = useQuizStore().quiz.length || 1;
+  console.log(createQuizPayload.value, useTopicStore().topicCodeSelected);
+  try {
+    // useTryCatch().tryCatch(async () => {
+    //   await useQuizStore().createQuiz({
+    //     ...createQuizPayload.value,
+    //     imageUrl: imageLink ? imageLink : null,
+    //   });
+    // });
+    showDialogModelValue.value = false;
+    await useTryCatch().tryCatch(createQuiz);
+
+    navigateTo(`/quiz/${useQuizStore().quiz[quizStoreLength - 1].id}/view`);
+  } catch (error) {
+    console.error("Error creating quiz:", error);
+  }
+  // }
   // Add your form submission logic here
 };
 

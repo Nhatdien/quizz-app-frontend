@@ -21,10 +21,15 @@ const selectedTopic = ref<string | null>(null);
 const inputValue = ref("");
 
 const topicNameMap = computed(() => {
-  return searchResults.value.map((topic) => ({
-    value: topic.code,
-    label: topic.title,
-  }));
+  return searchResults.value.length > 0
+    ? searchResults.value.map((topic) => ({
+        value: topic.code,
+        label: topic.title,
+      }))
+    : useTopicStore().topics.map((topic) => ({
+        value: topic.code,
+        label: topic.title,
+      }));
 });
 
 const onInputTopicSearch = (event: Event) => {
@@ -68,15 +73,14 @@ const onSelectTopic = (topicLabel: string, topicValue: string) => {
     <CommandList v-if="!selectedTopic">
       <CommandEmpty>No results found.</CommandEmpty>
       <CommandGroup heading="Suggestions">
-      <CommandItem
-        
-        v-for="topic in topicNameMap"
-        :key="topic.value"
-        :value="topic.label"
-        :class="'cursor-pointer'"
-        @click="onSelectTopic(topic.label, topic.value)">
-        {{ topic.label }}
-      </CommandItem>
+        <CommandItem
+          v-for="topic in topicNameMap"
+          :key="topic.value"
+          :value="topic.label"
+          :class="'cursor-pointer'"
+          @click="onSelectTopic(topic.label, topic.value)">
+          {{ topic.label }}
+        </CommandItem>
       </CommandGroup>
       <!-- <CommandSeparator />/ -->
     </CommandList>

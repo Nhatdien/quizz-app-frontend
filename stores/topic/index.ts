@@ -32,7 +32,7 @@ export class Topic extends Base {
   }
 
   async createTopic(topic: TopicRequest) {
-    return this.fetch<TopicRequest>(`${this.config.base_url}/topic`, {
+    return this.fetch<TopicType>(`${this.config.base_url}/topic/create`, {
       method: "POST",
       body: JSON.stringify(topic),
     });
