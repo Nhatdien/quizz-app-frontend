@@ -1,6 +1,6 @@
 import { Client } from "@stomp/stompjs";
 import type { IFrame, ActivationState } from "@stomp/stompjs";
-import { useToast } from "@/components/ui/toast/use-toast";
+import { toast, useToast } from "@/components/ui/toast/use-toast";
 
 export type Config = {
   base_url: string;
@@ -9,6 +9,57 @@ export type Config = {
   websocket_url?: string;
   access_token?: string;
   client_id?: string;
+};
+
+const readResponseBody = async (response: Response) => {
+  const contentType = response.headers.get("content-type");
+  if (contentType && contentType.includes("application/json")) {
+    return response.json();
+  } else {
+    return response.text();
+  }
+};
+
+const checkJsonRes = (data: string) => {
+  const jsonRegex = /((\[[^\}]{3,})?\{s*[^\}\{]{3,}?:.*\}([^\{]+\])?)/;
+  return jsonRegex.test(
+    data
+      .replace(/\\["\\\/bfnrtu]/g, "@")
+      .replace(
+        /"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,
+        "]"
+      )
+      .replace(/(?:^|:|,)(?:\s*\[)+/g, "")
+  );
+};
+
+const createNotify = (response: Response) => {
+  readResponseBody(response).then((data) => {
+    if (typeof data === "string" && checkJsonRes(data)) {
+      const parsedData = JSON.parse(data);
+      const errorMessage =
+        parsedData?.detail || parsedData?.message || parsedData?.errorMessage;
+      useToast().toast({
+        title: "Error: " + response.status,
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } else if (typeof data === "object") {
+
+      const errorMessage = data?.detail || data?.message || data?.errorMessage || JSON.stringify(data);
+      useToast().toast({
+        title: "Error: " + response.status,
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } else {
+      useToast().toast({
+        title: "Error: " + response.status,
+        description: "An error occurred",
+        variant: "destructive",
+      });
+    }
+  });
 };
 
 export abstract class Base {
@@ -108,9 +159,15 @@ export abstract class Base {
         .then((response: Response) => {
           if (response.status !== 200) {
             if (response.status === 401) {
+              useToast().toast({
+                title: "Unauthorized",
+                description: "You are not authorized to perform this action",
+                variant: "destructive",
+              });
               throw new Error("401 Unauthorized");
             }
-            if (response.status >= 400 && response.status < 500) {
+            else if (response.status >= 400) {
+              createNotify(response);
               throw new Error(response.statusText + response.status);
             }
           }
@@ -125,12 +182,8 @@ export abstract class Base {
           resolve(data);
         })
         .catch((error: Error) => {
-          useToast().toast({
-            title: `Error: ${error.message}`,
-            description: `An error occurred while fetching data`,
-            variant: "destructive",
-          });
           reject(error);
+          throw new Error(error.message);
         });
     });
   }

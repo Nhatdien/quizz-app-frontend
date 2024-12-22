@@ -227,6 +227,7 @@ const createQuiz = async () => {
       ...payload,
       imageUrl: currentImageLink.value,
     });
+    navigateTo(`/quiz/${useQuizStore().quiz[quizStoreLength - 1].id}/view`);
   }
 
   if (currentTab.value === "existing") {
@@ -236,6 +237,7 @@ const createQuiz = async () => {
       ...createQuizPayload.value,
       imageUrl: currentImageLink.value,
     });
+    navigateTo(`/quiz/${useQuizStore().quiz[quizStoreLength - 1].id}/view`);
   }
 };
 
@@ -254,10 +256,8 @@ const submitForm = async () => {
     //     imageUrl: imageLink ? imageLink : null,
     //   });
     // });
-    showDialogModelValue.value = false;
     await useTryCatch().tryCatch(createQuiz);
-
-    navigateTo(`/quiz/${useQuizStore().quiz[quizStoreLength - 1].id}/view`);
+    showDialogModelValue.value = false;
   } catch (error) {
     console.error("Error creating quiz:", error);
   }

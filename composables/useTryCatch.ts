@@ -9,6 +9,7 @@ export const useTryCatch = (toastInfo?: ToastInfo | undefined) => {
   const { toast } = useToast();
 
   const tryCatch = async (fn: () => Promise<any>) => {
+    const response = null as Response | null;
     try {
       await fn();
       !toastInfo?.title

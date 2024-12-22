@@ -81,7 +81,7 @@ const route = useRoute();
 const props = defineProps({
   quiz: {
     type: Object as PropType<Quiz>,
-    required: true,
+    required: false,
   },
 
   enableEdit: {

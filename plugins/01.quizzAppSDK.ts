@@ -43,37 +43,6 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     }
   }
 
-  QuizzAppSDK.getInstance().onError = (error: Error) => {
-    if (error.message.includes("Unauthorized")) {
-      toast({
-        title: `Error: ${error.message}`,
-        description: "You need to login to use this website",
-        variant: "destructive",
-        action: h(
-          ToastAction,
-          {
-            altText: "Login",
-            onClick: () => {
-              UserService.doLogin();
-            },
-          },
-          {
-            default: () => "Login",
-          }
-        ),
-      });
-      return;
-    } else {
-      console.log(error);
-      console.log("Error: ", error.message);
-      toast({
-        title: `Error: ${error.message}`,
-        description: "Please try again later",
-        variant: "destructive",
-      });
-    }
-  };
-
   return {
     provide: {
       keycloak: UserService,

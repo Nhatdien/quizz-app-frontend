@@ -54,12 +54,12 @@ const deleteQuizAlertOption = {
   title: "Delete Quiz",
   description: "Are you sure you want to delete this quiz?",
   actionText: "Delete",
-  action: () => {
-    useTryCatch().tryCatch(() => {
+  action: async () => {
+   
       isOpen.value = false;
       console.log(isOpen.value);
       return useQuizStore().deleteQuiz(props.quiz.id as string);
-    });
+ 
   },
 };
 </script>
