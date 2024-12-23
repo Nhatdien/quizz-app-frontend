@@ -28,15 +28,7 @@
         >
       </div>
     </div>
-    <AlertDialog
-      v-if="enableDelete"
-      v-model:open="isOpen"
-      class=""
-      :option="deleteQuizAlertOption">
-      <template #trigger>
-        <Button variant="destructive"><Trash /></Button>
-      </template>
-    </AlertDialog>
+
   </div>
 </template>
 
@@ -47,7 +39,6 @@ import AlertDialog from "@/components/Common/AlertDialog.vue";
 import type { PropType } from "vue";
 import type { Quiz } from "~/types/quiz";
 
-const isOpen = ref(false);
 const props = defineProps({
   quiz: {
     type: Object as PropType<Quiz>,
@@ -60,15 +51,7 @@ const props = defineProps({
   },
 });
 
-const deleteQuizAlertOption = {
-  title: "Delete Quiz",
-  description: "Are you sure you want to delete this quiz?",
-  actionText: "Delete",
-  action: async () => {
-    isOpen.value = false;
-    return useQuizStore().deleteQuiz(props.quiz.id as string);
-  },
-};
+
 </script>
 
 <style scoped lang="scss">

@@ -22,7 +22,7 @@
         >
       </div>
       <h5 class="mt-4">Other attempts:</h5>
-      <ScrollArea class="h-24">
+      <ScrollArea type="always" class="h-24">
         <div
           v-for="(attempt, index) in quizAttempt.slice(1)"
           :key="index"

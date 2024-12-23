@@ -53,7 +53,6 @@
         <template #tab-content-existing>
           <FormItem label="Quiz Topic">
             <MySelect
-              class="w-full"
               v-model="topicCode"
               :isFilter="true"
               :options="topicNameMap"

@@ -2,11 +2,27 @@
   <Card class="quiz-card relative">
     <div class="review-pin"></div>
     <CardHeader>
-      <CardTitle>{{ quiz?.title }}</CardTitle>
+      <CardTitle :class="enableDelete ? 'flex justify-between' : ''">
+        <span
+          @click="navigateTo(`/quiz/${quiz.id}/view`)"
+          class="hover:underline cursor-pointer"
+          >{{ quiz?.title }}</span
+        >
+        <AlertDialog
+          v-if="enableDelete"
+          v-model:open="isOpen"
+          class=""
+          :option="deleteQuizAlertOption">
+          <template #trigger>
+            <Button variant="destructive"><Trash /></Button>
+          </template>
+        </AlertDialog>
+      </CardTitle>
     </CardHeader>
     <CardContent>
-      <div class="image-container">
+      <div class="image-container mt-4">
         <NuxtImg
+          v-if="quiz.imageUrl"
           :size="120"
           :src="
             quiz.imageUrl
@@ -15,6 +31,10 @@
           "
           alt="Quiz Image"
           class="quiz-image" />
+        <Image
+          class="border-2 border-slate rounded-sm p-2"
+          v-else
+          :size="120" />
       </div>
       <div class="quiz-details">
         <!-- <div class="creator-info">
@@ -47,12 +67,19 @@
         </div>
       </div>
     </CardContent>
+
     <CardFooter> </CardFooter>
   </Card>
 </template>
 
 <script setup lang="ts">
-import { Star, MessageCircle, SquareCheck } from "lucide-vue-next";
+import {
+  Star,
+  MessageCircle,
+  SquareCheck,
+  Image,
+  Trash,
+} from "lucide-vue-next";
 import AlertDialog from "@/components/Common/AlertDialog.vue";
 
 import {
@@ -69,7 +96,25 @@ const props = defineProps({
     type: Object as PropType<Quiz>,
     required: true,
   },
+
+  enableDelete: {
+    type: Boolean,
+    default: false,
+    required: false,
+  },
 });
+
+const isOpen = ref(false);
+
+const deleteQuizAlertOption = {
+  title: "Delete Quiz",
+  description: "Are you sure you want to delete this quiz?",
+  actionText: "Delete",
+  action: async () => {
+    isOpen.value = false;
+    return useQuizStore().deleteQuiz(props.quiz.id as string);
+  },
+};
 </script>
 
 <style scoped lang="scss">
@@ -77,7 +122,6 @@ const props = defineProps({
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   border: 2px solid #f1f1f1;
   border-radius: 8px;
-  cursor: pointer;
   padding: 1rem;
   height: 100%;
   display: flex;
@@ -96,7 +140,6 @@ const props = defineProps({
   margin-bottom: 1rem;
   object-fit: cover;
 }
-
 
 .creator-info {
   font-size: 0.9rem;

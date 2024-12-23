@@ -58,3 +58,18 @@ export interface Quiz {
     isPass: boolean
     time : string
   }
+
+  export interface QuizAttemptResponse {
+    attemptId: string
+    quizId: string
+    score: number
+    isPass: boolean
+    asnwers: Answer[]
+  }
+
+  export interface AttemptAnswer {
+    questionId: string
+    attemptanswerId: string
+    selectedAnswerId: string
+    isCorrect: boolean
+  }

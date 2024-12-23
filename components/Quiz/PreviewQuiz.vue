@@ -34,9 +34,7 @@
         v-if="currentQuestion?.questionType === 2">
         <FillTheBlackType
           v-model="currentSubmissions[currentQuestionIndex]"
-          :inputLength="
-            currentQuestion.answers[0].content.length
-          " />
+          :inputLength="currentQuestion.answers[0].content.length" />
       </div>
     </div>
     <div class="move-buttons">
@@ -142,12 +140,16 @@ const handleClickContinue = (backOrContinue: "back" | "continue") => {
   }
 };
 
-const getScore = computed(() => {
-  const rightAnswers = props.quiz?.questions.map((question) => {
+const rightAnswersArr = computed(() => {
+  return props.quiz?.questions.map((question) => {
     return question.answers
       .filter((answer) => answer.isCorrect)
       .map((answer) => answer.content);
   }) as string[][];
+});
+
+const getScore = computed(() => {
+  const rightAnswers = rightAnswersArr.value;
 
   const correctAnswers = currentSubmissions.value.map((submission, index) => {
     if (props.quiz?.questions[index].questionType === 2) {
@@ -181,6 +183,19 @@ const handleClickSubmit = async () => {
     score: getScore.value,
   };
 
+  const rightAnswerAndSubmission = rightAnswersArr.value.map(
+    (rightAnswer, index) => {
+      return {
+        questionContent: props.quiz?.questions[index].content,
+        rightAnswer,
+        submission:
+          props.quiz?.questions[index].questionType === 2
+            ? currentSubmissions.value[index].join("")
+            : currentSubmissions.value[index],
+      };
+    }
+  );
+  // console.log(rightAnswerAndSubmission);
   await useQuizStore().createQuizAttempt(quizAttemptPayload as QuizzAttempt);
   navigateTo("result");
 };

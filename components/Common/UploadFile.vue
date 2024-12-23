@@ -51,6 +51,7 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { Upload } from "lucide-vue-next";
+import { useToast } from "../ui/toast/use-toast";
 
 const props = defineProps({
   accept: {
@@ -73,6 +74,10 @@ const props = defineProps({
 const { $quizzAppSDK } = useNuxtApp();
 // File Types
 type FileType = File | null;
+
+const emits = defineEmits({
+  onFileUploaded: () => {},
+})
 
 // Refs for state
 const isDragging = ref(false);
@@ -148,7 +153,22 @@ function handleFiles(files: FileList): void {
 
 const handleClickUploadFile = async () => {
   if (file.value) {
-    await $quizzAppSDK.uploadFile(file.value, props.uploadPath);
+    try {
+      const response = (await $quizzAppSDK.uploadFile(
+        file.value,
+        props.uploadPath
+      )) as Response;
+
+      if (response.status >= 400) {
+        useToast().toast({
+          title: "Error",
+          description: await response.text(),
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }
 };
 

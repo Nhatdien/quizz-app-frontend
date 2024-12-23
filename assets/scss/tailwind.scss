@@ -38,13 +38,12 @@
 
     --info: 200 100% 60%; /* Dark teal */
     --info-foreground: 200 100% 85%; /* Light teal for strong contrast */
-    
+
     --warning: 40 100% 60%; /* Dark greenish-yellow */
     --warning-foreground: 40 100% 100%; /* Light yellow for strong contrast */
-    
+
     --success: 120 100% 60%; /* Dark green */
     --success-foreground: 120 100% 85%; /* Light green for strong contrast */
-    
   }
   .dark {
     --background: 224 71.4% 4.1%;
@@ -74,15 +73,14 @@
     --border: 215 27.9% 16.9%;
     --input: 215 27.9% 16.9%;
     --ring: 263.4 70% 50.4%;
-    --info: 200 100% 20%;
-    --info-foreground: 210 20% 70%;
-    
+    --info: 200 100% 50.4%;
+    --info-foreground: 210 20% 98%;
+
     --warning: 40 100% 20%;
     --warning-foreground: 210 20% 70%;
-    
+
     --success: 120 100% 20%;
     --success-foreground: 210 20% 70%;
-    
   }
 }
 
@@ -100,6 +98,20 @@
   }
 }
 
+
+@each $variant, $opacity in (
+  primary, 90,
+  secondary, 90,
+  muted, 90,
+  destructive, 90,
+  info, 90,
+  warning, 90,
+  success, 90
+) {
+  .bg-#{$variant}\/90 {
+    background-color: hsla(var(--#{$variant}), $opacity);
+  }
+}
 @layer base {
   * {
     @apply border-border;

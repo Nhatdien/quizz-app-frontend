@@ -2,19 +2,21 @@
   <div class="container mx-auto p-4">
     <div class="review-item bg-white shadow-md rounded-lg p-6">
       <div class="section-pin"></div>
-      <div class="quiz-info flex items-center gap-8 mb-4">
+      <div class="quiz-info flex items-center gap-4 md:gap-8 mb-4">
         <div class="image-container">
           <NuxtImg
+            v-if="currentQuiz?.imageUrl"
             :size="120"
             :src="
               currentQuiz?.imageUrl
                 ? currentQuiz.imageUrl
-                : useAsset('@/assets/img/default_avt.jpg')
+                : '@/assets/img/default_avt.jpg'
             "
             alt="Quiz Image"
             class="quiz-image" />
+          <Image class="border-2 border-slate rounded-sm p-2" v-else :size="120"/>
         </div>
-        <div>
+        <div class="">
           <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold">
             {{ currentQuiz?.title }}
           </h1>
@@ -22,12 +24,21 @@
             {{ currentQuiz?.description }}
           </p>
           <p class="text-gray-500 text-sm md:text-base lg:text-lg">
-            Created by: {{ currentQuiz?.createdBy }}
+            Created by:
+            <span
+              @click="
+                () => {
+                  navigateTo(`/user?search=${currentQuiz?.createdBy}`);
+                }
+              "
+              class="hover:underline cursor-pointer"
+              >{{ currentQuiz?.createdBy }}</span
+            >
           </p>
         </div>
       </div>
-      <div class="flex justify-between items-center">
-        <Badge :variant="'outline'">
+      <div class="flex flex-col sm:flex-row items-start gap-4 justify-between md:items-center">
+        <Badge :variant="'secondary'">
           <span
             class="hover:underline cursor-pointer"
             @click="
@@ -38,17 +49,17 @@
             >{{ currentQuiz?.topicCode }}</span
           >
         </Badge>
-        <div class="flex justify-end space-x-4">
+        <div class="flex flex-col md:flex-row gap-4">
           <CreateOrEditQuestionDialog
             v-if="isEditableView"
             :is-edit-button="false" />
           <Button :variant="'warning'" @click="handleClickCloneAndEdit" v-else
             >Clone and Edit</Button
           >
-          <Button @click="handleClickPreview" class="ml-4"
+          <Button @click="handleClickPreview" class=""
             ><Eye /> Preview
           </Button>
-          <Button :variant="'info'" @click="handleClickStartQuiz" class="ml-4">
+          <Button :variant="'info'" @click="handleClickStartQuiz">
             <CirclePlay /> Start Quiz
           </Button>
         </div>
@@ -67,7 +78,7 @@
 
 <script setup lang="ts">
 import CreateOrEditQuestionDialog from "~/components/Questions/CreateOrEditQuestionDialog.vue";
-import { Eye, CirclePlay } from "lucide-vue-next";
+import { Eye, CirclePlay, Image } from "lucide-vue-next";
 import ReivewList from "~/components/Review/ReviewList.vue";
 import { useReviewStore } from "~/stores/stores/review";
 import CreateReviewInput from "~/components/Review/CreateReviewInput.vue";

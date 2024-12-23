@@ -13,9 +13,11 @@
     <div class="question-section flex flex-col w-full">
       <div class="flex justify-between w-full">
         <CommonMySelect
+          :width="'150px'"
           v-model="questionScore"
           :options="questionPointOptions" />
         <CommonMySelect
+          :width="'150px'"
           v-model="questionTimer"
           :options="questionTimeOptions" />
       </div>
@@ -50,9 +52,7 @@
             @click="deleteOption(index)">
             <Trash />
           </Button>
-          <Button variant="secondary" icon="image">
-            <Image />
-          </Button>
+
           <Checkbox
             v-model:checked="option.isCorrect"
             :true-value="true"
@@ -60,6 +60,8 @@
             class="correct-checkbox" />
         </div>
       </div>
+    </div>
+    <div class="flex justify-center">
       <Button
         v-if="answers.length < 5"
         @click="addOption"
@@ -286,14 +288,11 @@ function toggleMultipleCorrect() {
 }
 
 .question-editor {
-  * {
-    color: #fff !important;
-  }
+  color: #fff;
   flex-grow: 1;
   padding: 20px;
   text-align: center;
   min-height: 15rem;
-  height: auto;
   background-color: #250c3d;
   border-radius: 8px;
   cursor: pointer;
@@ -307,9 +306,9 @@ function toggleMultipleCorrect() {
 }
 
 .options-section {
-  width: 100%;
   display: flex;
   flex-direction: column;
+
   justify-content: center;
   align-items: center;
   gap: 15px;
@@ -320,13 +319,22 @@ function toggleMultipleCorrect() {
 .option-card {
   padding: 20px;
   flex-grow: 1;
-  width: 100%;
   text-align: center;
-
+  width: 100%;
   min-height: 100px;
   border-radius: 8px;
   color: #fff;
   position: relative;
+}
+
+@media screen and (min-width: 1067px) {
+  .options-section {
+    flex-direction: row;
+  }
+
+  .option-card {
+    width: calc(50% - 10px);
+  }
 }
 
 .option-editor {

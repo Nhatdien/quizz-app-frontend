@@ -18,11 +18,11 @@ export const toastVariants = cva(
   {
     variants: {
       variant: {
-        default: 'border bg-background text-foreground',
+        default: 'border bg-background text-white font-bold',
         destructive: 'destructive group border-destructive bg-destructive text-destructive-foreground',
-        success: 'border-success bg-success text-success-foreground',
-        warning: 'border-warning bg-warning text-warning-foreground',
-        info: 'border-info bg-info text-info-foreground',
+        success: 'border-success bg-success text-white font-bold',
+        warning: 'border-warning bg-warning text-white font-bold',
+        info: 'border-info bg-info text-white font-bold',
       },
     },
     defaultVariants: {

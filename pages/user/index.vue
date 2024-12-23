@@ -48,9 +48,10 @@
     </QuizCreateQuizDialog>
     <div v-for="quiz in quizzes" :key="quiz.id" class="w-full h-auto">
       <QuizCard
+        :enable-delete="isMe"
         class="w-full h-auto"
         :quiz="quiz"
-        @click="navigateTo(`/quiz/${quiz.id}/view`)">
+        >
       </QuizCard>
     </div>
     <div class="w-full h-auto"></div>

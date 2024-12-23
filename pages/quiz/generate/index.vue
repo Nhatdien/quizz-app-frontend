@@ -15,6 +15,7 @@
       </div>
       <div class="flex w-full justify-center gap-4 my-4">
         <MySelect
+          
           :isFilter="true"
           :class="'dropdown'"
           :placeholder="{
@@ -37,11 +38,11 @@
         </MySelect>
       </div>
       <button @click="handleGenerateQuiz" class="generate-btn self-center">
-        ⚡ Generate AI quiz
+        ⚡ Generate quiz by AI
       </button>
     </div>
     <div class="view-section flex-1">
-      <h3>Generated Quiz {{ loading }} {{ generatedQuiz.title }}</h3>
+      <h3>Generated Quiz {{ generatedQuiz.title }}</h3>
 
       <ScrollArea class="w-full" style="height: 450px">
         <div v-if="!generatedQuiz.title" class="loading-container h-full">
@@ -54,7 +55,7 @@
             {{
               loading
                 ? "Waiting for quiz to be generated..."
-                : "Hi! Please give me an instruction of the quiz you want to generate"
+                : "Hi! Please give me instructions of the quiz you want to generate"
             }}
           </p>
         </div>

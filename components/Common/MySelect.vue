@@ -18,6 +18,7 @@ const props = defineProps<{
     placeholderFilter?: string;
     placeholderSelect?: string;
   };
+  width?: string;
 }>();
 
 const selectedValue = ref<string>();
@@ -33,7 +34,7 @@ const filteredOptions = computed(() => {
 
 <template>
   <Select>
-    <SelectTrigger class="text-black" >
+    <SelectTrigger class="text-black" :style="{ width: props.width }">
       <SelectValue :placeholder="placeholder?.placeholderSelect" />
     </SelectTrigger>
     <SelectContent>

@@ -66,14 +66,17 @@
         <a
           href="https://docs.google.com/spreadsheets/d/1ic9jFZXZxCQm5m2VM6tp-zuApT3SAJOoD6e-Mk6ffJg/edit?gid=525658875#gid=525658875"
           target="_blank"
-          class="underline text-blue-500">
-          Go here Excel for the template
+          class="underline flex gap-2 items-center text-blue-500">
+          <layout-panel-top /> <span>Go here Excel for the template</span>
         </a>
         <CommonUploadFile
+          @onFileUploaded="() => {
+            isOpen = false;
+            step = 1
+          }"
           :accept="'.xlsx'"
           :show-upload="true"
-          :upload-path="'/quiz/import'"
-         />
+          :upload-path="'/quiz/import'" />
       </div>
     </DialogContent>
   </Dialog>
@@ -91,6 +94,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { LayoutPanelTop } from "lucide-vue-next";
 
 const isOpen = ref(false);
 const step = ref(1);
