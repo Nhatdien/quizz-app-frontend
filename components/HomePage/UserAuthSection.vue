@@ -8,17 +8,19 @@
       class="text-white text-lg font-bold">
       <Button @click="() => $keycloak.doLogin()">Login</Button>
     </div>
-    <DropdownMenu
-      v-if="currentUserName && isLoading === false"
+    <div v-if="currentUserName && isLoading === false">
+      <img
+        @click="() => navigateTo(`/user?search=${currentUserName}`)"
+        class="rounded-circle border border-[black] rounded-full cursor-pointer"
+        src="@/assets/img/default_avt.jpg"
+        width="50"
+        height="50" />
+    </div>
+    <!-- <DropdownMenu
+      
       :menuOptions="menuOptions">
       <template #trigger>
-        <div>
-          <img
-            class="rounded-circle border border-[black] rounded-full"
-            src="@/assets/img/default_avt.jpg"
-            width="50"
-            height="50" />
-        </div>
+
       </template>
 
       <template #[`icon-Yourlibrary`]>
@@ -28,7 +30,7 @@
       <template #icon-Logout>
         <LogOut />
       </template>
-    </DropdownMenu>
+    </DropdownMenu> -->
   </div>
 </template>
 
@@ -43,28 +45,6 @@ const { $keycloak, $quizzAppSDK } = useNuxtApp();
 const username = computed(() => $quizzAppSDK.config.current_username);
 
 const currentUserName = ref($keycloak.getTokenParsed()?.preferred_username);
-const menuOptions = {
-  items: [
-    {
-      label: "Your library",
-      icon: BookText,
-      eventHandlers: {
-        click: () => {
-          navigateTo(`/quiz?search=${currentUserName.value}`);
-        },
-      },
-    },
-    {
-      label: "Logout",
-      icon: LogOut,
-      eventHandlers: {
-        click: () => {
-          $keycloak?.doLogout();
-        },
-      },
-    },
-  ],
-};
 
 onMounted(async () => {
   isLoading.value = true;
@@ -75,6 +55,6 @@ onMounted(async () => {
   } finally {
     isLoading.value = false;
   }
-  currentUserName.value = $keycloak.getTokenParsed()?.preferred_username;
+  currentUserName.value = $quizzAppSDK.config.current_username;
 });
 </script>

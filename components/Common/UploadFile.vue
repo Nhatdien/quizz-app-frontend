@@ -4,7 +4,7 @@
     <Button
       @click.prevent="clearFile"
       class="clear-button self-end"
-      :disabled="file === undefined"
+      :disabled="file === null"
       >Remove file</Button
     >
     <div
@@ -36,18 +36,21 @@
         <!-- Remove File Button -->
       </div>
       <div v-else class="upload-message">
-        <i class="upload-icon">⬆</i>
+        <i class="upload-icon"><Upload /></i>
         <span>Click to upload or drag a file here</span>
       </div>
     </div>
 
     <!-- Preview or File Details -->
-     <Button v-if="showUpload" @click="handleClickUploadFile"> Upload Excel file</Button>
+    <Button v-if="showUpload" @click="handleClickUploadFile">
+      Upload Excel file</Button
+    >
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from "vue";
+import { Upload } from "lucide-vue-next";
 
 const props = defineProps({
   accept: {
@@ -187,6 +190,9 @@ function triggerFileInput(): void {
 }
 
 .upload-message {
+  display: flex;
+  gap: 0.5rem;
+
   text-align: center;
   color: #ff4d4d;
   font-size: 16px;

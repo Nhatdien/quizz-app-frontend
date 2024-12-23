@@ -18,17 +18,21 @@
         <span class="quiz-comments"
           >💬 {{ quiz.totalComments ?? quiz.reviewCount }}</span
         >
-
         <span class="quiz-comments ml-2"
           ><span class="font-extrabold">?</span> {{ quiz?.questionCount }}</span
         >
-        <span class="quiz-date ml-4">By: {{ quiz.createdBy }}</span>
+        <span
+          @click="() => navigateTo(`/user?search=${quiz.createdBy}`)"
+          class="quiz-date ml-4 hover:underline"
+          >By: {{ quiz.createdBy }}</span
+        >
       </div>
-      <!-- <div class="quiz-tags">
-        <span v-for="tag in tags" :key="tag" class="quiz-tag">{{ tag }}</span>
-      </div> -->
     </div>
-    <AlertDialog v-model:open="isOpen" class="" :option="deleteQuizAlertOption">
+    <AlertDialog
+      v-if="enableDelete"
+      v-model:open="isOpen"
+      class=""
+      :option="deleteQuizAlertOption">
       <template #trigger>
         <Button variant="destructive"><Trash /></Button>
       </template>
@@ -37,16 +41,22 @@
 </template>
 
 <script setup lang="ts">
-import { Star, MessageCircle, SquareCheck } from "lucide-vue-next";
-import type { Quiz } from "~/types/quiz";
-import AlertDialog from "@/components/Common/AlertDialog.vue";
+import { ref } from "vue";
 import { Trash } from "lucide-vue-next";
+import AlertDialog from "@/components/Common/AlertDialog.vue";
+import type { PropType } from "vue";
+import type { Quiz } from "~/types/quiz";
 
-const isOpen = ref();
+const isOpen = ref(false);
 const props = defineProps({
   quiz: {
     type: Object as PropType<Quiz>,
     required: true,
+  },
+
+  enableDelete: {
+    type: Boolean,
+    default: false,
   },
 });
 
@@ -55,34 +65,33 @@ const deleteQuizAlertOption = {
   description: "Are you sure you want to delete this quiz?",
   actionText: "Delete",
   action: async () => {
-   
-      isOpen.value = false;
-      console.log(isOpen.value);
-      return useQuizStore().deleteQuiz(props.quiz.id as string);
- 
+    isOpen.value = false;
+    return useQuizStore().deleteQuiz(props.quiz.id as string);
   },
 };
 </script>
 
 <style scoped lang="scss">
 .quiz-card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  cursor: pointer;
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-  }
-}
-
-.quiz-card {
   display: flex;
+  flex-direction: column;
   align-items: center;
   background-color: #fffbea;
   border: 1px solid #030303;
   border-radius: 8px;
   padding: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  gap: 12px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    align-items: flex-start;
+  }
 }
 
 .quiz-image {
@@ -91,38 +100,59 @@ const deleteQuizAlertOption = {
   height: 80px;
   object-fit: cover;
   border-radius: 6px;
+
+  @media (min-width: 768px) {
+    width: 100px;
+    height: 100px;
+  }
+
+  @media (min-width: 1024px) {
+    width: 120px;
+    height: 120px;
+  }
 }
 
 .quiz-info {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin-top: 12px;
+
+  @media (min-width: 768px) {
+    margin-top: 0;
+    margin-left: 12px;
+  }
 }
 
 .quiz-title {
   font-size: 18px;
   font-weight: bold;
   margin: 0;
+
+  @media (min-width: 768px) {
+    font-size: 22px;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 24px;
+  }
 }
 
 .quiz-details {
   font-size: 14px;
   color: #555;
   display: flex;
-  gap: 8px;
-  margin-top: 4px;
-}
-
-.quiz-tags {
-  display: flex;
   flex-wrap: wrap;
-  gap: 4px;
-  margin-top: 8px;
-}
+  margin-top: auto;
+  gap: 8px;
 
-.quiz-tag {
-  background-color: #f3f3f3;
-  color: #333;
-  font-size: 12px;
-  padding: 4px 8px;
-  border-radius: 12px;
+  @media (min-width: 768px) {
+    font-size: 16px;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 18px;
+  }
 }
 </style>

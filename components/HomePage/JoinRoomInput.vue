@@ -1,8 +1,8 @@
 <template>
-  <div class="review-item bg-[#FFF3E0] flex justify-center items-center min-w-[300px]">
+  <div class="review-item bg-[#FFF3E0] flex justify-center items-center">
     <div class="review-pin "></div>
     <div class="flex gap-4">
-      <span class="w-full font-extrabold text-center align-middle">{{ isMobile ? "Enter PIN:" : "Join Game? Enter PIN:"}}</span>
+      <span class="w-full font-extrabold text-center align-middle">Enter PIN:</span>
       <Input v-model="code" @keyup.enter="hanleClickJoinRoom"> </Input>
     </div>
   </div>
@@ -17,7 +17,7 @@ const code = ref("");
 const { $keycloak, $quizzAppSDK } = useNuxtApp();
 
 
-const isMobile = !useScreen().isLargerThanLarge
+const isExtraLarge = !useScreen().isLargerThanXLarge
 
 const hanleClickJoinRoom = async () => {
   const room = await $quizzAppSDK.getRoomByCode(code.value);

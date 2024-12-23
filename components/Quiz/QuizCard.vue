@@ -7,6 +7,7 @@
     <CardContent>
       <div class="image-container">
         <NuxtImg
+          :size="120"
           :src="
             quiz.imageUrl
               ? quiz.imageUrl
@@ -16,14 +17,14 @@
           class="quiz-image" />
       </div>
       <div class="quiz-details">
-        <div class="creator-info">
+        <!-- <div class="creator-info">
           <span>Created by:</span>
           <span
             class="creator-name"
             @click="navigateTo(`/quiz/?search=${quiz?.createdBy}`)">
             {{ quiz?.createdBy }}
           </span>
-        </div>
+        </div> -->
         <div class="stats-container">
           <div class="stat">
             <span class="stat-value">
@@ -97,10 +98,10 @@ const props = defineProps({
 }
 
 .quiz-image {
+  width: 120px;
+  height: 120px;
   border: 1px solid #030303;
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
+  object-fit: fill;
   border-radius: 6px;
   margin-top: 1rem;
 }

@@ -23,20 +23,24 @@ class KeycloakService {
   }
 
   public async initKeycloak(onAuthenticatedCallback: Function): Promise<void> {
-    console.log("KeycloakService.initKeycloak() called", KeycloakService._initialized);
+    console.log(
+      "KeycloakService.initKeycloak() called",
+      KeycloakService._initialized
+    );
     if (KeycloakService._initialized) {
       onAuthenticatedCallback();
       return;
     }
 
     if (!KeycloakService._initPromise) {
-      KeycloakService._initPromise = KeycloakService._kc.init({
-        flow: 'standard',
-        onLoad: 'login-required',
-        enableLogging: true,
-        scope: 'openid email',
-        pkceMethod: 'S256',
-      })
+      KeycloakService._initPromise = KeycloakService._kc
+        .init({
+          flow: "standard",
+          onLoad: "login-required",
+          enableLogging: true,
+          scope: "openid email",
+          pkceMethod: "S256",
+        })
         .then((authenticated) => {
           if (!authenticated) {
             console.log("User is not authenticated!");
@@ -76,7 +80,8 @@ class KeycloakService {
   }
 
   public updateToken(successCallback: any): void {
-    KeycloakService._kc.updateToken(5)
+    KeycloakService._kc
+      .updateToken(5)
       .then(successCallback)
       .catch(this.doLogin);
   }
