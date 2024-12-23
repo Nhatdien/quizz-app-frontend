@@ -2,28 +2,56 @@
   <div class="container mx-auto p-4">
     <div class="review-item bg-white shadow-md rounded-lg p-6">
       <div class="section-pin"></div>
-      <div class="quiz-info mb-4">
-        <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold">
-          {{ currentQuiz?.title }}
-        </h1>
-        <p class="text-gray-700 text-base md:text-lg lg:text-xl">
-          {{ currentQuiz?.description }}
-        </p>
-        <p class="text-gray-500 text-sm md:text-base lg:text-lg">
-          Created by: {{ currentQuiz?.createdBy }}
-        </p>
+      <div class="quiz-info flex items-center gap-8 mb-4">
+        <div class="image-container">
+          <NuxtImg
+            :size="120"
+            :src="
+              currentQuiz?.imageUrl
+                ? currentQuiz.imageUrl
+                : useAsset('@/assets/img/default_avt.jpg')
+            "
+            alt="Quiz Image"
+            class="quiz-image" />
+        </div>
+        <div>
+          <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold">
+            {{ currentQuiz?.title }}
+          </h1>
+          <p class="text-gray-700 text-base md:text-lg lg:text-xl">
+            {{ currentQuiz?.description }}
+          </p>
+          <p class="text-gray-500 text-sm md:text-base lg:text-lg">
+            Created by: {{ currentQuiz?.createdBy }}
+          </p>
+        </div>
       </div>
-      <div class="flex justify-end space-x-4">
-        <CreateOrEditQuestionDialog
-          v-if="isEditableView"
-          :is-edit-button="false" />
-        <Button @click="handleClickCloneAndEdit" v-else>Clone and Edit</Button>
-        <Button @click="handleClickPreview" class="ml-4"
-          ><Eye /> Preview
-        </Button>
-        <Button @click="handleClickStartQuiz" class="ml-4">
-          <CirclePlay /> Start Quiz
-        </Button>
+      <div class="flex justify-between items-center">
+        <Badge :variant="'outline'">
+          <span
+            class="hover:underline cursor-pointer"
+            @click="
+              () => {
+                navigateTo(`/quiz/?search=${currentQuiz?.topicCode}`);
+              }
+            "
+            >{{ currentQuiz?.topicCode }}</span
+          >
+        </Badge>
+        <div class="flex justify-end space-x-4">
+          <CreateOrEditQuestionDialog
+            v-if="isEditableView"
+            :is-edit-button="false" />
+          <Button :variant="'warning'" @click="handleClickCloneAndEdit" v-else
+            >Clone and Edit</Button
+          >
+          <Button @click="handleClickPreview" class="ml-4"
+            ><Eye /> Preview
+          </Button>
+          <Button :variant="'info'" @click="handleClickStartQuiz" class="ml-4">
+            <CirclePlay /> Start Quiz
+          </Button>
+        </div>
       </div>
     </div>
     <div

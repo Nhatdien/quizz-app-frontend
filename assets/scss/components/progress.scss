@@ -1,11 +1,12 @@
 .progress-bar {
   width: 100%;
   background-color: hsla(var(--primary));
-
+  border: 1px solid hsla(var(--primary));
   border-radius: 25px;
   overflow: hidden;
   position: relative;
   height: 20px;
+  animation: progress-animation 0.5s ease;
 }
 
 progress::-webkit-progress-value {

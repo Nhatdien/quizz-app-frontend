@@ -97,20 +97,6 @@ const props = defineProps({
   object-fit: cover;
 }
 
-.quiz-image {
-  width: 120px;
-  height: 120px;
-  border: 1px solid #030303;
-  object-fit: fill;
-  border-radius: 6px;
-  margin-top: 1rem;
-}
-
-.quiz-details {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
 
 .creator-info {
   font-size: 0.9rem;

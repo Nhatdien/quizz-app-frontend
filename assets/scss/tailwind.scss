@@ -36,13 +36,13 @@
     --info: 200 100% 50%;
     --info-foreground: 210 20% 98%;
 
-    --info: 200 100% 20%; /* Dark teal */
+    --info: 200 100% 60%; /* Dark teal */
     --info-foreground: 200 100% 85%; /* Light teal for strong contrast */
     
-    --warning: 40 100% 20%; /* Dark greenish-yellow */
-    --warning-foreground: 40 100% 90%; /* Light yellow for strong contrast */
+    --warning: 40 100% 60%; /* Dark greenish-yellow */
+    --warning-foreground: 40 100% 100%; /* Light yellow for strong contrast */
     
-    --success: 120 100% 20%; /* Dark green */
+    --success: 120 100% 60%; /* Dark green */
     --success-foreground: 120 100% 85%; /* Light green for strong contrast */
     
   }

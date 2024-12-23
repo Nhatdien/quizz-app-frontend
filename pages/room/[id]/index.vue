@@ -103,14 +103,13 @@ onMounted(async () => {
   await useRoomStore().getRoomByCode(route.query.code as string);
   isPlayer.value =
     $quizzAppSDK.config.current_username !== currentRoom.value.createdBy;
-  console.log(
-    "isPlayer",
-    isPlayer.value,
-    $quizzAppSDK.config.current_username,
-    currentRoom.value.createdBy
-  );
   joinRoon();
-
+  $quizzAppSDK.webSocketClient.subscribe(
+    `/topic/room/${currentRoom.value.id}`,
+    (message) => {
+      console.log(message);
+    }
+  );
   useQuizStore().searchQuiz({
     textSearch: currentRoom.value?.quizzId,
   });

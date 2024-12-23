@@ -115,7 +115,7 @@ h1 {
   font-weight: 900;
   position: absolute;
   right: calc(50% - 4.5rem / 2);
-  bottom: 11px;
+  bottom: 14px;
 
   &-passed {
     color: #41cd62;

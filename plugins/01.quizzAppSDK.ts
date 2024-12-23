@@ -43,6 +43,12 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     }
   }
 
+  QuizzAppSDK.getInstance().onError = (error) => {
+    if (error.message.includes("Unauthorized")) {
+      UserService.doLogin();
+    }
+  }
+
   return {
     provide: {
       keycloak: UserService,

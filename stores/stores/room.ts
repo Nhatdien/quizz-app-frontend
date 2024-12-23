@@ -95,6 +95,19 @@ export const useRoomStore = defineStore({
       }
     },
 
+    async updateYourSoreAndGetLobbyScore(roomId: string) {
+      QuizzAppSDK.getInstance().webSocketClient.publish({
+        destination: `/app/room/${roomId}/update-score`,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: QuizzAppSDK.getInstance().config.current_username,
+          score: this.currentScore,
+        }),
+      });
+    },
+
     receiveQuesitonCallback(question: any) {
       console.log(JSON.parse(question.body));
 
@@ -104,6 +117,9 @@ export const useRoomStore = defineStore({
           this.currentSubmission[0][0],
           this.currentQuestion
         );
+
+        //update score
+        this.updateYourSoreAndGetLobbyScore(this.room.id);
       }
 
       //set current question
@@ -135,19 +151,40 @@ export const useRoomStore = defineStore({
             this.currentQuestion
           );
 
+          this.updateYourSoreAndGetLobbyScore(this.room.id);
+
           console.log("last question");
           this.saveScore(
             QuizzAppSDK.getInstance().config.current_username as string,
             this.currentScore,
             this.room.id
           );
-          navigateTo(`/room/${this.room.id}/result?code=${this.room.code}`);
+
+          delay(2000).then(() => {
+            navigateTo(`/room/${this.room.id}/result?code=${this.room.code}`);
+          });
+
           // this.currentQuestion = {} as any;
           // this.currentSubmission = [];
           // this.currentQuestionIndex = 0;
           // clearInterval(lastQuestionInterval);
-        }, (this.currentQuestion.time * 1000 / 6));
+        }, (this.currentQuestion.time * 1000) / 6);
       }
+    },
+
+    reset() {
+      this.quizId = "";
+      this.room = {} as RoomRes;
+      this.currentQuestionIndex = 0;
+      this.currentQuestion = {} as Question;
+      this.currentScore = 0;
+      this.roomStarted = false;
+      this.currentSubmission = [] as string[][];
+      this.questionIds = [] as string[];
+      this.clockTime = 0;
+      this.roomParticipants = [] as Participant[];
+      this.participantScores = [] as { username: string; score: number }[];
+      this.clockInterval = null;
     },
   },
 });

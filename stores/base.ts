@@ -182,6 +182,7 @@ export abstract class Base {
           resolve(data);
         })
         .catch((error: Error) => {
+          this.onError(error);
           reject(error);
           throw new Error(error.message);
         });

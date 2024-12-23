@@ -1,7 +1,7 @@
 <template>
   <div class="quiz-container paper bg-yellow-600 stacked">
     <div class="progress-container">
-      <div class="progress-bar">
+      <div class="progress-bar-time">
         <div
           class="progress-fill"
           :style="{
@@ -35,7 +35,7 @@
         <FillTheBlackType
           v-model="currentSubmissions[currentQuestionIndex]"
           :inputLength="
-            getInnerTextFromHTML(currentQuestion.answers[0].content).length
+            currentQuestion.answers[0].content.length
           " />
       </div>
     </div>

@@ -8,19 +8,19 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          'bg-primary text-primary-foreground shadow hover:bg-primary/90',
+          'bg-primary text-primary-foreground shadow hover:bg-primary/90 font-bold',
         destructive:
-          'bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90',
+          'bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90 font-bold',
         outline:
-          'border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground',
+          'border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground font-bold',
         secondary:
-          'bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80',
+          'bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80 font-bold',
         ghost: 'hover:bg-accent hover:text-accent-foreground',
-        link: 'text-primary underline-offset-4 hover:underline',
-        success: 'bg-success text-success-foreground shadow-sm hover:bg-success/90',
-        warning: 'bg-warning text-warning-foreground shadow-sm hover:bg-warning/90',
+        link: 'text-primary underline-offset-4 hover:underline font-bold',
+        success: 'bg-success text-success-foreground shadow-sm hover:bg-success/90 font-bold',
+        warning: 'bg-warning text-warning-foreground shadow-sm hover:bg-warning/90 font-bold',
         danger: 'bg-danger text-danger-foreground shadow-sm hover:bg-danger/90',
-        info: 'bg-info text-info-foreground shadow-sm hover:bg-info/90',
+        info: 'bg-info text-info-foreground shadow-sm hover:bg-info/90 font-bold',
 
       },
       size: {

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-between items-center">
+  <div class="flex flex-col md:flex-row justify-between md:items-center gap-4">
     <span
       class="text-xl sm:text-xxl md:text-3xl font-bold flex items-center gap-4">
       <div>
@@ -15,9 +15,10 @@
     <Button
       v-if="isMe"
       :variant="'destructive'"
-      class="md:text-2xl"
+      class="md:text-2xl flex gap-2 p-6"
       @click="() => $keycloak.doLogout()">
-      Log out
+      <LogOut :size="32" :stroke-width="3"/>
+      <span> Log out </span>
     </Button>
   </div>
 
@@ -57,7 +58,7 @@
 </template>
 
 <script setup lang="ts">
-import { PlusCircle } from "lucide-vue-next";
+import { PlusCircle, LogOut } from "lucide-vue-next";
 
 const { $keycloak } = useNuxtApp();
 

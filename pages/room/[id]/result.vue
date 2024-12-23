@@ -166,7 +166,9 @@ onBeforeUnmount(() => {
       useRoomStore().room.code,
       currentUser.value as string
     );
+
   }
+  useRoomStore().reset();
 });
 </script>
 

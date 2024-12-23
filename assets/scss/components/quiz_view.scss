@@ -2,6 +2,7 @@
   background-color: #fff;
   border-radius: 8px;
   padding: 20px;
+  
   width: 100%;
   min-height: 500px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -122,7 +123,7 @@
   align-items: center;
   gap: 16px;
 
-  .progress-bar {
+  .progress-bar-time {
     flex-grow: 1;
     background-color: #e0e0e0;
     border-radius: 5px;
@@ -185,4 +186,19 @@
       cursor: not-allowed;
     }
   }
+}
+
+.quiz-image {
+  width: 120px;
+  height: 120px;
+  padding: 8px;
+  border: 1px solid #030303;
+  object-fit: fill;
+  border-radius: 6px;
+  margin-top: 1rem;
+}
+
+.quiz-details {
+  display: flex;
+  gap: 1rem;
 }

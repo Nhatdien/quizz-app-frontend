@@ -125,26 +125,31 @@ const handleNextQuestion = async () => {
 
   const nextQuestionInterval = setInterval(
     async () => {
+      const questionId =
+        useRoomStore().questionIds[useRoomStore().currentQuestionIndex];
       try {
-        const questionId =
-          useRoomStore().questionIds[useRoomStore().currentQuestionIndex];
 
-        $quizzAppSDK.nextQuestion(questionId, props.room.id);
-        useRoomStore().currentQuestion = await $quizzAppSDK.getDetailQuestion(
-          useRoomStore().questionIds[useRoomStore().currentQuestionIndex]
-        );
+        if (questionId) {
+          $quizzAppSDK.nextQuestion(questionId, props.room.id);
+          useRoomStore().currentQuestion = await $quizzAppSDK.getDetailQuestion(
+            useRoomStore().questionIds[useRoomStore().currentQuestionIndex]
+          );
+        }
       } catch (error) {
         console.error("Error fetching next question:", error);
       }
       useRoomStore().currentQuestionIndex++;
       if (
-        useRoomStore().currentQuestionIndex > useRoomStore().questionIds.length
+        !questionId
       ) {
         console.log("End of quiz");
+        clearInterval(nextQuestionInterval);
+
+
+        await delay(2000);
         navigateTo(
           "/room/" + props.room.id + "/result" + "?code=" + props.room.code
         );
-        clearInterval(nextQuestionInterval);
         return;
       }
     },
