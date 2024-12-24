@@ -24,16 +24,16 @@
       </div>
     </div>
   </div>
-  <div class="main-content-host">
+  <div v-if="!useRoomStore().roomStarted" class="main-content-host">
     <div class="waiting-area">
       <p>Join on this device</p>
-      <CommonMyDialog>
+      <!-- <CommonMyDialog>
         <template #trigger>
           <Button :variant="'success'">Show Leaderboard</Button>
         </template>
 
         <RoomScoreLeaderBoard :scores="useRoomStore().participantScores" />
-      </CommonMyDialog>
+      </CommonMyDialog> -->
       <h3 v-if="useRoomStore().roomParticipants?.length === 0">
         Waiting for players
       </h3>
@@ -84,6 +84,7 @@
       </div>
     </div>
   </div>
+  <ScoreLeaderBoard class="w-full" v-if="true" :scores="useRoomStore().participantScores" />
 </template>
 
 <script setup lang="ts">
@@ -94,6 +95,7 @@ import { useToast } from "../ui/toast/use-toast";
 const { toast } = useToast();
 
 import { Copy, QrCode } from "lucide-vue-next";
+import ScoreLeaderBoard from "./ScoreLeaderBoard.vue";
 
 const { $quizzAppSDK } = useNuxtApp();
 
@@ -139,11 +141,12 @@ function hidePin() {
 }
 
 const handleNextQuestion = async () => {
+  useRoomStore().roomStarted = true;
   $quizzAppSDK.nextQuestion(
     useRoomStore().questionIds[useRoomStore().currentQuestionIndex],
     props.room.id
   );
-  
+
   await delay(useRoomStore().countDownBeforeStart);
   const currentQuestionId =
     useRoomStore().questionIds[useRoomStore().currentQuestionIndex];

@@ -7,10 +7,10 @@
   </div>
   <div v-else>
     <div class="mt-5">
-      <div class="quiz-page">
+      <div class="quiz-page w-full">
         <div
           v-if="useRoomStore().currentQuestion.questionType"
-          class="text-3xl w-full text-center my-4 flex flex-col items-center gap-4">
+          class="text-3xl w-full h-full text-center my-4 flex flex-col items-center gap-4">
           {{ useRoomStore().currentQuestionIndex }}/{{
             useRoomStore().questionIds.length
           }}
@@ -56,7 +56,6 @@
     </div>
   </div>
 </template>
-
 <script setup lang="ts">
 import { ActivationState } from "@stomp/stompjs";
 import Clock from "~/components/Common/Clock.vue";
@@ -127,15 +126,13 @@ const joinRoon = async () => {
 
 const pollInterVal = ref();
 
-watch(
-  () => useRoomStore().roomParticipants,
-  (participants) => {
-    useRoomStore().roomParticipants.forEach((participant) => {
+watch(() => useRoomStore().roomParticipants, () => {
+  useRoomStore().roomParticipants.forEach((participant) => {
+    if(!(participant.username in useRoomStore().participantScores)){
       useRoomStore().participantScores[participant.username] = 0;
-    });
-  }
-);
-
+    }
+  });
+});
 onMounted(async () => {
   if (!$quizzAppSDK.webSocketClient.connected) {
     $quizzAppSDK.webSocketClient.activate();
@@ -163,7 +160,7 @@ onMounted(async () => {
     if (!useRoomStore().roomStarted) {
       useRoomStore().getParticipants(currentRoom.value.code);
     }
-  }, 5000);
+  }, 3000);
 });
 
 onBeforeUnmount(() => {
@@ -175,5 +172,6 @@ onBeforeUnmount(() => {
       $keycloak.getUsername() as string
     );
   }
+  useRoomStore().reset();
 });
 </script>

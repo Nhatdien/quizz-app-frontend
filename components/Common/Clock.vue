@@ -2,9 +2,7 @@
   <ClientOnly>
     <div :style="countdownStyle" id="countdown">
       <div id="countdown-number">{{ formattedTime }}</div>
-      <svg>
-        <circle ref="circle" r="18" cx="20" cy="20"></circle>
-      </svg>
+
     </div>
   </ClientOnly>
 </template>
@@ -66,28 +64,21 @@ watch(
 </script>
 
 <style scoped>
+#countdown {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
 #countdown-number {
   color: white;
   display: inline-block;
-  line-height: 40px;
-  font-size: 1.2rem;
-}
-
-svg {
+  font-size: 1.8rem; /* Increased font size for better readability */
+  font-weight: bold; /* Make the text bold */
   position: absolute;
-  top: 0;
-  right: 0;
-  width: 60px;
-  height: 60px;
-  transform: rotateY(-180deg) rotateZ(-90deg);
+  text-align: center;
 }
 
-svg circle {
-  stroke-linecap: round;
-  stroke-width: 2px;
-  stroke: white;
-  fill: none;
-  /* The transition ensures a smooth animation for stroke-dashoffset */
-  transition: stroke-dashoffset 1s linear;
-}
 </style>

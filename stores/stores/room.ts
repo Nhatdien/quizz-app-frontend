@@ -122,9 +122,23 @@ export const useRoomStore = defineStore({
       );
     },
 
+    endQuiz() {
+      if (this.currentQuestionIndex === this.questionIds.length) {
+        this.saveScore(
+          QuizzAppSDK.getInstance().config.current_username as string,
+          this.currentScore,
+          this.room.id
+        );
+
+        delay(2000).then(() => {
+          navigateTo(`/room/${this.room.id}/result?code=${this.room.code}`);
+        });
+      }
+    },
+
     /**
      * Callback function to handle the reception of a new question.
-     * 
+     *
      * This function performs the following tasks:
      * 1. Sets the room as started.
      * 2. If it's the first question, shows a countdown before starting.
@@ -133,7 +147,7 @@ export const useRoomStore = defineStore({
      * 5. Initializes the clock timer for the current question.
      * 6. Handles the display of the leaderboard when the clock timer runs out.
      * 7. Manages the submission and score update for the last question, and navigates to the result page.
-     * 
+     *
      * @param {any} question - The received question data.
      */
     receiveQuesitonCallback(question: any) {
@@ -143,28 +157,16 @@ export const useRoomStore = defineStore({
         this.showingCountDown = true;
         delay(this.countDownBeforeStart).then(() => {
           this.showingCountDown = false;
-        }
-        );
-      }
-      // console.log(JSON.parse(question.body));
-
-      //handling answer submission
-      if (
-        this.currentQuestionIndex > 0 &&
-        this.currentQuestionIndex < this.questionIds.length
-      ) {
-        this.handleAnswerSubmission(
-          this.currentSubmission?.[0]?.[0],
-          this.currentQuestion
-        );
-
-        //update score
-        this.updateYourSoreAndGetLobbyScore(this.room.id);
+        });
       }
 
       //set current question
       const curQuestion = JSON.parse(question.body);
-      this.clockTime = curQuestion.time;
+      this.clockTime =
+        this.currentQuestionIndex === 0
+          ? curQuestion.time + this.countDownBeforeStart / 1000
+          : curQuestion.time;
+
       this.currentQuestion = curQuestion;
       this.currentSubmission = [];
       this.currentQuestionIndex += 1;
@@ -179,44 +181,27 @@ export const useRoomStore = defineStore({
         if (this.clockTime > 0) {
           this.clockTime -= 1;
         } else {
+          clearInterval(this.clockInterval);
           console.log("showing leaderboard");
           this.showingLeaderboard = true;
+
+          //update score
+          this.handleAnswerSubmission(
+            this.currentSubmission?.[0]?.[0],
+            this.currentQuestion
+          );
+          this.updateYourSoreAndGetLobbyScore(this.room.id);
 
           delay(this.showLeaderboardTime).then(() => {
             this.showingLeaderboard = false;
             console.log("hiding leaderboard");
           });
-          clearInterval(this.clockInterval);
+
+          this.endQuiz();
         }
       }, 1000);
 
       //hanlding last question
-      if (this.currentQuestionIndex >= this.questionIds.length) {
-        const lastQuestionTimeOut = setTimeout(() => {
-          this.handleAnswerSubmission(
-            this.currentSubmission[0][0],
-            this.currentQuestion
-          );
-
-          this.updateYourSoreAndGetLobbyScore(this.room.id);
-
-          console.log("last question");
-          this.saveScore(
-            QuizzAppSDK.getInstance().config.current_username as string,
-            this.currentScore,
-            this.room.id
-          );
-
-          delay(2000).then(() => {
-            navigateTo(`/room/${this.room.id}/result?code=${this.room.code}`);
-          });
-
-          // this.currentQuestion = {} as any;
-          // this.currentSubmission = [];
-          // this.currentQuestionIndex = 0;
-          // clearInterval(lastQuestionInterval);
-        }, this.currentQuestion.time * 1000);
-      }
     },
 
     reset() {
@@ -232,7 +217,6 @@ export const useRoomStore = defineStore({
       this.roomParticipants = [] as Participant[];
       this.participantScores = {} as { [key: string]: number };
       this.clockInterval = null;
-
 
       this.countDownBeforeStart = 5000;
       this.showingCountDown = false;

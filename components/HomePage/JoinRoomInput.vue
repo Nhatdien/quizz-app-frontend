@@ -21,12 +21,12 @@ const isExtraLarge = !useScreen().isLargerThanXLarge
 
 const hanleClickJoinRoom = async () => {
   const room = await $quizzAppSDK.getRoomByCode(code.value);
-  $quizzAppSDK.joinRoom(
-    room.id,
-    code.value,
-    $keycloak.getTokenParsed()?.preferred_username,
-    useRoomStore().receiveQuesitonCallback
-  );
+  // $quizzAppSDK.joinRoom(
+  //   room.id,
+  //   code.value,
+  //   $keycloak.getTokenParsed()?.preferred_username,
+  //   useRoomStore().receiveQuesitonCallback
+  // );
 
   await useRoomStore().getQuestionIds(room.quizzId);
 
