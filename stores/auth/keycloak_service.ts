@@ -75,13 +75,22 @@ class KeycloakService {
     return KeycloakService._kc.tokenParsed;
   }
 
-  public isLoggedIn(): boolean {
-    return !!KeycloakService._kc.token;
+  public refreshToken(): Promise<string | undefined> {
+    return new Promise((resolve, reject) => {
+      KeycloakService._kc
+        .updateToken(5)
+        .then(() => {
+          resolve(KeycloakService._kc.token);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
   }
 
   public updateToken(successCallback: any): void {
     KeycloakService._kc
-      .updateToken(5)
+      .updateToken(30)
       .then(successCallback)
       .catch(this.doLogin);
   }

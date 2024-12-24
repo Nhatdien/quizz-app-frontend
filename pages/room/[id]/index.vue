@@ -8,25 +8,42 @@
   <div v-else>
     <div class="mt-5">
       <div class="quiz-page">
-        <div class="text-3xl text-center my-4 flex flex-col items-center gap-8">
-          <div>time left: {{ useRoomStore().clockTime }}</div>
-
-          isCorrect:
-          {{
-            useQuizStore().checkCorrectAnswer(
-              useRoomStore().currentSubmission[0],
-              useRoomStore().currentQuestion
-            )
-          }}
-          {{ useRoomStore().currentSubmission }}
-          {{ useRoomStore().currentQuestionIndex + 1 }}/{{
+        <div
+          v-if="useRoomStore().currentQuestion.questionType"
+          class="text-3xl w-full text-center my-4 flex flex-col items-center gap-4">
+          {{ useRoomStore().currentQuestionIndex }}/{{
             useRoomStore().questionIds.length
           }}
-          <span>{{ useRoomStore().currentQuestion.content }}</span>
+          <RoomScoreLeaderBoard
+            v-if="useRoomStore().showingLeaderboard"
+            :scores="useRoomStore().participantScores" />
+
+          <RoomCountDownScreen
+            v-if="useRoomStore().showingCountDown"
+            :time="useRoomStore().countDownBeforeStart" />
+          <div
+            v-if="
+              useRoomStore().currentQuestion.questionType &&
+              !useRoomStore().showingLeaderboard &&
+              !useRoomStore().showingCountDown
+            ">
+            <progress
+              class="progress-bar"
+              v-bind:max="useRoomStore().questionIds.length"
+              :value="useRoomStore().currentQuestionIndex" />
+            <Clock
+              :duration="useRoomStore().currentQuestion.time"
+              :remaining-time="useRoomStore().clockTime"
+              :countdown-style="countdownStyle" />
+            <span>{{ useRoomStore().currentQuestion.content }}</span>
+          </div>
+          <Question
+            v-if="
+              !useRoomStore().showingLeaderboard &&
+              !useRoomStore().showingCountDown
+            "
+            :question="useRoomStore().currentQuestion" />
         </div>
-        <Question
-          v-if="useRoomStore().currentQuestion.questionType"
-          :question="useRoomStore().currentQuestion" />
         <PlayerView
           v-if="
             isPlayer &&
@@ -42,6 +59,7 @@
 
 <script setup lang="ts">
 import { ActivationState } from "@stomp/stompjs";
+import Clock from "~/components/Common/Clock.vue";
 import QrCode from "~/components/Common/QrCode.vue";
 import Question from "~/components/Questions/Question.vue";
 import HostView from "~/components/Room/HostView.vue";
@@ -64,6 +82,15 @@ const qrValue = computed(() => {
   );
 });
 
+const countdownStyle = {
+  height: "60px",
+  width: "60px",
+  margin: "0 auto",
+  marginTop: "20px",
+  textAlign: "center",
+  position: "relative",
+};
+
 const currentRoom = computed(() => {
   return useRoomStore().room;
 });
@@ -75,6 +102,7 @@ const currentQuestion = computed(() => {
 const route = useRoute();
 
 const joinRoon = async () => {
+  //join the room and subscribe to the question topic
   if (isPlayer.value && !useRoomStore().roomStarted) {
     $quizzAppSDK.joinRoom(
       currentRoom.value.id,
@@ -89,9 +117,24 @@ const joinRoon = async () => {
       variant: "destructive",
     });
   }
+
+  //subscribe to the score topic
+  $quizzAppSDK.subscribeUserScoreTopic(
+    currentRoom.value.id,
+    useRoomStore().receiveScoreMessageCallback
+  );
 };
 
 const pollInterVal = ref();
+
+watch(
+  () => useRoomStore().roomParticipants,
+  (participants) => {
+    useRoomStore().roomParticipants.forEach((participant) => {
+      useRoomStore().participantScores[participant.username] = 0;
+    });
+  }
+);
 
 onMounted(async () => {
   if (!$quizzAppSDK.webSocketClient.connected) {

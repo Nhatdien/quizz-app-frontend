@@ -18,7 +18,11 @@
           <h2 class="text-sm md:text-base font-semibold text-gray-500">
             YOUR SCORE
           </h2>
-          <p class="text-3xl md:text-4xl font-bold text-green-600">
+          <p class="text-3xl md:text-4xl font-bold" 
+            :class="{
+              'text-green-600': isPassed(currentScore),
+              'text-red-600': !isPassed(currentScore),
+            }">
             {{ currentScore }} / {{ quizMaxScore }}
           </p>
           <div class="relative">
@@ -26,7 +30,7 @@
               class="progress-bar"
               :max="quizMaxScore"
               :value="currentScore" />
-            <span class="absolute top-[-8px] left-[40%] text-red-600">|</span>
+            <span class="absolute top-[-6px] left-[40%] text-red-600">|</span>
           </div>
           <p class="text-sm md:text-base text-gray-400">PASSING SCORE: 40%</p>
         </div>
@@ -37,18 +41,26 @@
       <div
         class="attempt"
         v-for="(participant, index) in participants"
-        :key="participant.username">
-        <div
-          :class="{
-            highlight: participant.username === currentUser,
-          }"
-          class="p-8 relative">
+        :key="participant.username"
+        :class="{
+          highlight: participant.username === currentUser,
+          'first-place': index === 0,
+          'second-place': index === 1,
+          'third-place': index === 2,
+        }">
+        <div class="p-8 relative">
+          <div
+            :class="{
+              'review-pin': index === 0,
+              'silver-pin': index === 1,
+              'brown-pin': index === 2,
+            }"></div>
           <div class="flex justify-between items-center">
             <p>#{{ index + 1 }} {{ participant.username }}</p>
             <div
               :class="{
-                'score-passed': participant.score >= 40,
-                'score-failed': participant.score < 40,
+                'score-passed': isPassed(participant.score),
+                'score-failed': !isPassed(participant.score),
               }">
               {{ participant.score }} / {{ quizMaxScore }}
             </div>
@@ -84,7 +96,7 @@ const participants = computed(() => {
       (participant) => participant.username !== useRoomStore().room.createdBy
     )
     ?.sort((a, b) => {
-      return a?.score - b?.score;
+      return b?.score - a?.score;
     });
 });
 
@@ -102,6 +114,10 @@ const quizMaxScore = computed(() => {
   );
 });
 
+const isPassed = (score: number) => {
+  return (score / quizMaxScore.value) * 100 >= 40;
+};
+
 watchEffect(() => {
   progressValue.value = (currentScore.value / quizMaxScore.value) * 100;
 });
@@ -118,7 +134,7 @@ onMounted(async () => {
   try {
     await waitForToken();
     currentUser.value = $quizzAppSDK.config.current_username;
-    await useRoomStore().getParticipants(useRoute().query.code as string);
+    useRoomStore().getParticipants(useRoute().query.code as string);
 
     if (!useRoomStore().room.id) {
       await useRoomStore().getRoomByCode(useRoute().query.code as string);
@@ -150,9 +166,7 @@ onMounted(async () => {
     pollInterVal.value = setInterval(() => {
       useRoomStore().getParticipants(useRoomStore().room.code);
       countIntervalCalled.value++;
-    }, 3000);
-    console.log(useRoomStore().room);
-    // useQuizStore().getQuiz(useRoute().params.quiz_id as string);
+    }, 1500);
   } catch (error) {
     console.error("An error occurred while fetching quiz data:", error);
   }
@@ -166,8 +180,8 @@ onBeforeUnmount(() => {
       useRoomStore().room.code,
       currentUser.value as string
     );
-
   }
+  $quizzAppSDK.unsubscribeUserScoreTopic(useRoomStore().room.id);
   useRoomStore().reset();
 });
 </script>
@@ -197,12 +211,28 @@ h1 {
   background-color: #e7f3ff;
 }
 
+.first-place {
+  border: 2px solid gold;
+  background-color: #fffbea;
+}
+
+.second-place {
+  border: 2px solid silver;
+  background-color: #f0f0f0;
+}
+
+.third-place {
+  border: 2px solid #cd7f32;
+  background-color: #f5f5dc;
+}
+
 .recent-attempt {
   font-size: 1.2em;
   font-weight: bold;
   color: #007bff;
   margin-bottom: 10px;
 }
+
 .score {
   font-size: 1em;
   font-weight: bold;

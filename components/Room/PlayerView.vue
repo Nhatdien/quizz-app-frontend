@@ -32,7 +32,10 @@
       </h3>
       <div v-else class="player-container">
         <div
-          v-for="player in useRoomStore().roomParticipants.slice(0, 2)"
+          v-for="player in useRoomStore().roomParticipants.slice(
+            0,
+            numberOfShownParticipants
+          )"
           :key="player.username">
           <div class="player w-24 flex flex-col items-center gap-2">
             <img
@@ -44,7 +47,9 @@
         </div>
 
         <div
-          v-if="useRoomStore().roomParticipants?.length > 2"
+          v-if="
+            useRoomStore().roomParticipants?.length > numberOfShownParticipants
+          "
           class="border-2 border-gray-200 rounded-full p-2">
           <p>+ {{ useRoomStore().roomParticipants?.length - 2 }}</p>
         </div>
@@ -84,6 +89,19 @@ const props = defineProps({
     type: Object as PropType<RoomRes>,
     required: true,
   },
+});
+
+
+const numberOfShownParticipants = computed(() => {
+  if (useScreen().isLargerThanLarge) {
+    return 7;
+  }
+
+  if (useScreen().isLargerThanMedium) {
+    return 5;
+  }
+
+  return 4;
 });
 
 const roomLink = computed(() => {

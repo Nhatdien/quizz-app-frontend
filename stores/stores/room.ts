@@ -6,19 +6,28 @@ import type { Question } from "../../types/quiz";
 export const useRoomStore = defineStore({
   id: "room",
   state: () => ({
+    //quiz id
     quizId: "",
-    room: {} as RoomRes,
 
+    //question, room and score
+    room: {} as RoomRes,
     currentQuestionIndex: 0,
     currentQuestion: {} as Question,
     currentScore: 0,
-    roomStarted: false,
     currentSubmission: [] as string[][],
     questionIds: [] as string[],
+    roomStarted: false,
     clockTime: 0,
 
+    // Room participants and scores
     roomParticipants: [] as Participant[],
-    participantScores: [] as { username: string; score: number }[],
+    participantScores: {} as { [key: string]: number },
+
+    // Countdown and Leaderboard
+    countDownBeforeStart: 5000,
+    showingCountDown: false,
+    showLeaderboardTime: 5000,
+    showingLeaderboard: false,
     clockInterval: null as any,
   }),
   actions: {
@@ -95,26 +104,57 @@ export const useRoomStore = defineStore({
       }
     },
 
-    async updateYourSoreAndGetLobbyScore(roomId: string) {
-      QuizzAppSDK.getInstance().webSocketClient.publish({
-        destination: `/app/room/${roomId}/update-score`,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: QuizzAppSDK.getInstance().config.current_username,
-          score: this.currentScore,
-        }),
-      });
+    receiveScoreMessageCallback(message: any) {
+      const participants = JSON.parse(message.body);
+      const username = JSON.parse(participants?.username).username;
+      const score = JSON.parse(participants?.username).score;
+      this.participantScores[username] = score;
+      // console.log(this.participantScores);
     },
 
+    async updateYourSoreAndGetLobbyScore(roomId: string) {
+      const username = QuizzAppSDK.getInstance().config
+        .current_username as string;
+      QuizzAppSDK.getInstance().sendUserScoreTopic(
+        roomId,
+        username,
+        this.currentScore
+      );
+    },
+
+    /**
+     * Callback function to handle the reception of a new question.
+     * 
+     * This function performs the following tasks:
+     * 1. Sets the room as started.
+     * 2. If it's the first question, shows a countdown before starting.
+     * 3. Handles answer submission and updates the score for subsequent questions.
+     * 4. Parses and sets the current question from the received data.
+     * 5. Initializes the clock timer for the current question.
+     * 6. Handles the display of the leaderboard when the clock timer runs out.
+     * 7. Manages the submission and score update for the last question, and navigates to the result page.
+     * 
+     * @param {any} question - The received question data.
+     */
     receiveQuesitonCallback(question: any) {
-      console.log(JSON.parse(question.body));
+      this.roomStarted = true;
+
+      if (this.currentQuestionIndex === 0) {
+        this.showingCountDown = true;
+        delay(this.countDownBeforeStart).then(() => {
+          this.showingCountDown = false;
+        }
+        );
+      }
+      // console.log(JSON.parse(question.body));
 
       //handling answer submission
-      if (this.currentQuestionIndex > 0) {
+      if (
+        this.currentQuestionIndex > 0 &&
+        this.currentQuestionIndex < this.questionIds.length
+      ) {
         this.handleAnswerSubmission(
-          this.currentSubmission[0][0],
+          this.currentSubmission?.[0]?.[0],
           this.currentQuestion
         );
 
@@ -139,6 +179,13 @@ export const useRoomStore = defineStore({
         if (this.clockTime > 0) {
           this.clockTime -= 1;
         } else {
+          console.log("showing leaderboard");
+          this.showingLeaderboard = true;
+
+          delay(this.showLeaderboardTime).then(() => {
+            this.showingLeaderboard = false;
+            console.log("hiding leaderboard");
+          });
           clearInterval(this.clockInterval);
         }
       }, 1000);
@@ -168,7 +215,7 @@ export const useRoomStore = defineStore({
           // this.currentSubmission = [];
           // this.currentQuestionIndex = 0;
           // clearInterval(lastQuestionInterval);
-        }, (this.currentQuestion.time * 1000) / 6);
+        }, this.currentQuestion.time * 1000);
       }
     },
 
@@ -183,8 +230,14 @@ export const useRoomStore = defineStore({
       this.questionIds = [] as string[];
       this.clockTime = 0;
       this.roomParticipants = [] as Participant[];
-      this.participantScores = [] as { username: string; score: number }[];
+      this.participantScores = {} as { [key: string]: number };
       this.clockInterval = null;
+
+
+      this.countDownBeforeStart = 5000;
+      this.showingCountDown = false;
+      this.showLeaderboardTime = 5000;
+      this.showingLeaderboard = false;
     },
   },
 });

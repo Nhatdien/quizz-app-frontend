@@ -27,12 +27,22 @@
   <div class="main-content-host">
     <div class="waiting-area">
       <p>Join on this device</p>
+      <CommonMyDialog>
+        <template #trigger>
+          <Button :variant="'success'">Show Leaderboard</Button>
+        </template>
+
+        <RoomScoreLeaderBoard :scores="useRoomStore().participantScores" />
+      </CommonMyDialog>
       <h3 v-if="useRoomStore().roomParticipants?.length === 0">
         Waiting for players
       </h3>
       <div v-else class="player-container">
         <div
-          v-for="player in useRoomStore().roomParticipants"
+          v-for="player in useRoomStore().roomParticipants.slice(
+            0,
+            numberOfShownParticipants
+          )"
           :key="player.username">
           <div class="player w-24 flex flex-col items-center gap-2">
             <img
@@ -42,11 +52,19 @@
             <p class="text-sm">{{ player.username }}</p>
           </div>
         </div>
+
+        <div
+          v-if="
+            useRoomStore().roomParticipants?.length > numberOfShownParticipants
+          "
+          class="border-2 border-gray-200 rounded-full p-2">
+          <p>+ {{ useRoomStore().roomParticipants?.length - 2 }}</p>
+        </div>
       </div>
       <Button
         :variant="'success'"
         @click="handleNextQuestion"
-        class="start-game-btn"
+        class="start-game-btn mt-4"
         :disabled="useRoomStore().roomParticipants?.length === 0">
         Start game
       </Button>
@@ -87,6 +105,20 @@ const props = defineProps({
   },
 });
 
+const sceen = useScreen();
+
+const numberOfShownParticipants = computed(() => {
+  if (useScreen().isLargerThanLarge) {
+    return 7;
+  }
+
+  if (useScreen().isLargerThanMedium) {
+    return 5;
+  }
+
+  return 4;
+});
+
 const roomLink = computed(() => {
   return (
     "localhost:4200" + "/room/" + props.room.id + "?code=" + props.room.code
@@ -111,7 +143,8 @@ const handleNextQuestion = async () => {
     useRoomStore().questionIds[useRoomStore().currentQuestionIndex],
     props.room.id
   );
-
+  
+  await delay(useRoomStore().countDownBeforeStart);
   const currentQuestionId =
     useRoomStore().questionIds[useRoomStore().currentQuestionIndex];
 
@@ -128,7 +161,6 @@ const handleNextQuestion = async () => {
       const questionId =
         useRoomStore().questionIds[useRoomStore().currentQuestionIndex];
       try {
-
         if (questionId) {
           $quizzAppSDK.nextQuestion(questionId, props.room.id);
           useRoomStore().currentQuestion = await $quizzAppSDK.getDetailQuestion(
@@ -140,21 +172,23 @@ const handleNextQuestion = async () => {
       }
       useRoomStore().currentQuestionIndex++;
       if (
-        !questionId
+        !questionId ||
+        useRoomStore().currentQuestionIndex > useRoomStore().questionIds.length
       ) {
         console.log("End of quiz");
         clearInterval(nextQuestionInterval);
 
-
-        await delay(2000);
         navigateTo(
           "/room/" + props.room.id + "/result" + "?code=" + props.room.code
         );
         return;
       }
     },
-
-    (useRoomStore().currentQuestion.time * 1000) / 6
+    // useRoomStore().currentQuestion.time * 1000 + useRoomStore().showLeaderboardTime (if not last question)
+    useRoomStore().currentQuestion.time * 1000 +
+      (useRoomStore().currentQuestionIndex === useRoomStore().questionIds.length
+        ? 0
+        : useRoomStore().showLeaderboardTime)
   );
 };
 </script>

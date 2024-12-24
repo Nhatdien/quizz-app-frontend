@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col min-w-[375px] w-full">
-    <transition name="slide-left" mode="out-in">
+    <transition name="fade" mode="out-in">
       <div class="comment text-[#121212]" :key="question.id">
         <QuizOptionType
           v-if="question.questionType === 1"
@@ -36,10 +36,13 @@ const props = defineProps({
 </script>
 
 <style scoped>
-.slide-left-enter-active, .slide-left-leave-active {
-  transition: transform 0.5s ease;
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s ease;
 }
-.slide-left-enter, .slide-left-leave-to {
-  transform: translateX(100%);
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+.fade-enter-to, .fade-leave {
+  opacity: 1;
 }
 </style>

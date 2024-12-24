@@ -22,8 +22,32 @@ export class Room extends Base {
   }
 
   getParticipants(roomCode: string) {
-    return this.fetch<Participant>(`${this.config.base_url}/room/participants?roomCode=${roomCode}`, {
-      method: "GET",
+    return this.fetch<Participant>(
+      `${this.config.base_url}/room/participants?roomCode=${roomCode}`,
+      {
+        method: "GET",
+      }
+    );
+  }
+
+  subscribeUserScoreTopic(
+    roomId: string,
+    onMessageCallback: (message: any) => void
+  ) {
+    super.webSocketClient.subscribe(
+      `/topic/room/${roomId}/user-score`,
+      onMessageCallback
+    );
+  }
+
+  unsubscribeUserScoreTopic(roomId: string) {
+    super.webSocketClient.unsubscribe(`/topic/room/${roomId}/user-score`);
+  }
+
+  sendUserScoreTopic(roomId: string, username: string, score: number) {
+    super.webSocketClient.publish({
+      destination: `/app/room/${roomId}/update-score`,
+      body: JSON.stringify({ username, score }),
     });
   }
 
@@ -36,10 +60,6 @@ export class Room extends Base {
     super.webSocketClient.subscribe(
       `/topic/room/${roomId}/questions`,
       onMessageCallback
-    );
-    console.log(
-      "subscribe to topic",
-      `${this.config.websocket_url}/topic/room/${roomId}/questions`
     );
     return this.fetch(
       `${this.config.base_url}/participant/join?roomCode=${roomCode}&username=${username}`,

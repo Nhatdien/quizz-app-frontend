@@ -92,7 +92,11 @@
     display: grid;
     flex: 1;
     height: 100%;
+    gap: 1rem;
+    align-items: center;
+    justify-items: center;
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    grid-template-rows: repeat(auto-fill, minmax(100px, 1fr));
   }
 }
 
