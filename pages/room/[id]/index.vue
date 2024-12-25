@@ -19,9 +19,11 @@
             :scores="useRoomStore().participantScores" />
 
           <RoomCountDownScreen
+            class="justify-self-center "
             v-if="useRoomStore().showingCountDown"
             :time="useRoomStore().countDownBeforeStart" />
           <div
+            class="w-full my-4 flex flex-col items-center gap-4"
             v-if="
               useRoomStore().currentQuestion.questionType &&
               !useRoomStore().showingLeaderboard &&
@@ -126,13 +128,16 @@ const joinRoon = async () => {
 
 const pollInterVal = ref();
 
-watch(() => useRoomStore().roomParticipants, () => {
-  useRoomStore().roomParticipants.forEach((participant) => {
-    if(!(participant.username in useRoomStore().participantScores)){
-      useRoomStore().participantScores[participant.username] = 0;
-    }
-  });
-});
+watch(
+  () => useRoomStore().roomParticipants,
+  () => {
+    useRoomStore().roomParticipants.forEach((participant) => {
+      if (!(participant.username in useRoomStore().participantScores)) {
+        useRoomStore().participantScores[participant.username] = 0;
+      }
+    });
+  }
+);
 onMounted(async () => {
   if (!$quizzAppSDK.webSocketClient.connected) {
     $quizzAppSDK.webSocketClient.activate();
@@ -150,9 +155,7 @@ onMounted(async () => {
       console.log(message);
     }
   );
-  useQuizStore().searchQuiz({
-    textSearch: currentRoom.value?.quizzId,
-  });
+  useQuizStore().getQuiz(currentRoom.value?.quizzId);
   await useRoomStore().getQuestionIds(currentRoom.value?.quizzId);
   console.log("questionIds", useRoomStore().questionIds);
 

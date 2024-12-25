@@ -1,5 +1,5 @@
 <template>
-  <div class="result-page relative">
+  <div class="result-page relative shadow-md">
     <div class="info-pin"></div>
     <h3 class="mt-8">Your results:</h3>
     <div class="relative" v-if="quizAttempt && quizAttempt?.length">
@@ -27,7 +27,10 @@
           v-for="(attempt, index) in quizAttempt.slice(1)"
           :key="index"
           class="attempt">
-          <p>{{ formatDate(attempt.time) }}</p>
+          <div class="flex justify-between items-center">
+            <p>{{ formatDate(attempt.time) }}</p>
+            <span>Score: {{ attempt.score }}/{{ quizMaxScore }}</span>
+          </div>
           <progress
             class="progress-bar"
             v-bind:max="quizMaxScore"
@@ -83,7 +86,7 @@ onMounted(async () => {
   font-family: Arial, sans-serif;
   padding: 20px;
   border-radius: 8px;
-  background-color: #f9f9f9;
+  background-color: #9fe7f52a;
 }
 
 h1 {

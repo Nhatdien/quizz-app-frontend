@@ -50,7 +50,7 @@ export class Quizz extends Base {
     });
   }
 
-  createQuizAttempt(quizAttempt: QuizzAttempt): Promise<Quiz> {
+  createQuizAttempt(quizAttempt: QuizzAttempt): Promise<QuizzAttempt> {
     return this.fetch(`${this.config.base_url}/quiz-attemp/create`, {
       method: "POST",
       body: JSON.stringify(quizAttempt),
@@ -64,6 +64,12 @@ export class Quizz extends Base {
     return this.fetch(`${this.config.base_url}/quiz-attemp/filter`, {
       method: "POST",
       body: JSON.stringify({ ...filter, isPass }),
+    });
+  }
+
+  getAttemptById(id: string): Promise<QuizzAttempt> {
+    return this.fetch(`${this.config.base_url}/quiz-attemp/${id}`, {
+      method: "GET",
     });
   }
 

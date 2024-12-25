@@ -8,6 +8,7 @@ const router = useRouter();
 function onInputQuizSearch() {
   useQuizStore().searchQuiz({
     textSearch: search.value,
+    pageSize: 10,
   })
   navigateTo(`/quiz?search=${search.value}`);
 }

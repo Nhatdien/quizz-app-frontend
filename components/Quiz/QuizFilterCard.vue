@@ -2,11 +2,13 @@
   <div class="quiz-card relative">
     <div class="review-pin"></div>
     <NuxtImg
+      v-if="quiz.imageUrl"
       :src="
         quiz.imageUrl ? quiz.imageUrl : useAsset('@/assets/img/default_avt.jpg')
       "
       alt="Quiz Image"
       class="quiz-image bg-slate-100" />
+    <Image class="border-2 border-slate rounded-sm p-2" v-else :size="120" />
     <div class="quiz-info">
       <h3
         @click="navigateTo(`/quiz/${quiz?.id}/view`)"
@@ -28,13 +30,12 @@
         >
       </div>
     </div>
-
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { Trash } from "lucide-vue-next";
+import { Trash, Image } from "lucide-vue-next";
 import AlertDialog from "@/components/Common/AlertDialog.vue";
 import type { PropType } from "vue";
 import type { Quiz } from "~/types/quiz";
@@ -50,8 +51,6 @@ const props = defineProps({
     default: false,
   },
 });
-
-
 </script>
 
 <style scoped lang="scss">

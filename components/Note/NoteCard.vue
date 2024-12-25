@@ -39,8 +39,8 @@ const props = defineProps({
 
 const handleDeleteNoteOption = (noteID: string) => {
   return {
-    title: "Delete Question",
-    description: "Are you sure you want to delete this question?",
+    title: "Delete Note",
+    description: "Are you sure you want to delete this note?",
     actionText: "Delete",
     action: async () => {
       useTryCatch().tryCatch(() => useNoteStore().deleteNote(noteID));

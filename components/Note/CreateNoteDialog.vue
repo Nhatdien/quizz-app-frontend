@@ -19,9 +19,9 @@
     </DialogTrigger>
     <DialogContent class="">
       <DialogHeader>
-        <DialogTitle> Create Note </DialogTitle>
+        <DialogTitle> {{ isEdingNote ? "Edit Note" : "Create Note"}} </DialogTitle>
         <DialogDescription>
-          {{ "Create a new note for current question" }}
+          {{ `${isEdingNote ? "Edit" : "Create new"} note for current question` }}
         </DialogDescription>
       </DialogHeader>
       <Form class="flex flex-col gap-8 review-item">

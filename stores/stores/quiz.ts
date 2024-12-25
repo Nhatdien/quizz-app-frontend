@@ -52,9 +52,19 @@ export const useQuizStore = defineStore({
     },
 
     async getQuizAttempt(filter: BaseFilter, isPass?: boolean) {
-      return QuizzAppSDK.getInstance().getQuizAttempt(filter, isPass).then((res) => {
-        this.quizAttempt = res.content;
-      });
+      return QuizzAppSDK.getInstance()
+        .getQuizAttempt(filter, isPass)
+        .then((res) => {
+          this.quizAttempt = res.content;
+        });
+    },
+
+    async getQuizAttemptById(id: string) {
+      return QuizzAppSDK.getInstance()
+        .getAttemptById(id)
+        .then((res) => {
+          this.quizAttempt = [res];
+        });
     },
 
     async searchQuiz(search: SearchParams) {

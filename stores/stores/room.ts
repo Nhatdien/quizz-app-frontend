@@ -91,25 +91,70 @@ export const useRoomStore = defineStore({
         });
     },
 
-    async handleAnswerSubmission(answer: string, question: Question) {
-      const isCorrect =
-        question.answers.find((ans) => ans.isCorrect)?.content === answer;
+    checkIsCorrect(submission: string[][], question: Question) {
+      const haveMultipleAnswers =
+        question.answers.filter((ans) => ans.isCorrect).length > 1;
 
-      console.log(
-        answer,
-        question.answers.find((ans) => ans.isCorrect)?.content === answer
-      );
-      if (isCorrect) {
+      const textQuestionType = question.questionType === 2;
+
+      let correctAnswer;
+
+      if (!haveMultipleAnswers && !textQuestionType) {
+        correctAnswer =
+          submission[0]?.[0] ===
+          question.answers.find((ans) => ans.isCorrect)?.content;
+      } else if (haveMultipleAnswers) {
+        const rightAnswers = question.answers
+          .filter((ans) => ans.isCorrect)
+          .map((ans) => ans.content).sort();
+
+        correctAnswer = this.currentSubmission[0].length > 0 &&
+          compareTwoArrayAnyOrder<string>(
+            this.currentSubmission[0].sort(),
+            rightAnswers
+          );
+      } else {
+        correctAnswer = submission[0]?.join("") === question.answers[0].content;
+      }
+
+      if (correctAnswer) {
         this.currentScore += question.point;
       }
+
+      console.log(
+        correctAnswer,
+        submission,
+        question.answers,
+        this.currentScore
+      );
+
+      return correctAnswer;
     },
+
+    // async handleAnswerSubmission(answer: string, question: Question) {
+    //   const haveMultipleAnswers =
+    //     question.answers.filter((ans) => ans.isCorrect).length > 1;
+
+    //   const isCorrect =
+    //     question.answers.find((ans) => ans.isCorrect)?.content === answer;
+
+    //   console.log(
+    //     answer,
+    //     question.answers.find((ans) => ans.isCorrect)?.content === answer
+    //   );
+    //   if (isCorrect) {
+    //     this.currentScore += question.point;
+    //   }
+    // },
 
     receiveScoreMessageCallback(message: any) {
       const participants = JSON.parse(message.body);
-      const username = JSON.parse(participants?.username).username;
-      const score = JSON.parse(participants?.username).score;
+
+      console.log(participants);
+      const username = participants.username;
+      const score = participants.score;
       this.participantScores[username] = score;
-      // console.log(this.participantScores);
+      console.log(this.participantScores);
     },
 
     async updateYourSoreAndGetLobbyScore(roomId: string) {
@@ -120,6 +165,8 @@ export const useRoomStore = defineStore({
         username,
         this.currentScore
       );
+
+      console.log("updating score", this.currentScore);
     },
 
     endQuiz() {
@@ -186,10 +233,7 @@ export const useRoomStore = defineStore({
           this.showingLeaderboard = true;
 
           //update score
-          this.handleAnswerSubmission(
-            this.currentSubmission?.[0]?.[0],
-            this.currentQuestion
-          );
+          this.checkIsCorrect(this.currentSubmission, this.currentQuestion);
           this.updateYourSoreAndGetLobbyScore(this.room.id);
 
           delay(this.showLeaderboardTime).then(() => {

@@ -55,20 +55,6 @@
         </div>
       </div>
     </div>
-    <div class="settings flex flex-col justify-center items-center gap-4">
-      <!-- <div class="presentation-info">
-              <img src="https://via.placeholder.com/80x80" alt="Presentation Image" />
-              <h3>JavaScript</h3>
-              <p>8 slides</p>
-            </div> -->
-      <div class="sound-settings">
-        <h4>Sound</h4>
-        <div class="slider-group">
-          <label>Music</label>
-          <input type="range" min="0" max="100" />
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -90,7 +76,6 @@ const props = defineProps({
     required: true,
   },
 });
-
 
 const numberOfShownParticipants = computed(() => {
   if (useScreen().isLargerThanLarge) {

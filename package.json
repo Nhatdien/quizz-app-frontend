@@ -19,6 +19,7 @@
     "@vuelidate/validators": "^2.0.4",
     "@vueup/vue-quill": "^1.2.0",
     "@vueuse/core": "^12.0.0",
+    "@vueuse/sound": "vueuse/sound",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cookie": "^1.0.2",

@@ -52,11 +52,12 @@ export interface Quiz {
   }
   
   export interface QuizzAttempt {
-    id: string
+    id?: string
     quizzId: string
     score: number
     isPass: boolean
-    time : string
+    time?: string
+    questions: AttemptAnswer[]
   }
 
   export interface QuizAttemptResponse {
@@ -64,12 +65,11 @@ export interface Quiz {
     quizId: string
     score: number
     isPass: boolean
-    asnwers: Answer[]
+    questions: AttemptAnswer[]
   }
 
   export interface AttemptAnswer {
-    questionId: string
-    attemptanswerId: string
-    selectedAnswerId: string
-    isCorrect: boolean
+    questionContent: string
+    selectedAnswerContents: string[]
+    correctAnswerContents: string[]
   }

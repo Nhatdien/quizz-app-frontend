@@ -1,4 +1,5 @@
 <template>
+
   <div class="success-pin"></div>
   <div class="header">
     <div class="join-info flex flex-col items-center">
@@ -69,22 +70,8 @@
         Start game
       </Button>
     </div>
-    <div class="settings flex flex-col justify-center items-center gap-4">
-      <!-- <div class="presentation-info">
-            <img src="https://via.placeholder.com/80x80" alt="Presentation Image" />
-            <h3>JavaScript</h3>
-            <p>8 slides</p>
-          </div> -->
-      <div class="sound-settings">
-        <h4>Sound</h4>
-        <div class="slider-group">
-          <label>Music</label>
-          <input type="range" min="0" max="100" />
-        </div>
-      </div>
-    </div>
   </div>
-  <ScoreLeaderBoard class="w-full" v-if="true" :scores="useRoomStore().participantScores" />
+  <ScoreLeaderBoard class="w-full" v-if="useRoomStore().roomStarted" :scores="useRoomStore().participantScores" />
 </template>
 
 <script setup lang="ts">

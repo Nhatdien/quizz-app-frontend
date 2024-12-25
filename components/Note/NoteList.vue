@@ -1,6 +1,13 @@
 <template>
-  <NoteCreateNoteDialog :currentQuizInfo />
-  <NoteCard v-for="note in currentNotes" :currentQuizInfo :key="note.id" :note  />
+  <div class="flex justify-between items-center">
+    <h2>Notes</h2>
+    <NoteCreateNoteDialog :currentQuizInfo />
+  </div>
+  <NoteCard
+    v-for="note in currentNotes"
+    :currentQuizInfo
+    :key="note.id"
+    :note />
 </template>
 
 <script setup lang="ts">

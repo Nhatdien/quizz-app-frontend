@@ -1,8 +1,7 @@
 <template>
   <CommonMyDrawer
     title="Ask A.I for some helps"
-    description="Please enter your question below"
->
+    description="Please enter your question below">
     <template #trigger>
       <Input placeholder="Feeling struggled? Ask A.I for some helps" />
     </template>
@@ -17,7 +16,7 @@
       <div class="chatbox-header">
         <h3>ChatBox</h3>
       </div>
-      <ScrollArea class="h-96">
+      <ScrollArea @scroll-top="onScrollTop" ref="scrollAreaRef" class="h-96">
         <div class="chatbox-messages">
           <div
             v-for="(message, index) in currentMessages"
@@ -34,7 +33,9 @@
           v-model="newMessage"
           @keyup.enter="sendMessage"
           placeholder="Type a message..." />
-        <button @click="sendMessage">Send</button>
+        <Button :disabled="newMessage.trim() === ''" @click="sendMessage">
+          Send
+        </Button>
       </div>
     </div>
   </CommonMyDrawer>
@@ -42,7 +43,9 @@
 
 <script setup lang="ts">
 import type { MessageModel, BaseContent } from "~/types/chatbot";
+import { useScroll } from "@vueuse/core";
 
+const { $quizzAppSDK } = useNuxtApp();
 const currentMessages = computed(() => {
   return useChatBotStore().messages.map((message: BaseContent) => {
     return {
@@ -52,11 +55,32 @@ const currentMessages = computed(() => {
   });
 });
 
+const pageSize = ref(20);
+
+const onScrollTop = () => {
+  pageSize.value += 20;
+
+  useChatBotStore().getMessages({
+    textSearch: $quizzAppSDK.config.current_username,
+    pageSize: pageSize.value,
+  });
+};
+
+// useChatBotStore().getMessages({
+//       textSearch: $quizzAppSDK.config.current_username,
+//       pageSize: 10,
+//     });
+
 const { $keycloak } = useNuxtApp();
 
 const newMessage = ref("");
 
 const sendMessage = async () => {
+  if (newMessage.value.trim() === "") {
+    return;
+  }
+
+  
   const inputMessageToBot = {
     role: "user",
     parts: [
@@ -165,10 +189,12 @@ const sendMessage = async () => {
 }
 
 .chatbox-input button {
-  padding: 10px 15px;
+  padding: 20px 20px;
   background-color: #007bff;
   color: white;
+  margin: 0 auto;
   border: none;
+
   border-radius: 4px;
   cursor: pointer;
 }

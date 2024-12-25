@@ -20,7 +20,7 @@ import { Label } from "@/components/ui/label";
     <DialogTrigger as-child>
       <slot name="trigger"></slot>
     </DialogTrigger>
-    <DialogContent class="sm:max-w-[425px]">
+    <DialogContent class="sm:max-w-[625px]">
       <DialogHeader>
         <DialogTitle>
           <slot name="title"></slot>

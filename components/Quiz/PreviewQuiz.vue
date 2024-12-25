@@ -44,8 +44,11 @@
         :disabled="enableMoveButtons.back">
         <ArrowLeft />
       </button>
-      <Button @click="handleClickSubmit" class="py-2 px-4">
-        SUBMIT {{ getScore }}
+      <Button
+        @click="handleClickSubmit"
+        class="p-4 text-2xl"
+        :disabled="!allSubmissionFilled">
+        SUBMIT
       </Button>
       <button
         :class="`continue-button ${
@@ -113,6 +116,15 @@ const currentSubmissions = ref<string[][]>(
   new Array(props.quiz?.questions?.length).fill([])
 );
 
+watch(
+  () => props.quiz?.questions.length,
+  () => {
+    currentSubmissions.value = new Array(props.quiz?.questions?.length).fill(
+      []
+    );
+  }
+);
+
 const paginatedSubmissions = computed(() => {
   const start = currentPage.value * questionsPerPage;
   const end = start + questionsPerPage;
@@ -148,6 +160,10 @@ const rightAnswersArr = computed(() => {
   }) as string[][];
 });
 
+const allSubmissionFilled = computed(() => {
+  return currentSubmissions.value.every((submission) => submission.length > 0);
+});
+
 const getScore = computed(() => {
   const rightAnswers = rightAnswersArr.value;
 
@@ -178,26 +194,29 @@ const isPassedSubmission = computed(() => {
 
 const handleClickSubmit = async () => {
   const quizAttemptPayload = {
-    quizzId: props.quiz?.id,
+    quizzId: props.quiz?.id as string,
     isPass: isPassedSubmission.value,
     score: getScore.value,
+    questions: [] as QuizzAttempt["questions"],
   };
 
   const rightAnswerAndSubmission = rightAnswersArr.value.map(
     (rightAnswer, index) => {
       return {
-        questionContent: props.quiz?.questions[index].content,
-        rightAnswer,
-        submission:
+        questionContent: props.quiz?.questions[index].content as string,
+        correctAnswerContents: rightAnswer as string[],
+        selectedAnswerContents:
           props.quiz?.questions[index].questionType === 2
-            ? currentSubmissions.value[index].join("")
+            ? [currentSubmissions.value[index].join("")]
             : currentSubmissions.value[index],
       };
     }
   );
-  // console.log(rightAnswerAndSubmission);
-  await useQuizStore().createQuizAttempt(quizAttemptPayload as QuizzAttempt);
-  navigateTo("result");
+
+  quizAttemptPayload.questions = rightAnswerAndSubmission;
+  
+  const attempt = await useQuizStore().createQuizAttempt(quizAttemptPayload);
+  navigateTo("result/" + attempt.id);
 };
 
 const prevPage = () => {

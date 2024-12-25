@@ -6,7 +6,7 @@
     </div>
     <div
       class="review-item w-full flex flex-col gap-4 justify-self-center lg:w-1/3 mt-8 lg:mt-0 lg:pl-6">
-      <div class="bg-[#f9f9f9] p-4 relative">
+      <div class="bg-[#9FE7FF2a] shadow-md rounded-sm p-4 relative">
         <div class="info-pin"></div>
         <ScrollArea class="h-96">
           <NoteList />
@@ -48,6 +48,7 @@ onMounted(async () => {
     console.log("fetching api");
     useChatBotStore().getMessages({
       textSearch: $quizzAppSDK.config.current_username,
+      pageSize: 20,
     });
 
     useQuizStore().getQuiz(route.params.quiz_id as string);

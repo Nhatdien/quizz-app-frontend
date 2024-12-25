@@ -1,7 +1,7 @@
 <template>
-  <div class="countdown">
+  <div class="countdown flex items-center justify-center">
     <transition name="fade" mode="out-in">
-      <span :key="timeLeft">{{ Math.ceil(timeLeft / 1000) }}</span>
+      <span class="mx-auto my-0" :key="timeLeft">{{ Math.ceil(timeLeft / 1000) }}</span>
     </transition>
   </div>
 </template>
@@ -35,6 +35,7 @@ onMounted(() => {
 <style scoped>
 .countdown {
   font-size: 2em;
+  min-height: 15rem;
   text-align: center;
 }
 

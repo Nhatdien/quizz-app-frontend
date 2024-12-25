@@ -27,12 +27,12 @@
           <p class="text-sm md:text-base text-gray-400">PASSING SCORE: 40%</p>
         </div>
         <!-- <div class="bg-gray-50 p-4 rounded-lg shadow-md">
-          <h2 class="text-sm md:text-base font-semibold text-gray-500">
-            YOUR POINTS
-          </h2>
-          <p class="text-3xl md:text-4xl font-bold text-green-600">10</p>
-          <p class="text-sm md:text-base text-gray-400">PASSING POINTS: 10</p>
-        </div> -->
+            <h2 class="text-sm md:text-base font-semibold text-gray-500">
+              YOUR POINTS
+            </h2>
+            <p class="text-3xl md:text-4xl font-bold text-green-600">10</p>
+            <p class="text-sm md:text-base text-gray-400">PASSING POINTS: 10</p>
+          </div> -->
       </div>
       <div class="flex justify-center w-full items-center gap-4 mt-6">
         <Button
@@ -68,26 +68,71 @@
             " />
         </MyDialog>
       </div>
-    </div>
+      <div class="mt-12"></div>
+      <MyDialog class="min-w-[500px]">
+        <template #trigger>
+          <p class="underline cursor-pointer">Review your submissions</p>
+        </template>
+        <template #title>
+          <span class="text-2xl font-bold">Your submissions</span>
+        </template>
 
-    <!-- <div
-      class="bg-white rounded-lg shadow-md p-10 w-full max-w-lg text-center relative mt-8">
-      <h2 class="text-xl md:text-2xl font-semibold mb-8">Your Answers</h2>
-      <div
-        v-for="(question, index) in currentQuiz?.questions"
-        :key="index"
-        class="mb-8">
-        <p class="text-lg font-medium">{{ question?.content }}</p>
-        <p
-          :class="{
-            'text-green-600': true,
-            'text-red-600': false,
-          }">
-          Your answer: aaa
-        </p>
-        <p class="text-gray-500">Correct answer: aaa</p>
-      </div>
-    </div> -->
+        <div class="user-submissons">
+          <ScrollArea class="h-104">
+            <div
+              class="submission mt-6 review-item"
+              v-for="(question, index) in quizAttempt?.[0]?.questions">
+              <div class="review-pin"></div>
+              <div>
+                <span class="text-2xl font-bold"
+                  >{{ index + 1 }}. {{ question.questionContent }}</span
+                >
+                <div class="mt-4 flex flex-col gap-4">
+                  <div>
+                    Right Answer:
+                    {{ question.correctAnswerContents?.join(" ,") }}
+                  </div>
+                  <div
+                    class="flex gap-2 items-center"
+                    :class="{
+                      'text-green-600': isCorrect(
+                        question.selectedAnswerContents,
+                        question.correctAnswerContents
+                      ),
+                      'text-red-600': !isCorrect(
+                        question.selectedAnswerContents,
+                        question.correctAnswerContents
+                      ),
+                    }">
+                    Your Answer:
+                    {{ question.selectedAnswerContents?.join(" ,") }}
+                    <component
+                      :is="
+                        isCorrect(
+                          question.selectedAnswerContents,
+                          question.correctAnswerContents
+                        )
+                          ? Check
+                          : X
+                      "
+                      :class="{
+                        'text-green-600': isCorrect(
+                          question.selectedAnswerContents,
+                          question.correctAnswerContents
+                        ),
+                        'text-red-600': !isCorrect(
+                          question.selectedAnswerContents,
+                          question.correctAnswerContents
+                        ),
+                      }" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ScrollArea>
+        </div>
+      </MyDialog>
+    </div>
   </div>
 </template>
 
@@ -95,6 +140,7 @@
 import { ref, onMounted, computed } from "vue";
 import MyDialog from "~/components/Common/MyDialog.vue";
 import Progress from "~/components/ui/progress/Progress.vue";
+import { Check, X } from "lucide-vue-next";
 import type { Question } from "~/types/quiz";
 
 const { $quizzAppSDK } = useNuxtApp();
@@ -105,6 +151,10 @@ const isDialogOpen = ref();
 const currentQuiz = computed(() => {
   return useQuizStore().quiz[0];
 });
+
+const isCorrect = (string1: string[], string2: string[]) => {
+  return string1.join(" ,") === string2.join(" ,");
+};
 
 const currentScore = computed(() => {
   return quizAttempt.value?.sort(
@@ -125,20 +175,6 @@ watchEffect(() => {
   progressValue.value = (currentScore.value / quizMaxScore.value) * 100;
 });
 
-// const isCorrect = (question: Question) => {
-//   const userAnswer = quizAttempt.value?.find(attempt => attempt.questionId === question.id)?.answer;
-//   return userAnswer === question.correctAnswer;
-// };
-
-// const getAnswerText = (question: Question) => {
-//   const userAnswer = quizAttempt.value?.find(attempt => attempt.questionId === question.id)?.answer;
-//   return question.answers.find(answer => answer.id === userAnswer)?.text || "No answer";
-// };
-
-// const getCorrectAnswerText = (question) => {
-//   return question.answers.find(answer => answer.id === question.correctAnswer)?.text || "No correct answer";
-// };
-
 const reviewQuiz = () => {
   // Handle quiz review logic here
   console.log("Reviewing the quiz...");
@@ -148,9 +184,7 @@ onMounted(async () => {
   try {
     await waitForToken();
     currentUser.value = $quizzAppSDK.config.current_username;
-    await useQuizStore().getQuizAttempt({
-      textSearch: $quizzAppSDK.config.current_username,
-    });
+    await useQuizStore().getQuizAttemptById(useRoute().params.id as string);
 
     useQuizStore().getQuiz(useRoute().params.quiz_id as string);
   } catch (error) {

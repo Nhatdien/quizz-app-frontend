@@ -7,18 +7,16 @@
       class="bg-white rounded-lg shadow-md p-10 w-full max-w-lg text-center relative">
       <div class="section-pin"></div>
       <h1 class="text-2xl md:text-3xl font-semibold mb-4">Quiz Results</h1>
-      <div class="text-green-500 text-5xl md:text-6xl mb-4">
-        <i class="fas fa-check-circle"></i>
-      </div>
 
-      <p class="text-lg md:text-xl font-medium mb-6">Nice job, you passed!</p>
+      <p class="text-lg md:text-xl font-medium mb-6">{{ isPassed(currentScore) ? 'Nice job, you passed!' : 'Oh no, you failed' }}</p>
 
       <div class="grid grid-cols-1 gap-4 mb-6 relative">
         <div class="bg-gray-50 p-8 rounded-lg shadow-md">
           <h2 class="text-sm md:text-base font-semibold text-gray-500">
             YOUR SCORE
           </h2>
-          <p class="text-3xl md:text-4xl font-bold" 
+          <p
+            class="text-3xl md:text-4xl font-bold"
             :class="{
               'text-green-600': isPassed(currentScore),
               'text-red-600': !isPassed(currentScore),
@@ -172,7 +170,7 @@ onMounted(async () => {
   }
 });
 
-onBeforeUnmount(() => {
+onUnmounted(() => {
   clearInterval(pollInterVal.value);
   if (isPlayer.value) {
     useRoomStore().leaveRoom(
