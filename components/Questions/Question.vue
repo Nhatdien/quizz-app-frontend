@@ -8,15 +8,20 @@
           :current-question-index="0"
           :current-submissions="useRoomStore().currentSubmission" />
         <div
-          class="h-[360px] flex align-center justify-center mx-0 my-auto"
+          class="py-16 px-8 flex align-center justify-center"
           v-if="question?.questionType === 2">
+          <!-- {{ useRoomStore().currentSubmission[0] }}
+          {{ useRoomStore().currentQuestion?.answers?.[0]?.content }} -->
+
+          <!-- {{
+            useRoomStore().checkIsCorrect(
+              useRoomStore().currentSubmission,
+              useRoomStore().currentQuestion
+            )
+          }} -->
           <FillTheBlankType
             :class="'text-[#121212]'"
-            v-model="useRoomStore().currentSubmission[0]"
-            :inputLength="
-              question.answers.find((answer) => answer.isCorrect)?.content?.length ||
-              0
-            " />
+            v-model="useRoomStore().currentSubmission[0]" />
         </div>
       </div>
     </transition>
@@ -36,13 +41,16 @@ const props = defineProps({
 </script>
 
 <style scoped>
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: opacity 0.5s ease;
 }
-.fade-enter, .fade-leave-to {
+.fade-enter,
+.fade-leave-to {
   opacity: 0;
 }
-.fade-enter-to, .fade-leave {
+.fade-enter-to,
+.fade-leave {
   opacity: 1;
 }
 </style>

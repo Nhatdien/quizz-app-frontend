@@ -18,6 +18,11 @@
           :options="questionPointOptions" />
         <CommonMySelect
           :width="'150px'"
+          :class="'font-extrabold'"
+          v-model="questionType"
+          :options="questionTypeOptions" />
+        <CommonMySelect
+          :width="'150px'"
           v-model="questionTimer"
           :options="questionTimeOptions" />
       </div>
@@ -33,55 +38,65 @@
       </div>
     </div>
 
+    <div
+      v-if="questionType === 2"
+      class="question-editor flex justify-center items-center">
+      <Input :class="'text-3xl font-bold text-center'" v-model="pin" />
+    </div>
     <!-- Answer options -->
-    <div class="options-section">
-      <div
-        v-for="(option, index) in answers"
-        :key="index"
-        :style="{ backgroundColor: optionColors[index % optionColors.length] }"
-        class="option-card">
-        <input
-          class="option-editor"
-          @focus="setActiveEditor(index)"
-          v-model="option.content"
-          :placeholder="placeholderText" />
-        <div class="option-icons">
-          <Button
-            variant="destructive"
-            v-if="answers.length > 3"
-            @click="deleteOption(index)">
-            <Trash />
-          </Button>
+    <div v-if="questionType === 1">
+      <div class="options-section">
+        <div
+          v-for="(option, index) in answers"
+          :key="index"
+          :style="{
+            backgroundColor: optionColors[index % optionColors.length],
+          }"
+          class="option-card">
+          <input
+            class="option-editor"
+            @focus="setActiveEditor(index)"
+            v-model="option.content"
+            :placeholder="placeholderText" />
+          <div class="option-icons">
+            <Button
+              variant="destructive"
+              v-if="answers.length > 3"
+              @click="deleteOption(index)">
+              <Trash />
+            </Button>
 
-          <Checkbox
-            v-model:checked="option.isCorrect"
-            :true-value="true"
-            :false-value="false"
-            class="correct-checkbox" />
+            <Checkbox
+              v-model:checked="option.isCorrect"
+              :true-value="true"
+              :false-value="false"
+              class="correct-checkbox" />
+          </div>
         </div>
       </div>
-    </div>
-    <div class="flex justify-center">
-      <Button
-        v-if="answers.length < 5"
-        @click="addOption"
-        variant="primary"
-        class="add-option-button"
-        >+</Button
-      >
-    </div>
-    <!-- Answer type toggle buttons -->
-    <div class="answer-type-toggle">
-      <Button
-        :variant="isMultipleCorrect ? 'primary' : 'secondary'"
-        @click="toggleSingleCorrect"
-        >Single correct answer</Button
-      >
-      <Button
-        :variant="!isMultipleCorrect ? 'primary' : 'secondary'"
-        @click="toggleMultipleCorrect"
-        >Multiple correct answers</Button
-      >
+
+      <div class="flex justify-center">
+        <Button
+          v-if="answers.length < 5"
+          @click="addOption"
+          variant="primary"
+          class="add-option-button"
+          >+</Button
+        >
+      </div>
+      <!-- Answer type toggle buttons -->
+      <div class="answer-type-toggle">
+        <Button
+          :variant="isMultipleCorrect ? 'primary' : 'secondary'"
+          @click="toggleSingleCorrect"
+          >Single correct answer</Button
+        >
+        <Button
+          :variant="!isMultipleCorrect ? 'primary' : 'secondary'"
+          @click="toggleMultipleCorrect"
+          >Multiple correct answers</Button
+        >
+      </div>
     </div>
   </div>
   <Button @click="handleSaveQuestion">Save Question</Button>
@@ -90,6 +105,7 @@
 <script setup>
 import CommonQuill from "~/components/Common/Quill.vue";
 import { Trash, Image, Clock } from "lucide-vue-next";
+import FillTheBlankType from "../Quiz/FillTheBlankType.vue";
 
 const route = useRoute();
 const props = defineProps({
@@ -99,6 +115,10 @@ const props = defineProps({
   },
 });
 
+const questionTypeOptions = [
+  { label: "Options Type", value: 1 },
+  { label: "Short Answer Type", value: 2 },
+];
 const questionPointOptions = [
   { label: "10 point", value: 10 },
   { label: "20 point", value: 20 },
@@ -125,8 +145,16 @@ const submitPayload = computed(() => {
   const payload = { ...currentQuiz.value };
   const currentEditingQuestion = {
     content: questionText.value,
-    questionType: 1,
-    answers: answers,
+    questionType: questionType.value,
+    answers:
+      questionType.value === 1
+        ? answers
+        : [
+            {
+              content: pin.value,
+              isCorrect: true,
+            },
+          ],
     time: questionTimer.value,
     point: questionScore.value,
   };
@@ -167,10 +195,12 @@ watch(props.question, (newVal) => {
       option.isCorrect = newVal.options[index].isCorrect;
     });
 
+
     isMultipleCorrect.value = newVal.isMultipleCorrect;
   }
 });
 
+const pin = ref([]);
 const questionText = ref("");
 const answers = reactive([
   { content: "", isCorrect: false },
@@ -178,6 +208,7 @@ const answers = reactive([
   { content: "", isCorrect: false },
   { content: "", isCorrect: false },
 ]);
+const questionType = ref(1);
 const questionTimer = ref(30);
 const questionScore = ref(10);
 
@@ -228,6 +259,12 @@ onMounted(() => {
       answers[index].content = option.content;
       answers[index].isCorrect = option.isCorrect;
     });
+
+    questionType.value = props.question.questionType;
+    questionTimer.value = props.question.time;
+    questionScore.value = props.question.point;
+
+    pin.value = props.question.answers[0].content;
   }
 });
 
@@ -276,6 +313,7 @@ function toggleMultipleCorrect() {
   color: #fff;
   border-radius: 8px;
   margin: auto;
+  transition: all 0.3s ease;
 }
 
 .question-section {

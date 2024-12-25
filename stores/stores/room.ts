@@ -14,7 +14,7 @@ export const useRoomStore = defineStore({
     currentQuestionIndex: 0,
     currentQuestion: {} as Question,
     currentScore: 0,
-    currentSubmission: [] as string[][],
+    currentSubmission: [[]] as string[][],
     questionIds: [] as string[],
     roomStarted: false,
     clockTime: 0,
@@ -106,27 +106,23 @@ export const useRoomStore = defineStore({
       } else if (haveMultipleAnswers) {
         const rightAnswers = question.answers
           .filter((ans) => ans.isCorrect)
-          .map((ans) => ans.content).sort();
+          .map((ans) => ans.content)
+          .sort();
 
-        correctAnswer = this.currentSubmission[0].length > 0 &&
+        correctAnswer =
+          this.currentSubmission[0].length > 0 &&
           compareTwoArrayAnyOrder<string>(
             this.currentSubmission[0].sort(),
             rightAnswers
           );
       } else {
-        correctAnswer = submission[0]?.join("") === question.answers[0].content;
+        console.log(submission, question.answers[0].content);
+        correctAnswer = submission?.[0] === question.answers[0].content;
       }
 
       if (correctAnswer) {
         this.currentScore += question.point;
       }
-
-      console.log(
-        correctAnswer,
-        submission,
-        question.answers,
-        this.currentScore
-      );
 
       return correctAnswer;
     },
@@ -153,7 +149,7 @@ export const useRoomStore = defineStore({
       console.log(participants);
       const username = participants.username;
       const score = participants.score;
-      this.participantScores[username] = score;
+      this.participantScores[username] = parseFloat(score);
       console.log(this.participantScores);
     },
 

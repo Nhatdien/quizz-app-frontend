@@ -81,11 +81,11 @@
           <ScrollArea class="h-104">
             <div
               class="submission mt-6 review-item"
-              v-for="(question, index) in quizAttempt?.[0]?.questions">
+              v-for="(question, index) in displayedSubmission">
               <div class="review-pin"></div>
               <div>
                 <span class="text-2xl font-bold"
-                  >{{ index + 1 }}. {{ question.questionContent }}</span
+                  >{{ question.originalIndex + 1 }}. {{ question.questionContent }}</span
                 >
                 <div class="mt-4 flex flex-col gap-4">
                   <div>
@@ -147,6 +147,23 @@ const { $quizzAppSDK } = useNuxtApp();
 const quizAttempt = computed(() => useQuizStore().quizAttempt);
 const currentUser = ref($quizzAppSDK.config.current_username);
 
+
+const displayedSubmission = computed(() => {
+  const questions = quizAttempt.value?.[0]?.questions?.map((question, index) => ({
+    ...question,
+    originalIndex: index
+  }));
+
+  const wrongAnswers = questions?.filter(
+    (question) => !isCorrect(question.selectedAnswerContents, question.correctAnswerContents)
+  );
+
+  const rightAnswers = questions?.filter(
+    (question) => isCorrect(question.selectedAnswerContents, question.correctAnswerContents)
+  );
+
+  return wrongAnswers.concat(rightAnswers);
+});
 const isDialogOpen = ref();
 const currentQuiz = computed(() => {
   return useQuizStore().quiz[0];

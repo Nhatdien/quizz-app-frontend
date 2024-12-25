@@ -40,6 +40,7 @@
             <span>{{ useRoomStore().currentQuestion.content }}</span>
           </div>
           <Question
+            class="h-full"
             v-if="
               !useRoomStore().showingLeaderboard &&
               !useRoomStore().showingCountDown

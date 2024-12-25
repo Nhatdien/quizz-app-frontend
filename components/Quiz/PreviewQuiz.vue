@@ -33,8 +33,8 @@
         class="h-[360px] flex align-center justify-center mx-0 my-auto"
         v-if="currentQuestion?.questionType === 2">
         <FillTheBlackType
-          v-model="currentSubmissions[currentQuestionIndex]"
-          :inputLength="currentQuestion.answers[0].content.length" />
+          v-model="currentSubmissions[currentQuestionIndex][0]"
+           />
       </div>
     </div>
     <div class="move-buttons">
@@ -48,7 +48,7 @@
         @click="handleClickSubmit"
         class="p-4 text-2xl"
         :disabled="!allSubmissionFilled">
-        SUBMIT
+        SUBMIT {{ getScore }}
       </Button>
       <button
         :class="`continue-button ${
@@ -169,7 +169,7 @@ const getScore = computed(() => {
 
   const correctAnswers = currentSubmissions.value.map((submission, index) => {
     if (props.quiz?.questions[index].questionType === 2) {
-      return submission.join("") === rightAnswers[index][0];
+      return submission[0] === rightAnswers[index][0];
     }
 
     return (

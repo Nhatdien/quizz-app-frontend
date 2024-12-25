@@ -20,7 +20,7 @@
               </AlertDialog>
             </div>
           </div>
-          <ul class="answers-list">
+          <ul v-if="question?.questionType === 1" class="answers-list">
             <li
               class="self-start"
               v-for="(answer, index) in question.answers"
@@ -35,6 +35,13 @@
               </div>
             </li>
           </ul>
+          <div class="flex min-w-[200xp] items-center justify-center my-8 gap-4">
+            <QuizFillTheBlankType
+              v-if="question?.questionType === 2"
+              v-model="question.answers[0].content"
+              :disabled="true"
+               />
+          </div>
         </div>
       </div>
     </div>
@@ -96,13 +103,13 @@ const deleteQuestionAlertOption = (question: Question) => {
     description: "Are you sure you want to delete this question?",
     actionText: "Delete",
     action: async () => {
-       useQuizStore().deleteQuestion(question.id as string);
+      useQuizStore().deleteQuestion(question.id as string);
     },
   };
 };
 
 const isEditableView = computed(() => {
-  return  props.enableEdit;
+  return props.enableEdit;
 });
 
 const currentQuiz = computed(() => {
