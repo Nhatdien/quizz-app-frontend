@@ -29,7 +29,6 @@
 
         <template #tab-trigger-existing> Use existing topic </template>
         <template #tab-content-new>
-          <!-- <TopicSearchBox /> -->
           <FormItem label="Topic Name">
             <Input
               v-model="newTopicInput.topicTitle"

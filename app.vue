@@ -20,6 +20,7 @@ onMounted(async () => {
     if (useTopicStore().topics.length === 0) {
       useTopicStore().getTopics({
         textSearch: "",
+        pageSize: 100,
       });
     }
   } catch (error) {

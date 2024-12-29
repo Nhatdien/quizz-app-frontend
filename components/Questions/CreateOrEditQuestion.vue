@@ -151,6 +151,7 @@ const submitPayload = computed(() => {
         ? answers
         : [
             {
+              id: props.question?.answers[0].id || null,
               content: pin.value,
               isCorrect: true,
             },
@@ -194,7 +195,6 @@ watch(props.question, (newVal) => {
       option.content = newVal.options[index].content;
       option.isCorrect = newVal.options[index].isCorrect;
     });
-
 
     isMultipleCorrect.value = newVal.isMultipleCorrect;
   }

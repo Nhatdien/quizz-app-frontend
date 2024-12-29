@@ -15,7 +15,6 @@
       </div>
       <div class="flex w-full justify-center gap-4 my-4">
         <MySelect
-          
           :isFilter="true"
           :class="'dropdown'"
           :placeholder="{
@@ -25,6 +24,23 @@
           :options="topicOption"
           groupLabel="Topic"
           v-model="currentInput.topic">
+          <template #add-option>
+            <MyDialog>
+              <template #trigger>
+                <div class="mt-4 hover:underline ml-8 cursor-pointer">
+                  Or, add new topic +
+                </div>
+              </template>
+              <template #title> Add new topic </template>
+              <template #description>
+                Fill in the form to add a new topic
+              </template>
+              <AddTopicForm @close="() => {
+                openTopicDialog = false;
+                currentInput.topic = useTopicStore().createdTopic.code;
+              }"/>
+            </MyDialog>
+          </template>
         </MySelect>
         <MySelect
           :isFilter="false"
@@ -84,6 +100,8 @@ import { ref, reactive, computed, watch, nextTick } from "vue";
 import MySelect from "~/components/Common/MySelect.vue";
 import { Bot } from "lucide-vue-next";
 import type { Quiz } from "~/types/quiz";
+import MyDialog from "~/components/Common/MyDialog.vue";
+import AddTopicForm from "~/components/Quiz/AddTopicForm.vue";
 
 const generatedQuiz = ref({} as Quiz);
 const currentInput = reactive({
@@ -92,6 +110,7 @@ const currentInput = reactive({
   topic: "",
 });
 const loading = ref(false);
+const openTopicDialog = ref(false);
 
 const numberOfQuestionsOption = [
   { value: "5", label: "5 questions" },

@@ -22,19 +22,20 @@
       #{{ currentQuestionIndex + 1 }}
       <span class="" v-html="currentQuestion?.content"></span>
     </h3>
-    <div class="min-h-[360px]">
+    <div class="min-h-[360px]" :key="currentQuestionIndex">
       <div v-if="currentQuestion?.questionType === 1">
         <OptionTypeQuiz
           :question="currentQuestion"
           :currentQuestionIndex="currentQuestionIndex"
           v-model:currentSubmissions="currentSubmissions" />
       </div>
+      {{ currentSubmissions }}
       <div
-        class="h-[360px] flex align-center justify-center mx-0 my-auto"
+        class="h-[360px] flex items-center justify-center mx-0 my-auto"
         v-if="currentQuestion?.questionType === 2">
         <FillTheBlackType
-          v-model="currentSubmissions[currentQuestionIndex][0]"
-           />
+        :key="currentQuestionIndex"
+        v-model="currentSubmissions[currentQuestionIndex]" />
       </div>
     </div>
     <div class="move-buttons">
@@ -169,7 +170,7 @@ const getScore = computed(() => {
 
   const correctAnswers = currentSubmissions.value.map((submission, index) => {
     if (props.quiz?.questions[index].questionType === 2) {
-      return submission[0] === rightAnswers[index][0];
+      return submission === rightAnswers[index][0];
     }
 
     return (
@@ -207,14 +208,14 @@ const handleClickSubmit = async () => {
         correctAnswerContents: rightAnswer as string[],
         selectedAnswerContents:
           props.quiz?.questions[index].questionType === 2
-            ? [currentSubmissions.value[index].join("")]
+            ? [currentSubmissions.value[index]]
             : currentSubmissions.value[index],
       };
     }
   );
 
   quizAttemptPayload.questions = rightAnswerAndSubmission;
-  
+
   const attempt = await useQuizStore().createQuizAttempt(quizAttemptPayload);
   navigateTo("result/" + attempt.id);
 };

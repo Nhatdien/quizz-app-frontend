@@ -76,6 +76,7 @@ onMounted(async () => {
     await waitForToken();
     useQuizStore().searchQuiz({
       textSearch: route.query.search as string,
+      pageSize: 100,
     });
     isMe.value = $keycloak.getUsername() === route.query.search;
     // }
