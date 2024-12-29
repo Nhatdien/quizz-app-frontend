@@ -10,14 +10,14 @@
             width="50"
             height="50" />
           <span class="flex flex-col">
-            <span>{{ review?.username }}</span>
+            <span>{{ review?.createdBy }}</span>
             <span class="text-gray text-xs">{{
               formatDate(review?.createdDate)
             }}</span>
           </span>
           <ReviewDropDown
             class="align-middle"
-            :menu-options="shownReviewDropdown(review?.username)" />
+            :menu-options="shownReviewDropdown(review?.createdBy)" />
         </h3>
 
         <span class="review-rating self-end">

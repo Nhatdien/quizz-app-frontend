@@ -29,7 +29,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["update:modelValue"]);
-const hoverValue = ref<number | null>(null);
+const hoverValue = ref<number | null>(5);
 
 function setRating(star: number) {
   emit("update:modelValue", star);

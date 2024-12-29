@@ -32,6 +32,7 @@ export interface Review {
   id: string;
   quizzId: string;
   comment: string;
+  createdBy: string;
   username: string;
   createdDate: string;
   rating: number;

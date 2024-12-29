@@ -26,11 +26,41 @@
           v-model="questionTimer"
           :options="questionTimeOptions" />
       </div>
-      <input
-        class="question-editor w-full mt-4"
-        @focus="setActiveEditor('question')"
-        v-model="questionText"
-        :placeholder="placeholderText" />
+      <div
+        class="question-editor w-full mt-4 flex flex-col justify-start items-center relative"
+        :class="{
+          'h-48': currentViewedImageUrl === null,
+          'h-96': currentViewedImageUrl !== null,
+        }">
+        <input
+          class="w-full bg-[#250c3d] text-center justify-self-start"
+          :class="{
+            'h-20': currentViewedImageUrl !== null,
+            'h-48': currentViewedImageUrl === null,
+          }"
+          @focus="setActiveEditor('question')"
+          v-model="questionText"
+          :placeholder="placeholderText" />
+        <NuxtImg
+          v-if="currentViewedImageUrl !== null"
+          class="h-full max-h-60 bottom-5 absolute"
+          :src="currentViewedImageUrl"
+          :size="120">
+        </NuxtImg>
+      </div>
+      <MyDialog>
+        <template #title>Upload image</template>
+        <template #trigger>
+          <Button
+            variant="secondary"
+            icon="image"
+            class="absolute right-5 bottom-5"
+            ><Image
+          /></Button>
+        </template>
+
+        <CommonUploadFile v-model="currentFileUploading" />
+      </MyDialog>
       <div class="question-icons absolute right-0 top-1">
         <!-- <Button variant="secondary" icon="image">dsadsad </Button>
         <Button variant="secondary" icon="mic">dsada </Button>
@@ -106,6 +136,7 @@
 import CommonQuill from "~/components/Common/Quill.vue";
 import { Trash, Image, Clock } from "lucide-vue-next";
 import FillTheBlankType from "../Quiz/FillTheBlankType.vue";
+import MyDialog from "../Common/MyDialog.vue";
 
 const route = useRoute();
 const props = defineProps({
@@ -113,6 +144,19 @@ const props = defineProps({
     type: Object,
     required: false,
   },
+});
+
+const currentViewedImageUrl = ref();
+const currentFileUploading = ref(null);
+
+watch(currentFileUploading, (newVal) => {
+  if (newVal) {
+    currentViewedImageUrl.value = URL.createObjectURL(newVal);
+  }
+
+  if (!newVal) {
+    currentViewedImageUrl.value = null;
+  }
 });
 
 const questionTypeOptions = [
@@ -175,11 +219,49 @@ const submitPayload = computed(() => {
   return payload;
 });
 
+const addImageUrlToPayload = async () => {
+  const payload = { ...submitPayload.value };
+
+  currentViewedImageUrl.value = await useUpload(
+    currentFileUploading.value
+  ).submitUploadFile();
+  if (isEditingQuestion.value) {
+    const questionIndex = payload.questions.findIndex(
+      (question) => question.id === props.question.id
+    );
+
+    payload.questions[questionIndex] = {
+      id: props.question.id,
+      ...submitPayload.value.questions[questionIndex],
+      imageUrl: currentViewedImageUrl.value,
+    };
+  } else {
+    const creatingQuestion = {
+      ...submitPayload.value.questions[
+        submitPayload.value.questions.length - 1
+      ],
+      imageUrl: currentViewedImageUrl.value,
+    };
+    payload.questions = [...submitPayload.value.questions, creatingQuestion];
+  }
+
+  return payload;
+};
+
 const showDialogModelValue = defineModel();
 const handleSaveQuestion = async () => {
   // console.log(submitPayload.value);
+
+  let finalPayload;
+
+  if (currentFileUploading.value) {
+    finalPayload = await addImageUrlToPayload();
+  } else {
+    finalPayload = submitPayload.value;
+  }
+
   useTryCatch().tryCatch(() => {
-    return useQuizStore().updateQuiz(submitPayload.value);
+    return useQuizStore().updateQuiz(finalPayload);
   });
 
   // Close the dialog
@@ -197,6 +279,7 @@ watch(props.question, (newVal) => {
     });
 
     isMultipleCorrect.value = newVal.isMultipleCorrect;
+    currentViewedImageUrl.value = newVal.imageUrl;
   }
 });
 
@@ -265,6 +348,8 @@ onMounted(() => {
     questionScore.value = props.question.point;
 
     pin.value = props.question.answers[0].content;
+
+    currentViewedImageUrl.value = props.question?.imageUrl;
   }
 });
 
@@ -330,7 +415,6 @@ function toggleMultipleCorrect() {
   flex-grow: 1;
   padding: 20px;
   text-align: center;
-  min-height: 15rem;
   background-color: #250c3d;
   border-radius: 8px;
   cursor: pointer;
@@ -373,6 +457,14 @@ function toggleMultipleCorrect() {
   .option-card {
     width: calc(50% - 10px);
   }
+}
+
+.preview-image {
+  max-width: 100%;
+  max-height: 200px;
+  background-color: #250c3d;
+  border: 1px solid #d3d3d3;
+  border-radius: 8px;
 }
 
 .option-editor {

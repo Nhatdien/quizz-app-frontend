@@ -5,6 +5,7 @@ export interface BaseFilter {
   to?: Date;
   textSearch?: string;
   status?: number;
+  [key: string]: string;
 }
 
 export interface FilterResponse<T> {

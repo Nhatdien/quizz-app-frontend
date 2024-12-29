@@ -71,7 +71,8 @@ onMounted(async () => {
     await waitForToken();
     currentUser.value = $quizzAppSDK.config.current_username;
     await useQuizStore().getQuizAttempt({
-      textSearch: $quizzAppSDK.config.current_username,
+      textSearch: $quizzAppSDK.config.current_username as string,
+      quizId: useRoute().params.quiz_id as string,
     });
 
     useQuizStore().getQuiz(useRoute().params.quiz_id as string);
