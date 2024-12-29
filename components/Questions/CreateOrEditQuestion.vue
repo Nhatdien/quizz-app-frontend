@@ -201,6 +201,7 @@ const submitPayload = computed(() => {
             },
           ],
     time: questionTimer.value,
+    imageUrl: props.question?.imageUrl || null,
     point: questionScore.value,
   };
 
@@ -254,7 +255,7 @@ const handleSaveQuestion = async () => {
 
   let finalPayload;
 
-  if (currentFileUploading.value) {
+  if (currentViewedImageUrl.value && currentViewedImageUrl.value !== props.question?.imageUrl) {
     finalPayload = await addImageUrlToPayload();
   } else {
     finalPayload = submitPayload.value;

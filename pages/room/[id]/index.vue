@@ -19,7 +19,7 @@
             :scores="useRoomStore().participantScores" />
 
           <RoomCountDownScreen
-            class="justify-self-center "
+            class="justify-self-center"
             v-if="useRoomStore().showingCountDown"
             :time="useRoomStore().countDownBeforeStart" />
           <div
@@ -38,6 +38,12 @@
               :remaining-time="useRoomStore().clockTime"
               :countdown-style="countdownStyle" />
             <span>{{ useRoomStore().currentQuestion.content }}</span>
+
+            <NuxtImg
+              v-if="useRoomStore().currentQuestion.imageUrl"
+              class="max-h-48 md:max-h-60"
+              :src="useRoomStore().currentQuestion.imageUrl"
+              alt="question image" />
           </div>
           <Question
             class="h-full"

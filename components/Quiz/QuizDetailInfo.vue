@@ -20,6 +20,13 @@
               </AlertDialog>
             </div>
           </div>
+          <div class="p-4 flex w-full items-center justify-center">
+            <NuxtImg
+              v-if="question?.imageUrl"
+              :src="question.imageUrl"
+              alt="Question image"
+              class="h-full max-h-48 object-cover rounded-sm border border-gray-300" />
+          </div>
           <ul v-if="question?.questionType === 1" class="answers-list">
             <li
               class="self-start"
@@ -35,12 +42,12 @@
               </div>
             </li>
           </ul>
-          <div class="flex min-w-[200xp] items-center justify-center my-8 gap-4">
+          <div
+            class="flex min-w-[200xp] items-center justify-center my-8 gap-4">
             <QuizFillTheBlankType
               v-if="question?.questionType === 2"
               v-model="question.answers[0].content"
-              :disabled="true"
-               />
+              :disabled="true" />
           </div>
         </div>
       </div>

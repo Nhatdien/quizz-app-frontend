@@ -15,12 +15,21 @@
         {{ `${currentQuestionIndex + 1}/${quiz?.questions?.length}` }}
       </div>
     </div>
-    <h2 class="quiz-title">{{ quiz?.title }}</h2>
+    <h2 class="quiz-title text-3xl">{{ quiz?.title }}</h2>
+
     <h3
-      class="quiz-question flex flex-col"
+      class="quiz-question w-full flex flex-col justify-center items-center"
       key="question-{{ currentQuestionIndex }}">
-      #{{ currentQuestionIndex + 1 }}
-      <span class="" v-html="currentQuestion?.content"></span>
+      <div class="flex flex-col text-2xl">
+        #{{ currentQuestionIndex + 1 }}
+        <span>{{ currentQuestion?.content }}</span>
+      </div>
+      <NuxtImg
+        v-if="currentQuestion?.imageUrl !== null"
+        class="h-full max-h-60 w-40 md:w-60 object-cover"
+        :src="currentQuestion?.imageUrl"
+        :size="120">
+      </NuxtImg>
     </h3>
     <div class="min-h-[360px]" :key="currentQuestionIndex">
       <div v-if="currentQuestion?.questionType === 1">
@@ -29,13 +38,12 @@
           :currentQuestionIndex="currentQuestionIndex"
           v-model:currentSubmissions="currentSubmissions" />
       </div>
-      {{ currentSubmissions }}
       <div
         class="h-[360px] flex items-center justify-center mx-0 my-auto"
         v-if="currentQuestion?.questionType === 2">
         <FillTheBlackType
-        :key="currentQuestionIndex"
-        v-model="currentSubmissions[currentQuestionIndex]" />
+          :key="currentQuestionIndex"
+          v-model="currentSubmissions[currentQuestionIndex]" />
       </div>
     </div>
     <div class="move-buttons">
