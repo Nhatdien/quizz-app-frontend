@@ -7,13 +7,14 @@
 
 <script setup lang="ts">
 import { useToast } from "./components/ui/toast/use-toast";
-
+import cookie from "cookie"
 const { toast } = useToast();
 
 const { $keycloak, $quizzAppSDK } = useNuxtApp();
 
 
 onMounted(async () => {
+  console.log(cookie)
   try {
     await waitForToken();
 

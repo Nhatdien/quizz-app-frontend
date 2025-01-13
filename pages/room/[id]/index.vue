@@ -1,12 +1,39 @@
 <template>
   <!-- Button display with the host-->
   <div v-if="!isPlayer">
+    <div class="self-end py-2">
+      <div class="flex gap-2 text-white cursor-pointer p-2">
+        <Volume2
+          v-if="audioPlaying"
+          @click="muteAudio"
+          fill="white"
+          :size="32" />
+        <VolumeX v-else @click="playAudio" fill="white" :size="32" />
+        <input @input="changeVolume" type="range" min="0" max="100" />
+      </div>
+
+      <audio ref="audioPlayer" :src="audioSrc" loop></audio>
+    </div>
     <div class="quiz-page">
       <HostView :room="currentRoom" />
+      <audio ref="audioPlayer" :src="audioSrc" loop></audio>
     </div>
   </div>
   <div v-else>
     <div class="mt-5">
+      <div class="self-end py-2">
+        <div class="flex gap-2 text-white cursor-pointer p-2">
+          <Volume2
+            v-if="audioPlaying"
+            @click="muteAudio"
+            fill="white"
+            :size="32" />
+          <VolumeX v-else @click="playAudio" fill="white" :size="32" />
+          <input @input="changeVolume" type="range" min="0" max="100" />
+        </div>
+
+        <audio ref="audioPlayer" :src="audioSrc" loop></audio>
+      </div>
       <div class="quiz-page w-full">
         <div
           v-if="useRoomStore().currentQuestion.questionType"
@@ -72,7 +99,9 @@ import QrCode from "~/components/Common/QrCode.vue";
 import Question from "~/components/Questions/Question.vue";
 import HostView from "~/components/Room/HostView.vue";
 import PlayerView from "~/components/Room/PlayerView.vue";
+import SettingDropdown from "~/components/Room/SettingDropdown.vue";
 import { toast } from "~/components/ui/toast";
+import { Volume2, VolumeX } from "lucide-vue-next";
 
 definePageMeta({
   layout: "quiz",
@@ -108,6 +137,25 @@ const currentQuestion = computed(() => {
 });
 
 const route = useRoute();
+
+const audioSrc = "/audio/audio.mp3";
+const audioPlayer = ref<HTMLAudioElement | null>(null);
+const audioPlaying = ref(false);
+
+const playAudio = () => {
+  audioPlaying.value = true;
+  audioPlayer.value?.play();
+};
+
+const muteAudio = () => {
+  audioPlaying.value = false;
+  console.log(audioSrc);
+  audioPlayer.value?.pause();
+};
+
+const changeVolume = (event: Event) => {
+  audioPlayer.value.volume = event.target?.value / 100;
+};
 
 const joinRoon = async () => {
   //join the room and subscribe to the question topic
@@ -175,13 +223,11 @@ onMounted(async () => {
 
 onBeforeUnmount(() => {
   clearInterval(pollInterVal.value);
-  if (isPlayer.value) {
-    useRoomStore().leaveRoom(
-      currentRoom.value.id,
-      currentRoom.value.code,
-      $keycloak.getUsername() as string
-    );
-  }
+  useRoomStore().leaveRoom(
+    currentRoom.value.id,
+    currentRoom.value.code,
+    $keycloak.getUsername() as string
+  );
   useRoomStore().reset();
 });
 </script>

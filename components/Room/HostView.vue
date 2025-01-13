@@ -1,5 +1,4 @@
 <template>
-
   <div class="success-pin"></div>
   <div class="header">
     <div class="join-info flex flex-col items-center">
@@ -62,6 +61,7 @@
           <p>+ {{ useRoomStore().roomParticipants?.length - 2 }}</p>
         </div>
       </div>
+
       <Button
         :variant="'success'"
         @click="handleNextQuestion"
@@ -71,7 +71,12 @@
       </Button>
     </div>
   </div>
-  <ScoreLeaderBoard class="w-full" v-if="useRoomStore().roomStarted" :scores="useRoomStore().participantScores" />
+
+  <ScoreLeaderBoard
+    class="w-full"
+    v-if="useRoomStore().roomStarted"
+    :scores="useRoomStore().participantScores" />
+
 </template>
 
 <script setup lang="ts">
