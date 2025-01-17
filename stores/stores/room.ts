@@ -117,7 +117,7 @@ export const useRoomStore = defineStore({
           );
       } else {
         console.log(submission, question.answers[0].content);
-        correctAnswer = submission?.[0] === question.answers[0].content;
+        correctAnswer = submission?.[0] === question.answers[0].content
       }
 
       if (correctAnswer) {

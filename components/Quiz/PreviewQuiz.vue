@@ -57,7 +57,7 @@
         @click="handleClickSubmit"
         class="p-4 text-2xl"
         :disabled="!allSubmissionFilled">
-        SUBMIT {{ getScore }}
+        SUBMIT
       </Button>
       <button
         :class="`continue-button ${

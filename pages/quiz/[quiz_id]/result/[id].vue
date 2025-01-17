@@ -78,7 +78,7 @@
         </template>
 
         <div class="user-submissons">
-          <ScrollArea class="h-104">
+          <ScrollArea class="h-[600px]">
             <div
               class="submission mt-6 review-item"
               v-for="(question, index) in displayedSubmission">

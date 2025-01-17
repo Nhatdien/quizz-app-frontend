@@ -40,7 +40,8 @@ const quizzes = computed(() => {
 onMounted(async () => {
   await waitForToken();
   useQuizStore().getSuggestionQuiz({
-    textSearch: $keycloak.getTokenParsed()?.preferred_username,
+    textSearch: $keycloak.getTokenParsed()?.preferred_username as string,
+    pageSize: 20,
   });
 });
 </script>

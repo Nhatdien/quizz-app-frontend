@@ -338,10 +338,23 @@ watch(activeContent, (newValue) => {
 onMounted(() => {
   if (props.question) {
     questionText.value = props.question.content;
+
+    if (answers.length < props.question.answers.length) {
+      for(var i=answers.length; i<props.question.answers.length; i++) {
+        answers.push({content:"", isCorrect:false})
+      }
+    }
+
+    if (answers.length > props.question.answers.length) {
+      for(var i=answers.length; i<props.question.answers.length; i++) {
+        answers.pop(-1)
+      }
+    }
+
     props.question.answers.forEach((option, index) => {
-      answers[index].id = option.id;
-      answers[index].content = option.content;
-      answers[index].isCorrect = option.isCorrect;
+      answers[index].id = option?.id;
+      answers[index].content = option?.content;
+      answers[index].isCorrect = option?.isCorrect;
     });
 
     questionType.value = props.question.questionType;

@@ -159,6 +159,10 @@ const handleClickUploadFile = async () => {
         props.uploadPath
       )) as Response;
 
+      const quizUpload = await response.json()
+
+      navigateTo(`/quiz/${quizUpload?.id}/view`)
+      emits("onFileUploaded")
       if (response.status >= 400) {
         useToast().toast({
           title: "Error",
